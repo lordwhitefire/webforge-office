@@ -308,11 +308,22 @@ documentation_dept = node("Thoth", "Documentation Director", dept="Documentation
     children=[quill_team, memory_team, embedded_docs])
 
 # Executive
+# HR Department — reports to Hermes, neutral (not part of the 4 operational departments)
+hr_dept = node("Voss", "HR Director", dept="HR",
+    function="Heads the HR Department — receives all recruiting and termination requests, makes final decisions, reports to Hermes. Manages both temporary numbered agents and permanent named agents.",
+    children=[
+        node("Rook", "Registry Manager", dept="HR",
+            function="Maintains the Agent Registry file. Handles all additions, activations, and deactivations of named agents. Never creates a duplicate — always checks the registry first."),
+        node("Weld", "Assignment Officer", dept="HR",
+            function="Assigns newly recruited agents to the department that requested them. Tracks who is working on what."),
+    ])
+
 hermes = node("Hermes", "COO / Scheduler", dept="Executive",
-    function="Automaton: wakes agents in sequence, manages handovers, monitors stalls")
+    function="Automaton: wakes agents in sequence, manages handovers, monitors stalls. HR reports to Hermes.",
+    children=[hr_dept])
 
 ceo = node("CEO", "Chief Executive Officer", dept="Executive",
-    function="Oversees all four departments, coordinates strategy, makes final decisions",
+    function="Oversees all departments, coordinates strategy, makes final decisions",
     children=[hermes, intelligence_dept, build_dept, quality_dept, documentation_dept])
 
 
@@ -353,6 +364,7 @@ html = """<!DOCTYPE html>
     --build: #34D399;
     --quality: #FB7185;
     --docs: #FBBF24;
+    --hr: #22D3EE;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -470,6 +482,7 @@ html = """<!DOCTYPE html>
   .dept-Build > circle { fill: var(--build); stroke: #059669; }
   .dept-Quality > circle { fill: var(--quality); stroke: #E11D48; }
   .dept-Documentation > circle { fill: var(--docs); stroke: #D97706; }
+  .dept-HR > circle { fill: var(--hr); stroke: #0891B2; }
 
   .node.highlighted > circle {
     stroke: #fff; stroke-width: 3px;
@@ -529,7 +542,8 @@ html = """<!DOCTYPE html>
 
 <div id="legend">
   <h3>Departments</h3>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--exec)"></div>Executive (2)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--exec)"></div>Executive (CEO, Hermes)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--hr)"></div>HR (Voss, Rook, Weld)</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--intel)"></div>Intelligence (38)</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--build)"></div>Build (69)</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--quality)"></div>Quality Council (108)</div>
@@ -550,6 +564,7 @@ const treeData = __TREE_DATA__;
 // ── Department colors ──
 const deptColors = {
   Executive: "#A78BFA",
+  HR: "#22D3EE",
   Intelligence: "#60A5FA",
   Build: "#34D399",
   Quality: "#FB7185",
