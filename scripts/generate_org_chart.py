@@ -249,8 +249,8 @@ pulse_team = node("Pulse Team", "Lead, Bug Fixing", dept="Quality",
                 children=batch_children("Pulse", "Pulse Agent",
                     "Bug fixing for areas {areas}, monitors error logs", "Quality"))])
 
-quality_dept = node("Quality Council", "Department Head", dept="Quality",
-    function="Test, review, secure, and fix (108 agents)",
+quality_dept = node("Minos", "Quality Director", dept="Quality",
+    function="Heads the Quality Council — test, review, secure, and fix (108 agents)",
     children=[verdict_team, nemesis_team, janus_team, pulse_team])
 
 # 4. Documentation Department
