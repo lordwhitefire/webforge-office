@@ -125,8 +125,8 @@ odin_team = node("Odin Team", "Lead, Standards Research & Selection", dept="Inte
 dorian = node("Dorian", "UI Researcher", dept="Intelligence",
     function="UI research, internet reference design search, reports to Aurora")
 
-intelligence_dept = node("Intelligence Team", "Department Head", dept="Intelligence",
-    function="Research, assess, and set standards before building starts (38 agents)",
+intelligence_dept = node("Athena", "Intelligence Director", dept="Intelligence",
+    function="Heads the Intelligence department — research, assess, and set standards before building starts (38 agents)",
     children=[probe_team, odin_team, dorian])
 
 # 2. Build Department
@@ -195,8 +195,8 @@ zephyr_subtree = build_subtree(
     "Zephyr", "Database/Infra Head", "Lead-Zen", DB_SR_GROUPS,
     jr_function="Database/Infra development for areas {areas}")
 
-build_dept = node("Build Team", "Department Head", dept="Build",
-    function="Actually build the website/app (69 agents)",
+build_dept = node("Hephaestus", "Build Director", dept="Build",
+    function="Heads the Build department — actually build the website/app (69 agents)",
     children=[aurora_subtree, titan_subtree, zephyr_subtree])
 
 # 3. Quality Council
@@ -303,8 +303,8 @@ embedded_docs = node("Embedded Documentation", "Embedded Docs Lead", dept="Docum
     function="51 embedded doc agents across 3 departments",
     children=[doc_intel, doc_build, doc_quality])
 
-documentation_dept = node("Documentation Team", "Department Head", dept="Documentation",
-    function="Write and maintain all guides, memory, and real-time docs (60 agents)",
+documentation_dept = node("Thoth", "Documentation Director", dept="Documentation",
+    function="Heads the Documentation department — write and maintain all guides, memory, and real-time docs (60 agents)",
     children=[quill_team, memory_team, embedded_docs])
 
 # Executive
