@@ -2,16 +2,19 @@
 """
 Build CP3 pages from JSON data + extracted MHTML templates.
 
-For each page:
-1. Read the JSON data file
-2. Read the template HTML (with embedded CSS/images)
-3. Replace demo data in the template with JSON data
-4. Save the final HTML
+Architecture:
+- data/posts/<slug>.json  →  one JSON per blog post (contains card data + full body)
+- data/news/listing.json  →  news listing page config (references post slugs)
+- data/player/*.json      →  player page data
 
-For blog posts:
-- One template (Post Page V1)
-- Multiple JSON files in data/posts/
-- Generates one HTML file per post: post-<slug>.html
+Generated HTML:
+- index.html              →  homepage (TODO)
+- news.html               →  news listing (reads all post JSONs to build cards)
+- post-<slug>.html        →  one HTML per blog post (reads that post's JSON)
+- player-overview.html    →  player overview (reads data/player/overview.json)
+- player-stats.html       →  player stats
+- player-bio.html         →  player bio
+- player-gallery.html     →  player gallery
 """
 
 import json
@@ -29,25 +32,23 @@ def load_json(path):
 
 
 def load_template(name):
-    """Load template HTML by folder name."""
     path = TEMPLATES_DIR / name / "index.html"
     return path.read_text(encoding='utf-8')
 
 
 def save_page(name, html):
-    """Save final HTML page."""
     path = OUTPUT_DIR / name
     path.write_text(html, encoding='utf-8')
     print(f"  Saved: {path.name} ({len(html):,} chars)")
 
 
 # ───────────────────────────────────────────────────────────────────
-# Common replacements applied to ALL pages
+# Common replacements
 # ───────────────────────────────────────────────────────────────────
 def apply_common_replacements(html):
-    """Apply URL replacements that all pages need."""
+    """URL and brand replacements for all pages."""
     replacements = [
-        # Internal navigation links → CP3 routes
+        # Internal nav links → CP3 routes
         ('https://alchemists.dan-fisher.dev/basketball-dark/index.html', 'index.html'),
         ('https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html', 'player-overview.html'),
         ('https://alchemists.dan-fisher.dev/basketball-dark/player-stats.html', 'player-stats.html'),
@@ -55,7 +56,7 @@ def apply_common_replacements(html):
         ('https://alchemists.dan-fisher.dev/basketball-dark/player-gallery.html', 'player-gallery.html'),
         ('https://alchemists.dan-fisher.dev/basketball-dark/blog-1.html', 'news.html'),
         ('https://alchemists.dan-fisher.dev/basketball-dark/shop-wishlist.html', '#'),
-        # Remove hash-only links to alchemists
+        # Hash-only links
         ('https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#', '#'),
         ('https://alchemists.dan-fisher.dev/basketball-dark/blog-1.html#', '#'),
         # Brand
@@ -67,32 +68,16 @@ def apply_common_replacements(html):
 
 
 def replace_player_basics(html, player):
-    """Replace player name, number, basic info."""
-    # Player name (replace common demo names)
+    """Replace player name and number."""
     html = html.replace('James', player['firstName'])
     html = html.replace('Girobili', player['lastName'])
-    html = html.replace('Girobilli', player['lastName'])  # template typo
-    # Player number
+    html = html.replace('Girobilli', player['lastName'])
     html = html.replace('>38<', f">{player['number']}<")
     return html
 
 
-# ───────────────────────────────────────────────────────────────────
-# Page 1: Player Overview
-# ───────────────────────────────────────────────────────────────────
-def build_player_overview():
-    print("\n=== Building Player Overview ===")
-    data = load_json(DATA_DIR / "player/overview.json")
-    html = load_template("Alchemists Basketball Club & Sports News HTML Template -player-overview")
-
-    # Common replacements
-    html = apply_common_replacements(html)
-
-    # Player basics
-    html = replace_player_basics(html, data['player'])
-
-    # Player info details
-    info = data['info']
+def replace_player_info(html, info):
+    """Replace player physical info."""
     html = html.replace("6'9\"", info['height'])
     html = html.replace('295 lbs', info['weight'])
     html = html.replace('>18<', f">{info['age']}<")
@@ -100,12 +85,25 @@ def build_player_overview():
     html = html.replace('Amestris, California. usa', info['born'])
     html = html.replace('Amestris, California. USA', info['born'])
     html = html.replace('1st Shooting Guard', info['position'])
+    return html
 
-    # Career averages (circular bars)
+
+# ───────────────────────────────────────────────────────────────────
+# Pages 1-4: Player pages
+# ───────────────────────────────────────────────────────────────────
+def build_player_overview():
+    print("\n=== Building Player Overview ===")
+    data = load_json(DATA_DIR / "player/overview.json")
+    html = load_template("Alchemists Basketball Club & Sports News HTML Template -player-overview")
+    html = apply_common_replacements(html)
+    html = replace_player_basics(html, data['player'])
+    html = replace_player_info(html, data['info'])
+
+    # Career averages
     avg = data['careerAverages']
-    html = html.replace('9.6', str(avg['pointsPerGame']))  # PPG
-    html = html.replace('>4.5<', f">{avg['assistsPerGame']}<")  # APG (use > < to avoid weight clash)
-    html = html.replace('2.8', str(avg['reboundsPerGame']))  # RPG
+    html = html.replace('9.6', str(avg['pointsPerGame']))
+    html = html.replace('>4.5<', f">{avg['assistsPerGame']}<")
+    html = html.replace('2.8', str(avg['reboundsPerGame']))
 
     # Last games — replace team names
     games = data['lastGames']
@@ -124,107 +122,131 @@ def build_player_overview():
     for old, new in team_replacements:
         html = html.replace(old, new)
 
-    # Related news links → blog posts
+    # Related news → blog post links (full URL + relative)
     news = data['relatedNews']
-    html = html.replace('blog-post-1.html', f'post-{news[0]["slug"]}.html')
-    html = html.replace('blog-post-2.html', f'post-{news[1]["slug"]}.html')
-    html = html.replace('blog-post-3.html', f'post-{news[2]["slug"]}.html')
+    for i, n in enumerate(news, 1):
+        post_link = f'post-{n["slug"]}.html'
+        html = html.replace(
+            f'https://alchemists.dan-fisher.dev/basketball-dark/blog-post-{i}.html',
+            post_link
+        )
+        html = html.replace(f'blog-post-{i}.html', post_link)
 
     save_page('player-overview.html', html)
 
 
-# ───────────────────────────────────────────────────────────────────
-# Page 2: Player Stats (Single Player template)
-# ───────────────────────────────────────────────────────────────────
 def build_player_stats():
     print("\n=== Building Player Stats ===")
     data = load_json(DATA_DIR / "player/stats.json")
     html = load_template("Alchemists Basketball Club & Sports News HTML Template - Single Player")
-
     html = apply_common_replacements(html)
     html = replace_player_basics(html, data['player'])
-
-    # The Single Player template has the same player info structure
-    # Apply same info replacements
     info = {'height': "6'0\"", 'weight': '175 lbs', 'age': 40,
             'college': 'Wake Forest University',
             'born': 'Winston-Salem, North Carolina, USA',
             'position': 'Point Guard'}
-    html = html.replace("6'9\"", info['height'])
-    html = html.replace('295 lbs', info['weight'])
-    html = html.replace('>18<', f">{info['age']}<")
-    html = html.replace('Rockbell Bay College', info['college'])
-    html = html.replace('Amestris, California. usa', info['born'])
-    html = html.replace('Amestris, California. USA', info['born'])
-    html = html.replace('1st Shooting Guard', info['position'])
-
+    html = replace_player_info(html, info)
     save_page('player-stats.html', html)
 
 
-# ───────────────────────────────────────────────────────────────────
-# Page 3: Player Bio
-# ───────────────────────────────────────────────────────────────────
 def build_player_bio():
     print("\n=== Building Player Bio ===")
     data = load_json(DATA_DIR / "player/bio.json")
     html = load_template("Alchemists Basketball Club & Sports News HTML Template - biography")
-
     html = apply_common_replacements(html)
     html = replace_player_basics(html, data['player'])
-
-    # Replace "James Spiegel" if present
     html = html.replace('James Spiegel', f"{data['player']['firstName']} {data['player']['lastName']}")
-
     save_page('player-bio.html', html)
 
 
-# ───────────────────────────────────────────────────────────────────
-# Page 4: Player Gallery
-# ───────────────────────────────────────────────────────────────────
 def build_player_gallery():
     print("\n=== Building Player Gallery ===")
     data = load_json(DATA_DIR / "player/gallery.json")
     html = load_template("Alchemists Basketball Club & Sports News HTML Template - gallery")
-
     html = apply_common_replacements(html)
-    # Gallery JSON doesn't have number — use a default
     gallery_player = {
         'firstName': data['player']['firstName'],
         'lastName': data['player']['lastName'],
         'number': 3,
     }
     html = replace_player_basics(html, gallery_player)
-
     save_page('player-gallery.html', html)
 
 
 # ───────────────────────────────────────────────────────────────────
 # Page 5: News Listing
+# Reads ALL post JSONs to build the cards
 # ───────────────────────────────────────────────────────────────────
 def build_news_listing():
     print("\n=== Building News Listing ===")
-    data = load_json(DATA_DIR / "news/listing.json")
-    html = load_template("Alchemists Basketball Club & Sports News HTML Template - News V1")
+    listing_data = load_json(DATA_DIR / "news/listing.json")
 
+    # Load ALL blog post JSONs — these provide the card data
+    posts_dir = DATA_DIR / "posts"
+    all_posts = []
+    for post_file in sorted(posts_dir.glob("*.json")):
+        post = load_json(post_file)
+        all_posts.append(post)
+    print(f"  Loaded {len(all_posts)} blog posts from data/posts/")
+
+    html = load_template("Alchemists Basketball Club & Sports News HTML Template - News V1")
     html = apply_common_replacements(html)
 
-    # Replace blog post links with CP3 post slugs
-    posts = data['posts']
-    # The template has links to blog-post-1.html, blog-post-2.html, blog-post-3.html
-    # Map them to our actual post slugs
-    if len(posts) >= 3:
-        html = html.replace('blog-post-1.html', f'post-{posts[0]["slug"]}.html')
-        html = html.replace('blog-post-2.html', f'post-{posts[1]["slug"]}.html')
-        html = html.replace('blog-post-3.html', f'post-{posts[2]["slug"]}.html')
+    # Replace blog-N.html (other news listing pages) with news.html
+    # Use full URL pattern to be safe
+    for i in range(1, 10):
+        html = html.replace(
+            f'https://alchemists.dan-fisher.dev/basketball-dark/blog-{i}.html',
+            'news.html'
+        )
+        html = html.replace(f'blog-{i}.html', 'news.html')
+
+    # Replace blog-post-N.html with our actual post slugs (full URL + relative)
+    for i, post in enumerate(all_posts[:3], 1):
+        post_link = f'post-{post["slug"]}.html'
+        # Full URL replacement
+        html = html.replace(
+            f'https://alchemists.dan-fisher.dev/basketball-dark/blog-post-{i}.html',
+            post_link
+        )
+        # Relative replacement (in case any remain)
+        html = html.replace(f'blog-post-{i}.html', post_link)
+        print(f"  Card {i} → {post_link}")
+
+    # Fallback: any remaining blog-post-N.html → first post
+    for i in range(4, 10):
+        if all_posts:
+            post_link = f'post-{all_posts[0]["slug"]}.html'
+            html = html.replace(
+                f'https://alchemists.dan-fisher.dev/basketball-dark/blog-post-{i}.html',
+                post_link
+            )
+            html = html.replace(f'blog-post-{i}.html', post_link)
+
+    # Replace demo card titles and excerpts with our post data
+    # The template has specific demo text in the featured cards
+    for i, post in enumerate(all_posts[:3], 1):
+        # Replace demo titles (common demo titles in the template)
+        demo_titles = [
+            'The New Eco Friendly Stadium Will Be Built',
+            'Michael Bryan Was Chosen For The All-Star Game',
+            'The Planettrotters Will Perform In Madison Square',
+            'The Alchemists Missed The Playoffs For The First Time',
+            'The New Coach Is Bringing A Fresh Perspective',
+        ]
+        for demo_title in demo_titles:
+            if demo_title in html:
+                html = html.replace(demo_title, post['title'])
+                break
 
     save_page('news.html', html)
 
 
 # ───────────────────────────────────────────────────────────────────
-# Page 6: Blog Posts (one HTML per JSON)
+# Page 6: Blog Post Detail Pages (one HTML per JSON)
 # ───────────────────────────────────────────────────────────────────
 def build_blog_posts():
-    print("\n=== Building Blog Posts ===")
+    print("\n=== Building Blog Post Detail Pages ===")
     posts_dir = DATA_DIR / "posts"
     post_files = sorted(posts_dir.glob("*.json"))
     print(f"  Found {len(post_files)} blog post JSON files")
@@ -234,15 +256,31 @@ def build_blog_posts():
     for post_file in post_files:
         post = load_json(post_file)
         print(f"  Building: post-{post['slug']}.html")
+        print(f"    Title: {post['title']}")
 
         html = template_html
         html = apply_common_replacements(html)
 
-        # Replace demo post title with this post's title
-        # The template has a demo title — replace it
-        # Also replace author, date, etc.
+        # Replace blog-N.html with news.html (full URL + relative)
+        for i in range(1, 10):
+            html = html.replace(
+                f'https://alchemists.dan-fisher.dev/basketball-dark/blog-{i}.html',
+                'news.html'
+            )
+            html = html.replace(f'blog-{i}.html', 'news.html')
 
-        # Save
+        # Replace blog-post-N.html with other actual post slugs (for related posts section)
+        other_posts = [p for p in post_files if p.stem != post['slug']]
+        for i in range(1, 10):
+            if other_posts:
+                other = load_json(other_posts[(i-1) % len(other_posts)])
+                post_link = f'post-{other["slug"]}.html'
+                html = html.replace(
+                    f'https://alchemists.dan-fisher.dev/basketball-dark/blog-post-{i}.html',
+                    post_link
+                )
+                html = html.replace(f'blog-post-{i}.html', post_link)
+
         save_page(f"post-{post['slug']}.html", html)
 
 
