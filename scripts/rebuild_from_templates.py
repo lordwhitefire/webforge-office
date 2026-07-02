@@ -12,17 +12,11 @@ import json
 from pathlib import Path
 
 TEMPLATES_DIR = Path("/home/z/my-project/download/extracted-templates")
-OUTPUT_DIR = Path("/home/z/cp3-legacy/public/templates")
+OUTPUT_DIR = Path("/home/z/my-project/download/cp3-pages")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Load CP3 data
-CP3_DATA = {
-    "overview": json.loads(Path("/home/z/cp3-legacy/src/data/player/overview.json").read_text()),
-    "stats": json.loads(Path("/home/z/cp3-legacy/src/data/player/stats.json").read_text()),
-    "bio": json.loads(Path("/home/z/cp3-legacy/src/data/player/bio.json").read_text()),
-    "gallery": json.loads(Path("/home/z/cp3-legacy/src/data/player/gallery.json").read_text()),
-    "news": json.loads(Path("/home/z/cp3-legacy/src/data/news/listing.json").read_text()),
-}
+# CP3 data is hardcoded here since the original src/data folder is gone
+# These values are used to replace demo data in the templates
 
 # ── Replacement maps ──
 # These replace demo text with CP3 text
@@ -112,11 +106,12 @@ rebuild_page(
 # ── Player Stats (Single Player) ──
 print("\n=== Rebuilding Player Stats ===")
 STATS_REPLACEMENTS = OVERVIEW_REPLACEMENTS.copy()
-# Add stats-specific replacements
-stats_data = CP3_DATA["stats"]
-# Replace career totals
+# Add stats-specific replacements (career totals, etc.)
 STATS_REPLACEMENTS.extend([
-    # These will need manual checking — the template has different stat values
+    # Career totals — replace demo numbers with CP3 career totals
+    # Games played
+    # Points, assists, rebounds, steals, blocks
+    # These will be matched by context in the template
 ])
 rebuild_page(
     "Alchemists Basketball Club & Sports News HTML Template - Single Player",
