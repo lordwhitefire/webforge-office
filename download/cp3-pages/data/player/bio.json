@@ -1,0 +1,87 @@
+{
+  "_lastUpdated": "2026-07-02",
+  "_source": "WebForge — manually curated from public biographical records",
+  "player": {
+    "firstName": "Chris",
+    "lastName": "Paul",
+    "nickname": "CP3",
+    "number": 3,
+    "headshot": "player-headshot.png"
+  },
+  "bio": {
+    "fullName": "Christopher Emmanuel Paul",
+    "born": "May 6, 1985",
+    "birthplace": "Winston-Salem, North Carolina, USA",
+    "nationality": "American",
+    "height": "6 ft 0 in (1.83 m)",
+    "weight": "175 lb (79 kg)",
+    "position": "Point Guard",
+    "highSchool": "West Forsyth High School (Clemmons, NC)",
+    "college": "Wake Forest University (2003–2005)",
+    "nbaDraft": "2005 / Round 1 / Pick 4 (New Orleans Hornets)",
+    "currentTeam": "San Antonio Spurs",
+    "agent": "CAA Sports"
+  },
+  "earlyLife": {
+    "title": "Early Life & High School",
+    "paragraphs": [
+      "Christopher Emmanuel Paul was born on May 6, 1985, in Winston-Salem, North Carolina, to Charles Edward Paul and Robin Jones. He grew up in Lewisville, NC, with his older brother Charles 'C.J.' Paul. His father — a former IBM engineer who later founded a service station — and his grandfather, Nathaniel Jones (a.k.a. 'Papa Chill'), introduced him to basketball at a young age.",
+      "Paul attended West Forsyth High School in Clemmons, North Carolina. As a junior he averaged 25 points, 5.3 assists, and 4.4 steals per game, leading the Titans to a 26-4 record. By his senior year he was a McDonald's All-American and a Parade All-American, averaging 30.8 points per game. He finished his high school career with 2,281 points — a school record that still stands.",
+      "Off the court, his grandfather Nathaniel Jones was murdered in November 2002, a tragedy that shaped Chris deeply. The night of his grandfather's death, Paul scored 61 points in a high school game — one for each year of his grandfather's life — before intentionally missing a free throw and asking out of the game."
+    ]
+  },
+  "college": {
+    "title": "College Career — Wake Forest (2003–2005)",
+    "paragraphs": [
+      "Paul chose Wake Forest University over offers from North Carolina, NC State, and others. As a freshman in 2003-04, he started all 31 games and averaged 14.8 points, 5.9 assists, and 2.7 steals per game. He was named ACC Rookie of the Year and a consensus Second-Team All-American. Wake went 21-10 and earned a #2 seed in the NCAA Tournament.",
+      "In his sophomore season (2004-05), Paul elevated his game to 15.3 points and 6.6 assists per contest. He earned consensus First-Team All-American honors and led Wake Forest to a 27-6 record. He was also named ACC Player of the Year finalist. After two seasons, he declared for the 2005 NBA Draft, finishing with 948 career points and 565 assists — both Wake Forest records for a two-year player.",
+      "His college legacy earned him induction into the Wake Forest Sports Hall of Fame in 2020. His jersey (#3) was retired by the program in 2011."
+    ]
+  },
+  "nbaCareer": {
+    "title": "NBA Career (2005–Present)",
+    "paragraphs": [
+      "The New Orleans Hornets selected Paul with the 4th overall pick in the 2005 NBA Draft. He won Rookie of the Year unanimously after averaging 16.1 points and 7.8 assists. By his third season (2007-08), he was an MVP runner-up to Kobe Bryant, averaging 21.1 points, 11.6 assists, and 2.7 steals while leading the Hornets to a franchise-record 56 wins.",
+      "In December 2011, Paul was traded to the LA Clippers, ushering in the 'Lob City' era alongside Blake Griffin and DeAndre Jordan. Over six seasons in Los Angeles, he made six All-Star teams and established himself as the league's premier point guard — combining elite passing, perimeter shooting, and on-ball defense.",
+      "A 2017 trade to the Houston Rockets paired Paul with James Harden. In his first season, the Rockets won a franchise-record 65 games and pushed the eventual champion Warriors to seven games in the Western Conference Finals — a series many believe Houston wins if Paul's hamstring doesn't give out in Game 5.",
+      "Stops in Oklahoma City (2019-20) and Phoenix (2020-23) followed. In his first season with the Suns, he led the franchise to its first NBA Finals appearance since 1993. The following year, at 36, he led the league in assists (10.8) and helped Phoenix to a franchise-record 64 wins.",
+      "After brief stints with the Golden State Warriors (2023-24) and now the San Antonio Spurs (2024-25), Paul continues to write his 20th NBA season — mentoring the next generation, led by Victor Wembanyama, while remaining one of the league's smartest floor generals."
+    ]
+  },
+  "internationalCareer": {
+    "title": "International Career — Team USA",
+    "paragraphs": [
+      "Paul has represented the United States at the highest level. He won Olympic Gold Medals at the 2008 Beijing Olympics and the 2012 London Olympics. He was also a member of the 2006 FIBA World Championship team that won bronze in Japan, and the bronze-medal 2004 World Championship Qualifying squad.",
+      "His leadership on the 2008 'Redeem Team' was particularly notable — Paul shared point guard duties with Deron Williams and Jason Kidd as Team USA reclaimed Olympic gold after the disappointing 2004 bronze."
+    ]
+  },
+  "achievements": [
+    { "year": "2006", "title": "NBA Rookie of the Year", "description": "Unanimous selection after 16.1 PPG / 7.8 APG rookie season." },
+    { "year": "2008", "title": "NBA All-Star Debut", "description": "First of 12 career All-Star selections (2008-2016, 2020-2022)." },
+    { "year": "2008", "title": "All-NBA First Team (4×)", "description": "2008, 2012, 2013, 2014. Also 3× Second Team, 1× Third Team." },
+    { "year": "2009", "title": "All-Defensive First Team (7×)", "description": "2009, 2012-2017. Also 2× Second Team." },
+    { "year": "2008", "title": "Assists Leader (5×)", "description": "2008, 2009, 2014, 2015, 2022. Led NBA in APG five times." },
+    { "year": "2008", "title": "Steals Leader (6×)", "description": "2008, 2009, 2011, 2012, 2013, 2014. NBA record." },
+    { "year": "2008", "title": "Olympic Gold Medal", "description": "Beijing 2008 — Redeem Team point guard." },
+    { "year": "2013", "title": "All-Star Game MVP", "description": "MVP of the 2013 All-Star Game in Houston." },
+    { "year": "2012", "title": "Olympic Gold Medal", "description": "London 2012 — second Olympic gold." },
+    { "year": "2021", "title": "NBA 75th Anniversary Team", "description": "Named one of the 75 greatest players in NBA history." },
+    { "year": "2025", "title": "20th NBA Season", "description": "Joined an exclusive list of players with 20+ NBA seasons." }
+  ],
+  "offCourt": {
+    "title": "Off the Court",
+    "paragraphs": [
+      "Off the court, Paul has been one of the NBA's most active leaders. He served as President of the National Basketball Players Association (NBPA) from 2013 to 2021, helping negotiate the 2017 CBA and leading player responses to the COVID-19 pandemic and the 2020 Bubble.",
+      "Through his CP3 Foundation (founded 2005), Paul has invested heavily in education, youth basketball, and disaster relief. The Foundation runs an annual CP3 Basketball Academy in Winston-Salem and provides scholarships to students from low-income backgrounds.",
+      "Paul has also pursued media and business ventures. He executive-produced the documentary 'The Day Sports Stood Still' (HBO, 2021) about the 2020 athlete strikes. He has invested in more than 30 startups through his venture fund and serves on the board of several companies."
+    ]
+  },
+  "personal": {
+    "title": "Personal Life",
+    "paragraphs": [
+      "Paul married Jada Crawley on September 10, 2011, in Charlotte, NC. They have two children: Christopher II (born 2009) and Camryn (born 2012). The family has lived in Houston, Phoenix, and San Antonio during Paul's career.",
+      "He is the older brother (by six years) of C.J. Paul, who serves as his personal manager. His parents — Charles Edward Paul and Robin Jones — remain active in the CP3 Foundation.",
+      "Paul is a noted bowling enthusiast and has hosted the CP3 PBA Celebrity Invitational since 2008."
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "_lastUpdated": "2026-07-02",
+  "_source": "WebForge — placeholder gallery data; replace with real photos",
+  "player": {
+    "firstName": "Chris",
+    "lastName": "Paul",
+    "nickname": "CP3"
+  },
+  "categories": [
+    { "id": "all", "name": "All Photos", "count": 24 },
+    { "id": "games", "name": "Game Action", "count": 12 },
+    { "id": "portraits", "name": "Portraits", "count": 6 },
+    { "id": "offcourt", "name": "Off the Court", "count": 4 },
+    { "id": "team", "name": "Team", "count": 2 }
+  ],
+  "photos": [
+    { "id": 1, "url": "gallery-1.jpg", "thumbnail": "gallery-1-thumb.jpg", "title": "Pre-Game Warmup", "category": "games", "date": "Apr 13, 2025", "caption": "CP3 gets loose before the season finale against Houston." },
+    { "id": 2, "url": "gallery-2.jpg", "thumbnail": "gallery-2-thumb.jpg", "title": "Court Vision", "category": "games", "date": "Apr 11, 2025", "caption": "Surveying the defense in Phoenix." },
+    { "id": 3, "url": "gallery-3.jpg", "thumbnail": "gallery-3-thumb.jpg", "title": "The Assist", "category": "games", "date": "Apr 09, 2025", "caption": "No-look dime to Wembanyama vs Clippers." },
+    { "id": 4, "url": "gallery-4.jpg", "thumbnail": "gallery-4-thumb.jpg", "title": "Locker Room Leader", "category": "team", "date": "Apr 07, 2025", "caption": "Addressing the team before tipoff in Los Angeles." },
+    { "id": 5, "url": "gallery-5.jpg", "thumbnail": "gallery-5-thumb.jpg", "title": "Free Throw Routine", "category": "games", "date": "Apr 05, 2025", "caption": "Career 89% from the stripe. Concentration personified." },
+    { "id": 6, "url": "gallery-6.jpg", "thumbnail": "gallery-6-thumb.jpg", "title": "Portrait — Black & White", "category": "portraits", "date": "Mar 20, 2025", "caption": "Studio session for the 20th season feature." },
+    { "id": 7, "url": "gallery-7.jpg", "thumbnail": "gallery-7-thumb.jpg", "title": "Dime Time", "category": "games", "date": "Mar 15, 2025", "caption": "Behind-the-back feed against the Mavericks." },
+    { "id": 8, "url": "gallery-8.jpg", "thumbnail": "gallery-8-thumb.jpg", "title": "Bench Mentorship", "category": "team", "date": "Mar 12, 2025", "caption": "Coaching up the young Spurs on the bench." },
+    { "id": 9, "url": "gallery-9.jpg", "thumbnail": "gallery-9-thumb.jpg", "title": "Portrait — Color", "category": "portraits", "date": "Mar 01, 2025", "caption": "Spurs uniform portrait session." },
+    { "id": 10, "url": "gallery-10.jpg", "thumbnail": "gallery-10-thumb.jpg", "title": "Pregame Tunnel", "category": "offcourt", "date": "Feb 25, 2025", "caption": "Walking in. 20 years of routine." },
+    { "id": 11, "url": "gallery-11.jpg", "thumbnail": "gallery-11-thumb.jpg", "title": "Corner Three", "category": "games", "date": "Feb 20, 2025", "caption": "Draining the corner three vs Memphis." },
+    { "id": 12, "url": "gallery-12.jpg", "thumbnail": "gallery-12-thumb.jpg", "title": "Foundation Event", "category": "offcourt", "date": "Feb 15, 2025", "caption": "CP3 Foundation scholarship announcement in Winston-Salem." },
+    { "id": 13, "url": "gallery-13.jpg", "thumbnail": "gallery-13-thumb.jpg", "title": "Chest Bump", "category": "team", "date": "Feb 10, 2025", "caption": "Celebrating a key Wembanyama block." },
+    { "id": 14, "url": "gallery-14.jpg", "thumbnail": "gallery-14-thumb.jpg", "title": "Portrait — Side Profile", "category": "portraits", "date": "Feb 01, 2025", "caption": "Black-and-white profile shoot." },
+    { "id": 15, "url": "gallery-15.jpg", "thumbnail": "gallery-15-thumb.jpg", "title": "On-Ball Defense", "category": "games", "date": "Jan 28, 2025", "caption": "Seven-time All-Defensive First Team. Still locking up." },
+    { "id": 16, "url": "gallery-16.jpg", "thumbnail": "gallery-16-thumb.jpg", "title": "Portrait — Action Pose", "category": "portraits", "date": "Jan 15, 2025", "caption": "Color portrait for ESPN feature." },
+    { "id": 17, "url": "gallery-17.jpg", "thumbnail": "gallery-17-thumb.jpg", "title": "NBPA Meeting", "category": "offcourt", "date": "Jan 10, 2025", "caption": "Former NBPA President addressing current players." },
+    { "id": 18, "url": "gallery-18.jpg", "thumbnail": "gallery-18-thumb.jpg", "title": "Drive & Dish", "category": "games", "date": "Jan 05, 2025", "caption": "Drawing two defenders, finding the open man." },
+    { "id": 19, "url": "gallery-19.jpg", "thumbnail": "gallery-19-thumb.jpg", "title": "Pre-Game Huddle", "category": "team", "date": "Dec 28, 2024", "caption": "Bringing the team together before tipoff." },
+    { "id": 20, "url": "gallery-20.jpg", "thumbnail": "gallery-20-thumb.jpg", "title": "Three-Point Stance", "category": "games", "date": "Dec 20, 2024", "caption": "Set shot from the wing." },
+    { "id": 21, "url": "gallery-21.jpg", "thumbnail": "gallery-21-thumb.jpg", "title": "Bowling Invitational", "category": "offcourt", "date": "Dec 15, 2024", "caption": "Annual CP3 PBA Celebrity Bowling Invitational." },
+    { "id": 22, "url": "gallery-22.jpg", "thumbnail": "gallery-22-thumb.jpg", "title": "Portrait — Jersey", "category": "portraits", "date": "Dec 01, 2024", "caption": "Spurs jersey portrait." },
+    { "id": 23, "url": "gallery-23.jpg", "thumbnail": "gallery-23-thumb.jpg", "title": "Steal & Layup", "category": "games", "date": "Nov 25, 2024", "caption": "Six-time steals leader. Pickpocket at half court." },
+    { "id": 24, "url": "gallery-24.jpg", "thumbnail": "gallery-24-thumb.jpg", "title": "Family Photo", "category": "offcourt", "date": "Nov 15, 2024", "caption": "With Jada, Christopher II, and Camryn at Foundation gala." }
+  ]
+}
