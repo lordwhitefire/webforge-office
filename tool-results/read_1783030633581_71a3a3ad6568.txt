@@ -1,0 +1,1632 @@
+     1→     1→<div class="player-heading">
+     2→     2→
+     3→     3→<div class="container">
+     4→     4→
+     5→     5→<div class="player-info__team-logo">
+     6→     6→
+     7→     7→<img src="DATA_URI" alt="">
+     8→     8→
+     9→     9→</div>
+    10→    10→
+    11→    11→<div class="player-info__title player-info__title--mobile">
+    12→    12→
+    13→    13→<div class="player-info__number">38
+    14→    14→</div>
+    15→    15→
+    16→    16→<h1 class="player-info__name">
+    17→    17→
+    18→    18→<span class="player-info__first-name">James
+    19→    19→</span> 
+    20→    20→<span class="player-info__last-name">Girobili
+    21→    21→</span>
+    22→    22→
+    23→    23→</h1>
+    24→    24→
+    25→    25→</div>
+    26→    26→
+    27→    27→<div class="player-info slick-initialized slick-slider">
+    28→    28→
+    29→    29→<!-- Player Photo -->
+    30→    30→
+    31→    31→<div class="slick-list draggable">
+    32→    32→
+    33→    33→<div class="slick-track" style="opacity: 1; width: 15000px; transform: translate3d(0px, 0px, 0px);">
+    34→    34→
+    35→    35→<div class="player-info__item player-info__item--photo slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
+    36→    36→
+    37→    37→<figure class="player-info__photo">
+    38→    38→
+    39→    39→<img src="DATA_URI" alt="">
+    40→    40→
+    41→    41→</figure>
+    42→    42→
+    43→    43→</div>
+    44→    44→
+    45→    45→<div class="player-info__item player-info__item--details slick-slide slick-active" data-slick-index="1" aria-hidden="false">
+    46→    46→
+    47→    47→<div class="player-info__title player-info__title--desktop">
+    48→    48→
+    49→    49→<div class="player-info__number">38
+    50→    50→</div>
+    51→    51→
+    52→    52→<h1 class="player-info__name">
+    53→    53→
+    54→    54→<span class="player-info__first-name">James
+    55→    55→</span> 
+    56→    56→<span class="player-info__last-name">Girobili
+    57→    57→</span>
+    58→    58→
+    59→    59→</h1>
+    60→    60→
+    61→    61→</div>
+    62→    62→
+    63→    63→<div class="player-info-details">
+    64→    64→
+    65→    65→<div class="player-info-details__item player-info-details__item--height">
+    66→    66→
+    67→    67→<h6 class="player-info-details__title">Height
+    68→    68→</h6>
+    69→    69→
+    70→    70→<div class="player-info-details__value">6'9"
+    71→    71→</div>
+    72→    72→
+    73→    73→</div>
+    74→    74→
+    75→    75→<div class="player-info-details__item player-info-details__item--weight">
+    76→    76→
+    77→    77→<h6 class="player-info-details__title">Weight
+    78→    78→</h6>
+    79→    79→
+    80→    80→<div class="player-info-details__value">295 lbs
+    81→    81→</div>
+    82→    82→
+    83→    83→</div>
+    84→    84→
+    85→    85→<div class="player-info-details__item player-info-details__item--age">
+    86→    86→
+    87→    87→<h6 class="player-info-details__title">Age
+    88→    88→</h6>
+    89→    89→
+    90→    90→<div class="player-info-details__value">18
+    91→    91→</div>
+    92→    92→
+    93→    93→</div>
+    94→    94→
+    95→    95→<div class="player-info-details__item player-info-details__item--college">
+    96→    96→
+    97→    97→<h6 class="player-info-details__title">College
+    98→    98→</h6>
+    99→    99→
+   100→   100→<div class="player-info-details__value">Rockbell Bay College
+   101→   101→</div>
+   102→   102→
+   103→   103→</div>
+   104→   104→
+   105→   105→<div class="player-info-details__item player-info-details__item--born">
+   106→   106→
+   107→   107→<h6 class="player-info-details__title">Born
+   108→   108→</h6>
+   109→   109→
+   110→   110→<div class="player-info-details__value">Amestris, California. USA
+   111→   111→</div>
+   112→   112→
+   113→   113→</div>
+   114→   114→
+   115→   115→<div class="player-info-details__item player-info-details__item--position">
+   116→   116→
+   117→   117→<h6 class="player-info-details__title">Position
+   118→   118→</h6>
+   119→   119→
+   120→   120→<div class="player-info-details__value">1st Shooting Guard
+   121→   121→</div>
+   122→   122→
+   123→   123→</div>
+   124→   124→
+   125→   125→</div>
+   126→   126→
+   127→   127→<div class="player-info-stats">
+   128→   128→
+   129→   129→<div class="player-info-stats__item">
+   130→   130→
+   131→   131→<div class="circular">
+   132→   132→
+   133→   133→<div class="circular__bar" data-percent="88" data-track-color="#4c5d6f">
+   134→   134→
+   135→   135→<span class="circular__percents">9.6
+   136→   136→<small>avg
+   137→   137→</small>
+   138→   138→
+   139→   139→</span>
+   140→   140→
+   141→   141→<canvas height="90" width="90">
+   142→   142→
+   143→   143→</canvas>
+   144→   144→
+   145→   145→</div>
+   146→   146→
+   147→   147→<span class="circular__label">
+   148→   148→
+   149→   149→<strong>Points
+   150→   150→</strong>per game
+   151→   151→</span>
+   152→   152→
+   153→   153→</div>
+   154→   154→
+   155→   155→</div>
+   156→   156→
+   157→   157→<div class="player-info-stats__item">
+   158→   158→
+   159→   159→<div class="circular">
+   160→   160→
+   161→   161→<div class="circular__bar" data-percent="75" data-track-color="#4c5d6f">
+   162→   162→
+   163→   163→<span class="circular__percents">4.5
+   164→   164→<small>avg
+   165→   165→</small>
+   166→   166→
+   167→   167→</span>
+   168→   168→
+   169→   169→<canvas height="90" width="90">
+   170→   170→
+   171→   171→</canvas>
+   172→   172→
+   173→   173→</div>
+   174→   174→
+   175→   175→<span class="circular__label">
+   176→   176→
+   177→   177→<strong>Assists
+   178→   178→</strong>per game
+   179→   179→</span>
+   180→   180→
+   181→   181→</div>
+   182→   182→
+   183→   183→</div>
+   184→   184→
+   185→   185→<div class="player-info-stats__item">
+   186→   186→
+   187→   187→<div class="circular">
+   188→   188→
+   189→   189→<div class="circular__bar" data-percent="60" data-track-color="#4c5d6f">
+   190→   190→
+   191→   191→<span class="circular__percents">2.8
+   192→   192→<small>avg
+   193→   193→</small>
+   194→   194→
+   195→   195→</span>
+   196→   196→
+   197→   197→<canvas height="90" width="90">
+   198→   198→
+   199→   199→</canvas>
+   200→   200→
+   201→   201→</div>
+   202→   202→
+   203→   203→<span class="circular__label">
+   204→   204→
+   205→   205→<strong>Rebounds
+   206→   206→</strong>per game
+   207→   207→</span>
+   208→   208→
+   209→   209→</div>
+   210→   210→
+   211→   211→</div>
+   212→   212→
+   213→   213→</div>
+   214→   214→
+   215→   215→</div>
+   216→   216→
+   217→   217→<div class="player-info__item player-info__item--stats slick-slide slick-active" data-slick-index="2" aria-hidden="false">
+   218→   218→
+   219→   219→<iframe class="chartjs-hidden-iframe" tabindex="-1" style="display: block; overflow: hidden; border: 0px; margin: 0px; inset: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;">
+   220→   220→
+   221→   221→</iframe>
+   222→   222→
+   223→   223→<canvas id="player-stats" class="player-info-chart" height="299" width="310" style="display: block; width: 310px; height: 299px;">
+   224→   224→
+   225→   225→</canvas>
+   226→   226→
+   227→   227→</div>
+   228→   228→
+   229→   229→</div>
+   230→   230→
+   231→   231→</div>
+   232→   232→
+   233→   233→<!-- Player Photo / End -->
+   234→   234→
+   235→   235→<!-- Player Details -->
+   236→   236→
+   237→   237→<!-- Player Details / End -->
+   238→   238→
+   239→   239→<!-- Player Stats -->
+   240→   240→
+   241→   241→<!-- Player Stats / End -->
+   242→   242→
+   243→   243→</div>
+   244→   244→
+   245→   245→</div>
+   246→   246→
+   247→   247→</div>
+   248→   248→
+   249→   249→<!-- Player Pages Filter -->
+   250→   250→
+   251→   251→<nav class="content-filter">
+   252→   252→
+   253→   253→<div class="container">
+   254→   254→
+   255→   255→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="content-filter__toggle">
+   256→   256→
+   257→   257→</a>
+   258→   258→
+   259→   259→<ul class="content-filter__list">
+   260→   260→
+   261→   261→<li class="content-filter__item content-filter__item--active">
+   262→   262→
+   263→   263→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html" class="content-filter__link">
+   264→   264→
+   265→   265→<small>Player
+   266→   266→</small>Overview
+   267→   267→</a>
+   268→   268→
+   269→   269→</li>
+   270→   270→
+   271→   271→<li class="content-filter__item">
+   272→   272→
+   273→   273→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-stats.html" class="content-filter__link">
+   274→   274→
+   275→   275→<small>Player
+   276→   276→</small>Full Statistics
+   277→   277→</a>
+   278→   278→
+   279→   279→</li>
+   280→   280→
+   281→   281→<li class="content-filter__item">
+   282→   282→
+   283→   283→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-bio.html" class="content-filter__link">
+   284→   284→
+   285→   285→<small>Player
+   286→   286→</small>Biography
+   287→   287→</a>
+   288→   288→
+   289→   289→</li>
+   290→   290→
+   291→   291→<li class="content-filter__item">
+   292→   292→
+   293→   293→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-news.html" class="content-filter__link">
+   294→   294→
+   295→   295→<small>Player
+   296→   296→</small>Related News
+   297→   297→</a>
+   298→   298→
+   299→   299→</li>
+   300→   300→
+   301→   301→<li class="content-filter__item">
+   302→   302→
+   303→   303→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-gallery.html" class="content-filter__link">
+   304→   304→
+   305→   305→<small>Player
+   306→   306→</small>Gallery
+   307→   307→</a>
+   308→   308→
+   309→   309→</li>
+   310→   310→
+   311→   311→</ul>
+   312→   312→
+   313→   313→</div>
+   314→   314→
+   315→   315→</nav>
+   316→   316→
+   317→   317→<!-- Player Pages Filter / End -->
+   318→   318→
+   319→   319→<!-- Content
+   320→   320→                ================================================== -->
+   321→   321→
+   322→   322→<div class="site-content">
+   323→   323→
+   324→   324→<div class="container">
+   325→   325→
+   326→   326→<div class="row">
+   327→   327→
+   328→   328→<!-- Content -->
+   329→   329→
+   330→   330→<div class="content col-lg-8">
+   331→   331→
+   332→   332→<!-- Last Game Log -->
+   333→   333→
+   334→   334→<div class="card card--has-table">
+   335→   335→
+   336→   336→<div class="card__header card__header--has-btn">
+   337→   337→
+   338→   338→<h4>Last Games Log
+   339→   339→</h4>
+   340→   340→
+   341→   341→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-stats.html" class="btn btn-default btn-outline btn-xs card-header__button">See complete games log
+   342→   342→</a>
+   343→   343→
+   344→   344→</div>
+   345→   345→
+   346→   346→<div class="card__content">
+   347→   347→
+   348→   348→<div class="table-responsive">
+   349→   349→
+   350→   350→<table class="table table-hover game-player-result">
+   351→   351→
+   352→   352→<thead>
+   353→   353→
+   354→   354→<tr>
+   355→   355→
+   356→   356→<th class="game-player-result__date">Date
+   357→   357→</th>
+   358→   358→
+   359→   359→<th class="game-player-result__vs">Versus
+   360→   360→</th>
+   361→   361→
+   362→   362→<th class="game-player-result__score">Score
+   363→   363→</th>
+   364→   364→
+   365→   365→<th class="game-player-result__min">Min
+   366→   366→</th>
+   367→   367→
+   368→   368→<th class="game-player-result__reb">REB
+   369→   369→</th>
+   370→   370→
+   371→   371→<th class="game-player-result__ast">AST
+   372→   372→</th>
+   373→   373→
+   374→   374→<th class="game-player-result__blk">BLK
+   375→   375→</th>
+   376→   376→
+   377→   377→<th class="game-player-result__stl">STL
+   378→   378→</th>
+   379→   379→
+   380→   380→<th class="game-player-result__pf">PF
+   381→   381→</th>
+   382→   382→
+   383→   383→<th class="game-player-result__to">TO
+   384→   384→</th>
+   385→   385→
+   386→   386→<th class="game-player-result__pts">PTS
+   387→   387→</th>
+   388→   388→
+   389→   389→</tr>
+   390→   390→
+   391→   391→</thead>
+   392→   392→
+   393→   393→<tbody>
+   394→   394→
+   395→   395→<tr>
+   396→   396→
+   397→   397→<td class="game-player-result__date">Saturday, Mar 24
+   398→   398→</td>
+   399→   399→
+   400→   400→<td class="game-player-result__vs">
+   401→   401→
+   402→   402→<div class="team-meta">
+   403→   403→
+   404→   404→<figure class="team-meta__logo">
+   405→   405→
+   406→   406→<img src="DATA_URI" alt="">
+   407→   407→
+   408→   408→</figure>
+   409→   409→
+   410→   410→<div class="team-meta__info">
+   411→   411→
+   412→   412→<h6 class="team-meta__name">Sharks
+   413→   413→</h6>
+   414→   414→
+   415→   415→<span class="team-meta__place">Marine College
+   416→   416→</span>
+   417→   417→
+   418→   418→</div>
+   419→   419→
+   420→   420→</div>
+   421→   421→
+   422→   422→</td>
+   423→   423→
+   424→   424→<td class="game-player-result__score">
+   425→   425→
+   426→   426→<span class="game-player-result__game">W
+   427→   427→</span>107-102
+   428→   428→</td>
+   429→   429→
+   430→   430→<td class="game-player-result__min">22
+   431→   431→</td>
+   432→   432→
+   433→   433→<td class="game-player-result__reb">3
+   434→   434→</td>
+   435→   435→
+   436→   436→<td class="game-player-result__ast">1
+   437→   437→</td>
+   438→   438→
+   439→   439→<td class="game-player-result__blk">1
+   440→   440→</td>
+   441→   441→
+   442→   442→<td class="game-player-result__stl">2
+   443→   443→</td>
+   444→   444→
+   445→   445→<td class="game-player-result__pf">0
+   446→   446→</td>
+   447→   447→
+   448→   448→<td class="game-player-result__to">2
+   449→   449→</td>
+   450→   450→
+   451→   451→<td class="game-player-result__pts">11
+   452→   452→</td>
+   453→   453→
+   454→   454→</tr>
+   455→   455→
+   456→   456→<tr>
+   457→   457→
+   458→   458→<td class="game-player-result__date">Friday, Mar 16
+   459→   459→</td>
+   460→   460→
+   461→   461→<td class="game-player-result__vs">
+   462→   462→
+   463→   463→<div class="team-meta">
+   464→   464→
+   465→   465→<figure class="team-meta__logo">
+   466→   466→
+   467→   467→<img src="DATA_URI" alt="">
+   468→   468→
+   469→   469→</figure>
+   470→   470→
+   471→   471→<div class="team-meta__info">
+   472→   472→
+   473→   473→<h6 class="team-meta__name">L.A. Pirates
+   474→   474→</h6>
+   475→   475→
+   476→   476→<span class="team-meta__place">Bebop Institute
+   477→   477→</span>
+   478→   478→
+   479→   479→</div>
+   480→   480→
+   481→   481→</div>
+   482→   482→
+   483→   483→</td>
+   484→   484→
+   485→   485→<td class="game-player-result__score">
+   486→   486→
+   487→   487→<span class="game-player-result__game">L
+   488→   488→</span>124-106
+   489→   489→</td>
+   490→   490→
+   491→   491→<td class="game-player-result__min">22
+   492→   492→</td>
+   493→   493→
+   494→   494→<td class="game-player-result__reb">1
+   495→   495→</td>
+   496→   496→
+   497→   497→<td class="game-player-result__ast">5
+   498→   498→</td>
+   499→   499→
+   500→   500→<td class="game-player-result__blk">0
+   501→   501→</td>
+   502→   502→
+   503→   503→<td class="game-player-result__stl">4
+   504→   504→</td>
+   505→   505→
+   506→   506→<td class="game-player-result__pf">2
+   507→   507→</td>
+   508→   508→
+   509→   509→<td class="game-player-result__to">3
+   510→   510→</td>
+   511→   511→
+   512→   512→<td class="game-player-result__pts">14
+   513→   513→</td>
+   514→   514→
+   515→   515→</tr>
+   516→   516→
+   517→   517→<tr>
+   518→   518→
+   519→   519→<td class="game-player-result__date">Saturday, Mar 10
+   520→   520→</td>
+   521→   521→
+   522→   522→<td class="game-player-result__vs">
+   523→   523→
+   524→   524→<div class="team-meta">
+   525→   525→
+   526→   526→<figure class="team-meta__logo">
+   527→   527→
+   528→   528→<img src="DATA_URI" alt="">
+   529→   529→
+   530→   530→</figure>
+   531→   531→
+   532→   532→<div class="team-meta__info">
+   533→   533→
+   534→   534→<h6 class="team-meta__name">Lucky Clovers
+   535→   535→</h6>
+   536→   536→
+   537→   537→<span class="team-meta__place">St. Patrick’s Institute
+   538→   538→</span>
+   539→   539→
+   540→   540→</div>
+   541→   541→
+   542→   542→</div>
+   543→   543→
+   544→   544→</td>
+   545→   545→
+   546→   546→<td class="game-player-result__score">
+   547→   547→
+   548→   548→<span class="game-player-result__game">L
+   549→   549→</span>95-98
+   550→   550→</td>
+   551→   551→
+   552→   552→<td class="game-player-result__min">11
+   553→   553→</td>
+   554→   554→
+   555→   555→<td class="game-player-result__reb">4
+   556→   556→</td>
+   557→   557→
+   558→   558→<td class="game-player-result__ast">2
+   559→   559→</td>
+   560→   560→
+   561→   561→<td class="game-player-result__blk">0
+   562→   562→</td>
+   563→   563→
+   564→   564→<td class="game-player-result__stl">3
+   565→   565→</td>
+   566→   566→
+   567→   567→<td class="game-player-result__pf">5
+   568→   568→</td>
+   569→   569→
+   570→   570→<td class="game-player-result__to">6
+   571→   571→</td>
+   572→   572→
+   573→   573→<td class="game-player-result__pts">10
+   574→   574→</td>
+   575→   575→
+   576→   576→</tr>
+   577→   577→
+   578→   578→<tr>
+   579→   579→
+   580→   580→<td class="game-player-result__date">Friday, Mar 4
+   581→   581→</td>
+   582→   582→
+   583→   583→<td class="game-player-result__vs">
+   584→   584→
+   585→   585→<div class="team-meta">
+   586→   586→
+   587→   587→<figure class="team-meta__logo">
+   588→   588→
+   589→   589→<img src="DATA_URI" alt="">
+   590→   590→
+   591→   591→</figure>
+   592→   592→
+   593→   593→<div class="team-meta__info">
+   594→   594→
+   595→   595→<h6 class="team-meta__name">Ocean Kings
+   596→   596→</h6>
+   597→   597→
+   598→   598→<span class="team-meta__place">Bay College
+   599→   599→</span>
+   600→   600→
+   601→   601→</div>
+   602→   602→
+   603→   603→</div>
+   604→   604→
+   605→   605→</td>
+   606→   606→
+   607→   607→<td class="game-player-result__score">
+   608→   608→
+   609→   609→<span class="game-player-result__game">L
+   610→   610→</span>110-104
+   611→   611→</td>
+   612→   612→
+   613→   613→<td class="game-player-result__min">14
+   614→   614→</td>
+   615→   615→
+   616→   616→<td class="game-player-result__reb">3
+   617→   617→</td>
+   618→   618→
+   619→   619→<td class="game-player-result__ast">5
+   620→   620→</td>
+   621→   621→
+   622→   622→<td class="game-player-result__blk">2
+   623→   623→</td>
+   624→   624→
+   625→   625→<td class="game-player-result__stl">0
+   626→   626→</td>
+   627→   627→
+   628→   628→<td class="game-player-result__pf">1
+   629→   629→</td>
+   630→   630→
+   631→   631→<td class="game-player-result__to">4
+   632→   632→</td>
+   633→   633→
+   634→   634→<td class="game-player-result__pts">8
+   635→   635→</td>
+   636→   636→
+   637→   637→</tr>
+   638→   638→
+   639→   639→<tr>
+   640→   640→
+   641→   641→<td class="game-player-result__date">Saturday, Feb 29
+   642→   642→</td>
+   643→   643→
+   644→   644→<td class="game-player-result__vs">
+   645→   645→
+   646→   646→<div class="team-meta">
+   647→   647→
+   648→   648→<figure class="team-meta__logo">
+   649→   649→
+   650→   650→<img src="DATA_URI" alt="">
+   651→   651→
+   652→   652→</figure>
+   653→   653→
+   654→   654→<div class="team-meta__info">
+   655→   655→
+   656→   656→<h6 class="team-meta__name">Red Wings
+   657→   657→</h6>
+   658→   658→
+   659→   659→<span class="team-meta__place">Icarus College
+   660→   660→</span>
+   661→   661→
+   662→   662→</div>
+   663→   663→
+   664→   664→</div>
+   665→   665→
+   666→   666→</td>
+   667→   667→
+   668→   668→<td class="game-player-result__score">
+   669→   669→
+   670→   670→<span class="game-player-result__game">W
+   671→   671→</span>102-97
+   672→   672→</td>
+   673→   673→
+   674→   674→<td class="game-player-result__min">27
+   675→   675→</td>
+   676→   676→
+   677→   677→<td class="game-player-result__reb">1
+   678→   678→</td>
+   679→   679→
+   680→   680→<td class="game-player-result__ast">1
+   681→   681→</td>
+   682→   682→
+   683→   683→<td class="game-player-result__blk">1
+   684→   684→</td>
+   685→   685→
+   686→   686→<td class="game-player-result__stl">1
+   687→   687→</td>
+   688→   688→
+   689→   689→<td class="game-player-result__pf">4
+   690→   690→</td>
+   691→   691→
+   692→   692→<td class="game-player-result__to">5
+   693→   693→</td>
+   694→   694→
+   695→   695→<td class="game-player-result__pts">12
+   696→   696→</td>
+   697→   697→
+   698→   698→</tr>
+   699→   699→
+   700→   700→</tbody>
+   701→   701→
+   702→   702→</table>
+   703→   703→
+   704→   704→</div>
+   705→   705→
+   706→   706→</div>
+   707→   707→
+   708→   708→</div>
+   709→   709→
+   710→   710→<!-- Last Game Log / End -->
+   711→   711→
+   712→   712→<!-- Lates News -->
+   713→   713→
+   714→   714→<div class="card card--clean">
+   715→   715→
+   716→   716→<header class="card__header card__header--has-btn">
+   717→   717→
+   718→   718→<h4>Player Related News
+   719→   719→</h4>
+   720→   720→
+   721→   721→<a href="https://alchemists.dan-fisher.dev/basketball-dark/blog-1.html" class="btn btn-default btn-outline btn-xs card-header__button">See All Related News
+   722→   722→</a>
+   723→   723→
+   724→   724→</header>
+   725→   725→
+   726→   726→<div class="card__content">
+   727→   727→
+   728→   728→<!-- Posts Grid -->
+   729→   729→
+   730→   730→<div class="posts posts--cards post-grid post-grid--2cols post-grid--fitRows row" style="position: relative; height: 1275.34px;">
+   731→   731→
+   732→   732→<div class="post-grid__item col-6" style="position: absolute; left: 0px; top: 0px;">
+   733→   733→
+   734→   734→<div class="posts__item posts__item--card posts__item--category-1 card">
+   735→   735→
+   736→   736→<figure class="posts__thumb">
+   737→   737→
+   738→   738→<div class="posts__cat">
+   739→   739→
+   740→   740→<span class="label posts__cat-label">The Team
+   741→   741→</span>
+   742→   742→
+   743→   743→</div>
+   744→   744→
+   745→   745→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   746→   746→
+   747→   747→<img src="DATA_URI" alt="">
+   748→   748→
+   749→   749→</a>
+   750→   750→
+   751→   751→</figure>
+   752→   752→
+   753→   753→<div class="posts__inner card__content">
+   754→   754→
+   755→   755→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="posts__cta">
+   756→   756→
+   757→   757→</a> 
+   758→   758→<time datetime="2016-08-23" class="posts__date">August 23rd, 2018
+   759→   759→</time>
+   760→   760→
+   761→   761→<h6 class="posts__title">
+   762→   762→
+   763→   763→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">The Planetrotters will perform this May 4th at Madison Cube
+   764→   764→</a>
+   765→   765→
+   766→   766→</h6>
+   767→   767→
+   768→   768→<div class="posts__excerpt">Lorem ipsum dolor sit amet, consectetur adipisi nel elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini veniam, quis nostrud en derum sum laborem.
+   769→   769→</div>
+   770→   770→
+   771→   771→</div>
+   772→   772→
+   773→   773→<footer class="posts__footer card__footer">
+   774→   774→
+   775→   775→<div class="post-author">
+   776→   776→
+   777→   777→<figure class="post-author__avatar">
+   778→   778→
+   779→   779→<img src="DATA_URI" alt="Post Author Avatar">
+   780→   780→
+   781→   781→</figure>
+   782→   782→
+   783→   783→<div class="post-author__info">
+   784→   784→
+   785→   785→<h4 class="post-author__name">James Spiegel
+   786→   786→</h4>
+   787→   787→
+   788→   788→</div>
+   789→   789→
+   790→   790→</div>
+   791→   791→
+   792→   792→<ul class="post__meta meta">
+   793→   793→
+   794→   794→<li class="meta__item meta__item--views">2369
+   795→   795→</li>
+   796→   796→
+   797→   797→<li class="meta__item meta__item--likes">
+   798→   798→
+   799→   799→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   800→   800→
+   801→   801→<i class="meta-like icon-heart">
+   802→   802→
+   803→   803→</i>530
+   804→   804→</a>
+   805→   805→
+   806→   806→</li>
+   807→   807→
+   808→   808→<li class="meta__item meta__item--comments">
+   809→   809→
+   810→   810→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">18
+   811→   811→</a>
+   812→   812→
+   813→   813→</li>
+   814→   814→
+   815→   815→</ul>
+   816→   816→
+   817→   817→</footer>
+   818→   818→
+   819→   819→</div>
+   820→   820→
+   821→   821→</div>
+   822→   822→
+   823→   823→<div class="post-grid__item col-6" style="position: absolute; left: 395.328px; top: 0px;">
+   824→   824→
+   825→   825→<div class="posts__item posts__item--card posts__item--category-1 card">
+   826→   826→
+   827→   827→<figure class="posts__thumb">
+   828→   828→
+   829→   829→<div class="posts__cat">
+   830→   830→
+   831→   831→<span class="label posts__cat-label">The Team
+   832→   832→</span>
+   833→   833→
+   834→   834→</div>
+   835→   835→
+   836→   836→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   837→   837→
+   838→   838→<img src="DATA_URI" alt="">
+   839→   839→
+   840→   840→</a>
+   841→   841→
+   842→   842→</figure>
+   843→   843→
+   844→   844→<div class="posts__inner card__content">
+   845→   845→
+   846→   846→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="posts__cta">
+   847→   847→
+   848→   848→</a> 
+   849→   849→<time datetime="2016-08-23" class="posts__date">August 23rd, 2018
+   850→   850→</time>
+   851→   851→
+   852→   852→<h6 class="posts__title">
+   853→   853→
+   854→   854→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">The new eco friendly stadium won a Leafy Award in 2016
+   855→   855→</a>
+   856→   856→
+   857→   857→</h6>
+   858→   858→
+   859→   859→<div class="posts__excerpt">Lorem ipsum dolor sit amet, consectetur adipisi nel elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini veniam, quis nostrud en derum sum laborem.
+   860→   860→</div>
+   861→   861→
+   862→   862→</div>
+   863→   863→
+   864→   864→<footer class="posts__footer card__footer">
+   865→   865→
+   866→   866→<div class="post-author">
+   867→   867→
+   868→   868→<figure class="post-author__avatar">
+   869→   869→
+   870→   870→<img src="DATA_URI" alt="Post Author Avatar">
+   871→   871→
+   872→   872→</figure>
+   873→   873→
+   874→   874→<div class="post-author__info">
+   875→   875→
+   876→   876→<h4 class="post-author__name">Jessica Hoops
+   877→   877→</h4>
+   878→   878→
+   879→   879→</div>
+   880→   880→
+   881→   881→</div>
+   882→   882→
+   883→   883→<ul class="post__meta meta">
+   884→   884→
+   885→   885→<li class="meta__item meta__item--views">2369
+   886→   886→</li>
+   887→   887→
+   888→   888→<li class="meta__item meta__item--likes">
+   889→   889→
+   890→   890→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   891→   891→
+   892→   892→<i class="meta-like icon-heart">
+   893→   893→
+   894→   894→</i>530
+   895→   895→</a>
+   896→   896→
+   897→   897→</li>
+   898→   898→
+   899→   899→<li class="meta__item meta__item--comments">
+   900→   900→
+   901→   901→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">18
+   902→   902→</a>
+   903→   903→
+   904→   904→</li>
+   905→   905→
+   906→   906→</ul>
+   907→   907→
+   908→   908→</footer>
+   909→   909→
+   910→   910→</div>
+   911→   911→
+   912→   912→</div>
+   913→   913→
+   914→   914→<div class="post-grid__item col-6" style="position: absolute; left: 0px; top: 637.672px;">
+   915→   915→
+   916→   916→<div class="posts__item posts__item--card posts__item--category-1 card">
+   917→   917→
+   918→   918→<figure class="posts__thumb">
+   919→   919→
+   920→   920→<div class="posts__cat">
+   921→   921→
+   922→   922→<span class="label posts__cat-label">The Team
+   923→   923→</span>
+   924→   924→
+   925→   925→</div>
+   926→   926→
+   927→   927→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   928→   928→
+   929→   929→<img src="DATA_URI" alt="">
+   930→   930→
+   931→   931→</a>
+   932→   932→
+   933→   933→</figure>
+   934→   934→
+   935→   935→<div class="posts__inner card__content">
+   936→   936→
+   937→   937→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="posts__cta">
+   938→   938→
+   939→   939→</a> 
+   940→   940→<time datetime="2016-08-23" class="posts__date">August 23rd, 2018
+   941→   941→</time>
+   942→   942→
+   943→   943→<h6 class="posts__title">
+   944→   944→
+   945→   945→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">The Alchemists team is appearing in L.A. Beach for charity
+   946→   946→</a>
+   947→   947→
+   948→   948→</h6>
+   949→   949→
+   950→   950→<div class="posts__excerpt">Lorem ipsum dolor sit amet, consectetur adipisi nel elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini veniam, quis nostrud en derum sum laborem.
+   951→   951→</div>
+   952→   952→
+   953→   953→</div>
+   954→   954→
+   955→   955→<footer class="posts__footer card__footer">
+   956→   956→
+   957→   957→<div class="post-author">
+   958→   958→
+   959→   959→<figure class="post-author__avatar">
+   960→   960→
+   961→   961→<img src="DATA_URI" alt="Post Author Avatar">
+   962→   962→
+   963→   963→</figure>
+   964→   964→
+   965→   965→<div class="post-author__info">
+   966→   966→
+   967→   967→<h4 class="post-author__name">James Spiegel
+   968→   968→</h4>
+   969→   969→
+   970→   970→</div>
+   971→   971→
+   972→   972→</div>
+   973→   973→
+   974→   974→<ul class="post__meta meta">
+   975→   975→
+   976→   976→<li class="meta__item meta__item--views">2369
+   977→   977→</li>
+   978→   978→
+   979→   979→<li class="meta__item meta__item--likes">
+   980→   980→
+   981→   981→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+   982→   982→
+   983→   983→<i class="meta-like icon-heart">
+   984→   984→
+   985→   985→</i>530
+   986→   986→</a>
+   987→   987→
+   988→   988→</li>
+   989→   989→
+   990→   990→<li class="meta__item meta__item--comments">
+   991→   991→
+   992→   992→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">18
+   993→   993→</a>
+   994→   994→
+   995→   995→</li>
+   996→   996→
+   997→   997→</ul>
+   998→   998→
+   999→   999→</footer>
+  1000→  1000→
+  1001→  1001→</div>
+  1002→  1002→
+  1003→  1003→</div>
+  1004→  1004→
+  1005→  1005→<div class="post-grid__item col-6" style="position: absolute; left: 395.328px; top: 637.672px;">
+  1006→  1006→
+  1007→  1007→<div class="posts__item posts__item--card posts__item--category-1 card">
+  1008→  1008→
+  1009→  1009→<figure class="posts__thumb">
+  1010→  1010→
+  1011→  1011→<div class="posts__cat">
+  1012→  1012→
+  1013→  1013→<span class="label posts__cat-label">The Team
+  1014→  1014→</span>
+  1015→  1015→
+  1016→  1016→</div>
+  1017→  1017→
+  1018→  1018→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+  1019→  1019→
+  1020→  1020→<img src="DATA_URI" alt="">
+  1021→  1021→
+  1022→  1022→</a>
+  1023→  1023→
+  1024→  1024→</figure>
+  1025→  1025→
+  1026→  1026→<div class="posts__inner card__content">
+  1027→  1027→
+  1028→  1028→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="posts__cta">
+  1029→  1029→
+  1030→  1030→</a> 
+  1031→  1031→<time datetime="2016-08-23" class="posts__date">August 23rd, 2018
+  1032→  1032→</time>
+  1033→  1033→
+  1034→  1034→<h6 class="posts__title">
+  1035→  1035→
+  1036→  1036→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">The team is starting a new power breakfast regimen
+  1037→  1037→</a>
+  1038→  1038→
+  1039→  1039→</h6>
+  1040→  1040→
+  1041→  1041→<div class="posts__excerpt">Lorem ipsum dolor sit amet, consectetur adipisi nel elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini veniam, quis nostrud en derum sum laborem.
+  1042→  1042→</div>
+  1043→  1043→
+  1044→  1044→</div>
+  1045→  1045→
+  1046→  1046→<footer class="posts__footer card__footer">
+  1047→  1047→
+  1048→  1048→<div class="post-author">
+  1049→  1049→
+  1050→  1050→<figure class="post-author__avatar">
+  1051→  1051→
+  1052→  1052→<img src="DATA_URI" alt="Post Author Avatar">
+  1053→  1053→
+  1054→  1054→</figure>
+  1055→  1055→
+  1056→  1056→<div class="post-author__info">
+  1057→  1057→
+  1058→  1058→<h4 class="post-author__name">James Spiegel
+  1059→  1059→</h4>
+  1060→  1060→
+  1061→  1061→</div>
+  1062→  1062→
+  1063→  1063→</div>
+  1064→  1064→
+  1065→  1065→<ul class="post__meta meta">
+  1066→  1066→
+  1067→  1067→<li class="meta__item meta__item--views">2369
+  1068→  1068→</li>
+  1069→  1069→
+  1070→  1070→<li class="meta__item meta__item--likes">
+  1071→  1071→
+  1072→  1072→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">
+  1073→  1073→
+  1074→  1074→<i class="meta-like icon-heart">
+  1075→  1075→
+  1076→  1076→</i>530
+  1077→  1077→</a>
+  1078→  1078→
+  1079→  1079→</li>
+  1080→  1080→
+  1081→  1081→<li class="meta__item meta__item--comments">
+  1082→  1082→
+  1083→  1083→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#">18
+  1084→  1084→</a>
+  1085→  1085→
+  1086→  1086→</li>
+  1087→  1087→
+  1088→  1088→</ul>
+  1089→  1089→
+  1090→  1090→</footer>
+  1091→  1091→
+  1092→  1092→</div>
+  1093→  1093→
+  1094→  1094→</div>
+  1095→  1095→
+  1096→  1096→</div>
+  1097→  1097→
+  1098→  1098→<!-- Post Grid / End -->
+  1099→  1099→
+  1100→  1100→</div>
+  1101→  1101→
+  1102→  1102→</div>
+  1103→  1103→
+  1104→  1104→<!-- Lates News / End -->
+  1105→  1105→
+  1106→  1106→</div>
+  1107→  1107→
+  1108→  1108→<!-- Content / End -->
+  1109→  1109→
+  1110→  1110→<!-- Sidebar -->
+  1111→  1111→
+  1112→  1112→<div class="sidebar col-lg-4">
+  1113→  1113→
+  1114→  1114→<!-- Widget: Social Buttons -->
+  1115→  1115→
+  1116→  1116→<aside class="widget widget--sidebar widget-social">
+  1117→  1117→
+  1118→  1118→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="btn-social-counter btn-social-counter--facebook" target="_blank">
+  1119→  1119→
+  1120→  1120→<div class="btn-social-counter__icon">
+  1121→  1121→
+  1122→  1122→<i class="fab fa-facebook">
+  1123→  1123→
+  1124→  1124→</i>
+  1125→  1125→
+  1126→  1126→</div>
+  1127→  1127→
+  1128→  1128→<h6 class="btn-social-counter__title">James's Facebook Page
+  1129→  1129→</h6>
+  1130→  1130→
+  1131→  1131→<span class="btn-social-counter__count">
+  1132→  1132→
+  1133→  1133→<span class="btn-social-counter__count-num">
+  1134→  1134→
+  1135→  1135→</span>Likes
+  1136→  1136→</span> 
+  1137→  1137→<span class="btn-social-counter__add-icon">
+  1138→  1138→
+  1139→  1139→</span> 
+  1140→  1140→</a>
+  1141→  1141→
+  1142→  1142→<a href="https://alchemists.dan-fisher.dev/basketball-dark/player-overview.html#" class="btn-social-counter btn-social-counter--twitter" target="_blank">
+  1143→  1143→
+  1144→  1144→<div class="btn-social-counter__icon">
+  1145→  1145→
+  1146→  1146→<i class="fab fa-twitter">
+  1147→  1147→
+  1148→  1148→</i>
+  1149→  1149→
+  1150→  1150→</div>
+  1151→  1151→
+  1152→  1152→<h6 class="btn-social-counter__title">James's Twitter Account
+  1153→  1153→</h6>
+  1154→  1154→
+  1155→  1155→<span class="btn-social-counter__count">
+  1156→  1156→
+  1157→  1157→<span class="btn-social-counter__count-num">
+  1158→  1158→
+  1159→  1159→</span>Followers
+  1160→  1160→</span> 
+  1161→  1161→<span class="btn-social-counter__add-icon">
+  1162→  1162→
+  1163→  1163→</span>
+  1164→  1164→
+  1165→  1165→</a>
+  1166→  1166→
+  1167→  1167→</aside>
+  1168→  1168→
+  1169→  1169→<!-- Widget: Social Buttons / End -->
+  1170→  1170→
+  1171→  1171→<!-- Widget: Featured Player - Alternative without Image -->
+  1172→  1172→
+  1173→  1173→<aside class="widget card widget--sidebar widget-player widget-player--alt">
+  1174→  1174→
+  1175→  1175→<div class="widget__title card__header">
+  1176→  1176→
+  1177→  1177→<h4>Player Main Stats
+  1178→  1178→</h4>
+  1179→  1179→
+  1180→  1180→</div>
+  1181→  1181→
+  1182→  1182→<div class="widget__content-secondary">
+  1183→  1183→
+  1184→  1184→<!-- Player Details -->
+  1185→  1185→
+  1186→  1186→<div class="widget-player__details">
+  1187→  1187→
+  1188→  1188→<div class="widget-player__details__item">
+  1189→  1189→
+  1190→  1190→<div class="widget-player__details-desc-wrapper">
+  1191→  1191→
+  1192→  1192→<span class="widget-player__details-holder">
+  1193→  1193→
+  1194→  1194→<span class="widget-player__details-label">2 Points
+  1195→  1195→</span> 
+  1196→  1196→<span class="widget-player__details-desc">In his career
+  1197→  1197→</span> 
+  1198→  1198→</span>
+  1199→  1199→
+  1200→  1200→<span class="widget-player__details-value">1250
+  1201→  1201→</span>
+  1202→  1202→
+  1203→  1203→</div>
+  1204→  1204→
+  1205→  1205→</div>
+  1206→  1206→
+  1207→  1207→<div class="widget-player__details__item">
+  1208→  1208→
+  1209→  1209→<div class="widget-player__details-desc-wrapper">
+  1210→  1210→
+  1211→  1211→<span class="widget-player__details-holder">
+  1212→  1212→
+  1213→  1213→<span class="widget-player__details-label">3 Points
+  1214→  1214→</span> 
+  1215→  1215→<span class="widget-player__details-desc">In his career
+  1216→  1216→</span> 
+  1217→  1217→</span>
+  1218→  1218→
+  1219→  1219→<span class="widget-player__details-value">680
+  1220→  1220→</span>
+  1221→  1221→
+  1222→  1222→</div>
+  1223→  1223→
+  1224→  1224→</div>
+  1225→  1225→
+  1226→  1226→<div class="widget-player__details__item">
+  1227→  1227→
+  1228→  1228→<div class="widget-player__details-desc-wrapper">
+  1229→  1229→
+  1230→  1230→<span class="widget-player__details-holder">
+  1231→  1231→
+  1232→  1232→<span class="widget-player__details-label">Rebounds
+  1233→  1233→</span> 
+  1234→  1234→<span class="widget-player__details-desc">In his career
+  1235→  1235→</span> 
+  1236→  1236→</span>
+  1237→  1237→
+  1238→  1238→<span class="widget-player__details-value">234
+  1239→  1239→</span>
+  1240→  1240→
+  1241→  1241→</div>
+  1242→  1242→
+  1243→  1243→</div>
+  1244→  1244→
+  1245→  1245→<div class="widget-player__details__item">
+  1246→  1246→
+  1247→  1247→<div class="widget-player__details-desc-wrapper">
+  1248→  1248→
+  1249→  1249→<span class="widget-player__details-holder">
+  1250→  1250→
+  1251→  1251→<span class="widget-player__details-label">Assists
+  1252→  1252→</span> 
+  1253→  1253→<span class="widget-player__details-desc">In his career
+  1254→  1254→</span> 
+  1255→  1255→</span>
+  1256→  1256→
+  1257→  1257→<span class="widget-player__details-value">751
+  1258→  1258→</span>
+  1259→  1259→
+  1260→  1260→</div>
+  1261→  1261→
+  1262→  1262→</div>
+  1263→  1263→
+  1264→  1264→<div class="widget-player__details__item">
+  1265→  1265→
+  1266→  1266→<div class="widget-player__details-desc-wrapper">
+  1267→  1267→
+  1268→  1268→<span class="widget-player__details-holder">
+  1269→  1269→
+  1270→  1270→<span class="widget-player__details-label">Steals
+  1271→  1271→</span> 
+  1272→  1272→<span class="widget-player__details-desc">In his career
+  1273→  1273→</span> 
+  1274→  1274→</span>
+  1275→  1275→
+  1276→  1276→<span class="widget-player__details-value">472
+  1277→  1277→</span>
+  1278→  1278→
+  1279→  1279→</div>
+  1280→  1280→
+  1281→  1281→</div>
+  1282→  1282→
+  1283→  1283→<div class="widget-player__details__item">
+  1284→  1284→
+  1285→  1285→<div class="widget-player__details-desc-wrapper">
+  1286→  1286→
+  1287→  1287→<span class="widget-player__details-holder">
+  1288→  1288→
+  1289→  1289→<span class="widget-player__details-label">Blocks
+  1290→  1290→</span> 
+  1291→  1291→<span class="widget-player__details-desc">In his career
+  1292→  1292→</span> 
+  1293→  1293→</span>
+  1294→  1294→
+  1295→  1295→<span class="widget-player__details-value">565
+  1296→  1296→</span>
+  1297→  1297→
+  1298→  1298→</div>
+  1299→  1299→
+  1300→  1300→</div>
+  1301→  1301→
+  1302→  1302→<div class="widget-player__details__item">
+  1303→  1303→
+  1304→  1304→<div class="widget-player__details-desc-wrapper">
+  1305→  1305→
+  1306→  1306→<span class="widget-player__details-holder">
+  1307→  1307→
+  1308→  1308→<span class="widget-player__details-label">Fouls
+  1309→  1309→</span> 
+  1310→  1310→<span class="widget-player__details-desc">In his career
+  1311→  1311→</span> 
+  1312→  1312→</span>
+  1313→  1313→
+  1314→  1314→<span class="widget-player__details-value">97
+  1315→  1315→</span>
+  1316→  1316→
+  1317→  1317→</div>
+  1318→  1318→
+  1319→  1319→</div>
+  1320→  1320→
+  1321→  1321→<div class="widget-player__details__item">
+  1322→  1322→
+  1323→  1323→<div class="widget-player__details-desc-wrapper">
+  1324→  1324→
+  1325→  1325→<span class="widget-player__details-holder">
+  1326→  1326→
+  1327→  1327→<span class="widget-player__details-label">Game Played
+  1328→  1328→</span> 
+  1329→  1329→<span class="widget-player__details-desc">In his career
+  1330→  1330→</span> 
+  1331→  1331→</span>
+  1332→  1332→
+  1333→  1333→<span class="widget-player__details-value">104
+  1334→  1334→</span>
+  1335→  1335→
+  1336→  1336→</div>
+  1337→  1337→
+  1338→  1338→</div>
+  1339→  1339→
+  1340→  1340→</div>
+  1341→  1341→
+  1342→  1342→<!-- Player Details / End -->
+  1343→  1343→
+  1344→  1344→</div>
+  1345→  1345→
+  1346→  1346→<div class="widget__content-tertiary widget__content--bottom-decor">
+  1347→  1347→
+  1348→  1348→<div class="widget__content-inner">
+  1349→  1349→
+  1350→  1350→<div class="widget-player__stats row">
+  1351→  1351→
+  1352→  1352→<div class="col-4">
+  1353→  1353→
+  1354→  1354→<div class="widget-player__stat-item">
+  1355→  1355→
+  1356→  1356→<div class="widget-player__stat-circular circular">
+  1357→  1357→
+  1358→  1358→<div class="circular__bar" data-percent="88">
+  1359→  1359→
+  1360→  1360→<span class="circular__percents">88
+  1361→  1361→<small>%
+  1362→  1362→</small>
+  1363→  1363→
+  1364→  1364→</span>
+  1365→  1365→
+  1366→  1366→<canvas height="90" width="90">
+  1367→  1367→
+  1368→  1368→</canvas>
+  1369→  1369→
+  1370→  1370→</div>
+  1371→  1371→
+  1372→  1372→<span class="circular__label">Shot
+  1373→  1373→<br>Accuracy
+  1374→  1374→</span>
+  1375→  1375→
+  1376→  1376→</div>
+  1377→  1377→
+  1378→  1378→</div>
+  1379→  1379→
+  1380→  1380→</div>
+  1381→  1381→
+  1382→  1382→<div class="col-4">
+  1383→  1383→
+  1384→  1384→<div class="widget-player__stat-item">
+  1385→  1385→
+  1386→  1386→<div class="widget-player__stat-circular circular">
+  1387→  1387→
+  1388→  1388→<div class="circular__bar" data-percent="63">
+  1389→  1389→
+  1390→  1390→<span class="circular__percents">63
+  1391→  1391→<small>%
+  1392→  1392→</small>
+  1393→  1393→
+  1394→  1394→</span>
+  1395→  1395→
+  1396→  1396→<canvas height="90" width="90">
+  1397→  1397→
+  1398→  1398→</canvas>
+  1399→  1399→
+  1400→  1400→</div>
+  1401→  1401→
+  1402→  1402→<span class="circular__label">Pass
+  1403→  1403→<br>Accuracy
+  1404→  1404→</span>
+  1405→  1405→
+  1406→  1406→</div>
+  1407→  1407→
+  1408→  1408→</div>
+  1409→  1409→
+  1410→  1410→</div>
+  1411→  1411→
+  1412→  1412→<div class="col-4">
+  1413→  1413→
+  1414→  1414→<div class="widget-player__stat-item">
+  1415→  1415→
+  1416→  1416→<div class="widget-player__stat-circular circular">
+  1417→  1417→
+  1418→  1418→<div class="circular__bar" data-percent="75.5">
+  1419→  1419→
+  1420→  1420→<span class="circular__percents">75.5
+  1421→  1421→<small>%
+  1422→  1422→</small>
+  1423→  1423→
+  1424→  1424→</span>
+  1425→  1425→
+  1426→  1426→<canvas height="90" width="90">
+  1427→  1427→
+  1428→  1428→</canvas>
+  1429→  1429→
+  1430→  1430→</div>
+  1431→  1431→
+  1432→  1432→<span class="circular__label">Total
+  1433→  1433→<br>Efficiency
+  1434→  1434→</span>
+  1435→  1435→
+  1436→  1436→</div>
+  1437→  1437→
+  1438→  1438→</div>
+  1439→  1439→
+  1440→  1440→</div>
+  1441→  1441→
+  1442→  1442→</div>
+  1443→  1443→
+  1444→  1444→</div>
+  1445→  1445→
+  1446→  1446→</div>
+  1447→  1447→
+  1448→  1448→</aside>
+  1449→  1449→
+  1450→  1450→<!-- Widget: Featured Player - Alternative without Image / End -->
+  1451→  1451→
+  1452→  1452→<!-- Widget: Player Newslog -->
+  1453→  1453→
+  1454→  1454→<aside class="widget card widget--sidebar widget-newslog">
+  1455→  1455→
+  1456→  1456→<div class="widget__title card__header">
+  1457→  1457→
+  1458→  1458→<h4>Player Newslog
+  1459→  1459→</h4>
+  1460→  1460→
+  1461→  1461→</div>
+  1462→  1462→
+  1463→  1463→<div class="widget__content card__content">
+  1464→  1464→
+  1465→  1465→<ul class="newslog">
+  1466→  1466→
+  1467→  1467→<li class="newslog__item newslog__item--injury">
+  1468→  1468→
+  1469→  1469→<div class="newslog__item-inner">
+  1470→  1470→
+  1471→  1471→<div class="newslog__content">
+  1472→  1472→
+  1473→  1473→<strong>James Girobilli’s
+  1474→  1474→</strong>knee fracture is healing properly and will be returning to the field 
+  1475→  1475→<strong>next week
+  1476→  1476→</strong>.
+  1477→  1477→</div>
+  1478→  1478→
+  1479→  1479→<time class="newslog__date" datetime="2021-01-19">January 19, 2016
+  1480→  1480→</time>
+  1481→  1481→
+  1482→  1482→</div>
+  1483→  1483→
+  1484→  1484→</li>
+  1485→  1485→
+  1486→  1486→<li class="newslog__item newslog__item--injury">
+  1487→  1487→
+  1488→  1488→<div class="newslog__item-inner">
+  1489→  1489→
+  1490→  1490→<div class="newslog__content">
+  1491→  1491→
+  1492→  1492→<strong>James Girobilli
+  1493→  1493→</strong>has a knee fracture and he’s gonna be out of the play for 
+  1494→  1494→<strong>4 months
+  1495→  1495→</strong>.
+  1496→  1496→</div>
+  1497→  1497→
+  1498→  1498→<time class="newslog__date" datetime="2021-01-19">September 26, 2016
+  1499→  1499→</time>
+  1500→  1500→
+  1501→  1501→</div>
+  1502→  1502→
+  1503→  1503→</li>
+  1504→  1504→
+  1505→  1505→<li class="newslog__item newslog__item--join">
+  1506→  1506→
+  1507→  1507→<div class="newslog__item-inner">
+  1508→  1508→
+  1509→  1509→<div class="newslog__content">
+  1510→  1510→
+  1511→  1511→<strong>James Girobilli
+  1512→  1512→</strong>is now the 
+  1513→  1513→<strong>1st Shooting Guard
+  1514→  1514→</strong>after being 3rd Shooting Guard for the past year.
+  1515→  1515→</div>
+  1516→  1516→
+  1517→  1517→<time class="newslog__date" datetime="2021-01-19">September 6, 2016
+  1518→  1518→</time>
+  1519→  1519→
+  1520→  1520→</div>
+  1521→  1521→
+  1522→  1522→</li>
+  1523→  1523→
+  1524→  1524→<li class="newslog__item newslog__item--injury">
+  1525→  1525→
+  1526→  1526→<div class="newslog__item-inner">
+  1527→  1527→
+  1528→  1528→<div class="newslog__content">
+  1529→  1529→
+  1530→  1530→<strong>James Girobilli
+  1531→  1531→</strong>has an abductor strain so he will miss the next game against the LA Pirates.
+  1532→  1532→</div>
+  1533→  1533→
+  1534→  1534→<time class="newslog__date" datetime="2021-01-19">March 4, 2016
+  1535→  1535→</time>
+  1536→  1536→
+  1537→  1537→</div>
+  1538→  1538→
+  1539→  1539→</li>
+  1540→  1540→
+  1541→  1541→<li class="newslog__item newslog__item--injury">
+  1542→  1542→
+  1543→  1543→<div class="newslog__item-inner">
+  1544→  1544→
+  1545→  1545→<div class="newslog__content">
+  1546→  1546→
+  1547→  1547→<strong>James Girobilli
+  1548→  1548→</strong>has an abductor strain so he will miss the next game against the LA Pirates.
+  1549→  1549→</div>
+  1550→  1550→
+  1551→  1551→<time class="newslog__date" datetime="2021-01-19">March 4, 2016
+  1552→  1552→</time>
+  1553→  1553→
+  1554→  1554→</div>
+  1555→  1555→
+  1556→  1556→</li>
+  1557→  1557→
+  1558→  1558→<li class="newslog__item newslog__item--award">
+  1559→  1559→
+  1560→  1560→<div class="newslog__item-inner">
+  1561→  1561→
+  1562→  1562→<div class="newslog__content">
+  1563→  1563→
+  1564→  1564→<strong>James Girobilli
+  1565→  1565→</strong>won the 
+  1566→  1566→<strong>Player of the Year 2014 Award
+  1567→  1567→</strong>for the first time.
+  1568→  1568→</div>
+  1569→  1569→
+  1570→  1570→<time class="newslog__date" datetime="2021-01-19">August 17, 2015
+  1571→  1571→</time>
+  1572→  1572→
+  1573→  1573→</div>
+  1574→  1574→
+  1575→  1575→</li>
+  1576→  1576→
+  1577→  1577→<li class="newslog__item newslog__item--injury">
+  1578→  1578→
+  1579→  1579→<div class="newslog__item-inner">
+  1580→  1580→
+  1581→  1581→<div class="newslog__content">
+  1582→  1582→
+  1583→  1583→<strong>James Girobilli
+  1584→  1584→</strong>has a lower back contusion and will miss the next two games.
+  1585→  1585→</div>
+  1586→  1586→
+  1587→  1587→<time class="newslog__date" datetime="2021-01-19">August 5, 2015
+  1588→  1588→</time>
+  1589→  1589→
+  1590→  1590→</div>
+  1591→  1591→
+  1592→  1592→</li>
+  1593→  1593→
+  1594→  1594→<li class="newslog__item newslog__item--join">
+  1595→  1595→
+  1596→  1596→<div class="newslog__item-inner">
+  1597→  1597→
+  1598→  1598→<div class="newslog__content">
+  1599→  1599→
+  1600→  1600→<strong>James Girobilli
+  1601→  1601→</strong>has joined the team after playing for the California Surfers for a year.
+  1602→  1602→</div>
+  1603→  1603→
+  1604→  1604→<time class="newslog__date" datetime="2021-01-19">June 19, 2013
+  1605→  1605→</time>
+  1606→  1606→
+  1607→  1607→</div>
+  1608→  1608→
+  1609→  1609→</li>
+  1610→  1610→
+  1611→  1611→</ul>
+  1612→  1612→
+  1613→  1613→</div>
+  1614→  1614→
+  1615→  1615→</aside>
+  1616→  1616→
+  1617→  1617→<!-- Widget: Player Newslog / End -->
+  1618→  1618→
+  1619→  1619→</div>
+  1620→  1620→
+  1621→  1621→<!-- Sidebar / End -->
+  1622→  1622→
+  1623→  1623→</div>
+  1624→  1624→
+  1625→  1625→</div>
+  1626→  1626→
+  1627→  1627→</div>
+  1628→  1628→
+  1629→  1629→<!-- Content / End -->
+  1630→  1630→
+  1631→  1631→<!-- Footer
+  1632→  1632→                ================================================== -->
