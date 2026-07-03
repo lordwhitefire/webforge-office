@@ -1,0 +1,688 @@
+     1→import type { Metadata } from "next";
+     2→import React from "react";
+     3→import Link from "next/link";
+     4→import { notFound } from "next/navigation";
+     5→import { SiteChromeClient } from "@/components/alchemists/SiteChromeClient";
+     6→import { Footer } from "@/components/alchemists/Footer";
+     7→import fs from "fs";
+     8→import path from "path";
+     9→
+    10→type Block =
+    11→  | { type: "paragraph"; text: string }
+    12→  | { type: "heading"; level: number; text: string };
+    13→
+    14→interface PostData {
+    15→  slug: string;
+    16→  title: string;
+    17→  category: string;
+    18→  categoryLabel: string;
+    19→  categoryClass: string;
+    20→  date: string;
+    21→  dateLabel: string;
+    22→  datetime: string;
+    23→  author: string;
+    24→  image: string;
+    25→  readTime: string;
+    26→  excerpt: string;
+    27→  tags: string[];
+    28→  body: Block[];
+    29→  views: string;
+    30→  likes: string;
+    31→  commentsCount: string;
+    32→  authorProfile: {
+    33→    name: string;
+    34→    slogan: string;
+    35→    avatar: string;
+    36→    description: string;
+    37→    social: { platform: string; iconClass: string; url: string; linkClass: string }[];
+    38→  };
+    39→  sharing: { platform: string; iconClass: string; label: string; url: string }[];
+    40→  relatedPosts: {
+    41→    prev: { categoryLabel: string; title: string; date: string; datetime: string; slug: string };
+    42→    next: { categoryLabel: string; title: string; date: string; datetime: string; slug: string };
+    43→  };
+    44→  comments: any[];
+    45→  commentForm: {
+    46→    title: string;
+    47→    fields: { type: string; name: string; label: string; placeholder: string }[];
+    48→    textarea: { name: string; label: string; rows: number };
+    49→    submitText: string;
+    50→  };
+    51→  sidebar: {
+    52→    socialButtons: any[];
+    53→    popularNews: any;
+    54→    tagCloud: any;
+    55→    banner: any;
+    56→    trendingNews: any;
+    57→    topNextMatch: any;
+    58→    newsletter: any;
+    59→  };
+    60→  pageHeading: {
+    61→    title: string;
+    62→    highlight: string;
+    63→    breadcrumb: { label: string; href: string; active: boolean }[];
+    64→  };
+    65→}
+    66→
+    67→function loadPost(slug: string): PostData | null {
+    68→  const postsDir = path.join(process.cwd(), "src", "data", "news", "posts");
+    69→  const filePath = path.join(postsDir, `${slug}.json`);
+    70→  if (!fs.existsSync(filePath)) return null;
+    71→  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    72→}
+    73→
+    74→export function generateStaticParams() {
+    75→  const postsDir = path.join(process.cwd(), "src", "data", "news", "posts");
+    76→  if (!fs.existsSync(postsDir)) return [];
+    77→  return fs
+    78→    .readdirSync(postsDir)
+    79→    .filter((f) => f.endsWith(".json"))
+    80→    .map((f) => ({ slug: f.replace(".json", "") }));
+    81→}
+    82→
+    83→export async function generateMetadata({
+    84→  params,
+    85→}: {
+    86→  params: Promise<{ slug: string }>;
+    87→}): Promise<Metadata> {
+    88→  const { slug } = await params;
+    89→  const post = loadPost(slug);
+    90→  if (!post) return { title: "Post Not Found" };
+    91→  return {
+    92→    title: `${post.title} — CP3 Legacy`,
+    93→    description: post.excerpt,
+    94→    openGraph: {
+    95→      title: post.title,
+    96→      description: post.excerpt,
+    97→      type: "article",
+    98→      publishedTime: post.date,
+    99→      authors: [post.author],
+   100→    },
+   101→  };
+   102→}
+   103→
+   104→function renderComment(comment: any, key: number) {
+   105→  return (
+   106→    <li key={key} className="comments__item">
+   107→      <div className="comments__inner">
+   108→        <header className="comment__header">
+   109→          <div className="comment__author">
+   110→            <figure className="comment__author-avatar">
+   111→              <img src={comment.avatar} alt={comment.authorName} />
+   112→            </figure>
+   113→            <div className="comment__author-info">
+   114→              <h5 className="comment__author-name">{comment.authorName}</h5>
+   115→              <time className="comment__post-date" dateTime={comment.datetime}>
+   116→                {comment.date}
+   117→              </time>
+   118→            </div>
+   119→          </div>
+   120→          <div className="comment__reply">
+   121→            <a href="#" className="comment__reply-link btn btn-link btn-xs">
+   122→              Reply
+   123→            </a>
+   124→          </div>
+   125→        </header>
+   126→        <div className="comment__body">{comment.body}</div>
+   127→      </div>
+   128→      {comment.children && comment.children.length > 0 && (
+   129→        <ul className="comments--children">
+   130→          {comment.children.map((child: any, i: number) => renderComment(child, i))}
+   131→        </ul>
+   132→      )}
+   133→    </li>
+   134→  );
+   135→}
+   136→
+   137→export default async function BlogPostPage({
+   138→  params,
+   139→}: {
+   140→  params: Promise<{ slug: string }>;
+   141→}) {
+   142→  const { slug } = await params;
+   143→  const post = loadPost(slug);
+   144→  if (!post) notFound();
+   145→
+   146→  const {
+   147→    pageHeading,
+   148→    categoryLabel,
+   149→    title,
+   150→    dateLabel,
+   151→    datetime,
+   152→    views,
+   153→    likes,
+   154→    commentsCount,
+   155→    image,
+   156→    body,
+   157→    tags,
+   158→    sharing,
+   159→    authorProfile,
+   160→    relatedPosts,
+   161→    comments,
+   162→    commentForm,
+   163→    sidebar,
+   164→  } = post;
+   165→
+   166→  return (
+   167→    <div className="site-wrapper clearfix">
+   168→      <SiteChromeClient />
+   169→
+   170→      <div className="page-heading">
+   171→        <div className="container">
+   172→          <div className="row">
+   173→            <div className="col-md-10 offset-md-1">
+   174→              <h1 className="page-heading__title">
+   175→                {pageHeading.title} <span className="highlight">{pageHeading.highlight}</span>
+   176→              </h1>
+   177→              <ol className="page-heading__breadcrumb breadcrumb">
+   178→                {pageHeading.breadcrumb.map((crumb, i) => (
+   179→                  <li
+   180→                    key={i}
+   181→                    className={`breadcrumb-item${crumb.active ? " active" : ""}`}
+   182→                    aria-current={crumb.active ? "page" : undefined}
+   183→                  >
+   184→                    {crumb.active ? (
+   185→                      crumb.label
+   186→                    ) : (
+   187→                      <Link href={crumb.href}>{crumb.label}</Link>
+   188→                    )}
+   189→                  </li>
+   190→                ))}
+   191→              </ol>
+   192→            </div>
+   193→          </div>
+   194→        </div>
+   195→      </div>
+   196→
+   197→      <div className="site-content">
+   198→        <div className="container">
+   199→          <div className="row">
+   200→            {/* Content */}
+   201→            <div className="content col-lg-8">
+   202→              {/* Article */}
+   203→              <article className="card card--lg post post--single">
+   204→                <figure className="post__thumbnail">
+   205→                  <img src={image} alt={title} />
+   206→                </figure>
+   207→
+   208→                <div className="card__content">
+   209→                  <div className="post__category">
+   210→                    <span className="label posts__cat-label">{categoryLabel}</span>
+   211→                  </div>
+   212→
+   213→                  <header className="post__header">
+   214→                    <h2 className="post__title">{title}</h2>
+   215→                    <ul className="post__meta meta">
+   216→                      <li className="meta__item meta__item--date">
+   217→                        <time dateTime={datetime}>{dateLabel}</time>
+   218→                      </li>
+   219→                      <li className="meta__item meta__item--views">{views}</li>
+   220→                      <li className="meta__item meta__item--likes">
+   221→                        <a href="#">
+   222→                          <i className="meta-like icon-heart"></i>
+   223→                          {likes}
+   224→                        </a>
+   225→                      </li>
+   226→                      <li className="meta__item meta__item--comments">
+   227→                        <a href="#">{commentsCount}</a>
+   228→                      </li>
+   229→                    </ul>
+   230→                  </header>
+   231→
+   232→                  <div className="post__content">
+   233→                    {body.map((block, i) => {
+   234→                      if (block.type === "paragraph") {
+   235→                        return <p key={i}>{block.text}</p>;
+   236→                      }
+   237→                      if (block.type === "heading") {
+   238→                        const Tag = `h${block.level}` as React.ElementType;
+   239→                        return <Tag key={i}>{block.text}</Tag>;
+   240→                      }
+   241→                      return null;
+   242→                    })}
+   243→                  </div>
+   244→
+   245→                  <footer className="post__footer">
+   246→                    <div className="post__tags">
+   247→                      {tags.map((tag, i) => (
+   248→                        <React.Fragment key={i}>
+   249→                          <a href="#" className="btn btn-primary btn-outline btn-xs">
+   250→                            {tag}
+   251→                          </a>{" "}
+   252→                        </React.Fragment>
+   253→                      ))}
+   254→                    </div>
+   255→                  </footer>
+   256→                </div>
+   257→              </article>
+   258→              {/* Article / End */}
+   259→
+   260→              {/* Post Sharing Buttons */}
+   261→              <div className="post-sharing">
+   262→                {sharing.map((btn, i) => (
+   263→                  <a
+   264→                    key={i}
+   265→                    href={btn.url}
+   266→                    className={`btn btn-default btn-${btn.platform} btn-icon btn-block`}
+   267→                  >
+   268→                    <i className={btn.iconClass}></i>{" "}
+   269→                    <span className="post-sharing__label d-none d-sm-inline-block">{btn.label}</span>
+   270→                  </a>
+   271→                ))}
+   272→              </div>
+   273→              {/* Post Sharing Buttons / End */}
+   274→
+   275→              {/* Post Author */}
+   276→              <div className="post-author card card--lg">
+   277→                <div className="card__content">
+   278→                  <header className="post-author__header">
+   279→                    <figure className="post-author__avatar">
+   280→                      <img src={authorProfile.avatar} alt="Post Author Avatar" />
+   281→                    </figure>
+   282→                    <div className="post-author__info">
+   283→                      <h4 className="post-author__name">{authorProfile.name}</h4>
+   284→                      <span className="post-author__slogan">{authorProfile.slogan}</span>
+   285→                    </div>
+   286→                    <ul className="post-author__social-links social-links social-links--btn">
+   287→                      {authorProfile.social.map((s, i) => (
+   288→                        <li key={i} className="social-links__item">
+   289→                          <a
+   290→                            href={s.url}
+   291→                            className={`social-links__link ${s.linkClass}`}
+   292→                          >
+   293→                            <i className={s.iconClass}></i>
+   294→                          </a>
+   295→                        </li>
+   296→                      ))}
+   297→                    </ul>
+   298→                  </header>
+   299→                  <div className="post-author__description">{authorProfile.description}</div>
+   300→                </div>
+   301→              </div>
+   302→              {/* Post Author / End */}
+   303→
+   304→              {/* Related Posts */}
+   305→              <div className="post-related row">
+   306→                <div className="col-6">
+   307→                  {/* Prev Post */}
+   308→                  <div className="card post-related__prev">
+   309→                    <div className="card__content">
+   310→                      <a href={`/news/${relatedPosts.prev.slug}`} className="btn-nav">
+   311→                        <i className="fas fa-chevron-left"></i>
+   312→                      </a>
+   313→                      <ul className="posts posts--simple-list">
+   314→                        <li className="posts__item posts__item--category-1">
+   315→                          <div className="posts__inner">
+   316→                            <div className="posts__cat">
+   317→                              <span className="label posts__cat-label">
+   318→                                {relatedPosts.prev.categoryLabel}
+   319→                              </span>
+   320→                            </div>
+   321→                            <h6 className="posts__title">
+   322→                              <Link href={`/news/${relatedPosts.prev.slug}`}>
+   323→                                {relatedPosts.prev.title}
+   324→                              </Link>
+   325→                            </h6>
+   326→                            <time dateTime={relatedPosts.prev.datetime} className="posts__date">
+   327→                              {relatedPosts.prev.date}
+   328→                            </time>
+   329→                          </div>
+   330→                        </li>
+   331→                      </ul>
+   332→                    </div>
+   333→                  </div>
+   334→                  {/* Prev Post / End */}
+   335→                </div>
+   336→                <div className="col-6">
+   337→                  <div className="card post-related__next">
+   338→                    {/* Next Post */}
+   339→                    <div className="card__content">
+   340→                      <ul className="posts posts--simple-list">
+   341→                        <li className="posts__item posts__item--category-1">
+   342→                          <div className="posts__inner">
+   343→                            <div className="posts__cat">
+   344→                              <span className="label posts__cat-label">
+   345→                                {relatedPosts.next.categoryLabel}
+   346→                              </span>
+   347→                            </div>
+   348→                            <h6 className="posts__title">
+   349→                              <Link href={`/news/${relatedPosts.next.slug}`}>
+   350→                                {relatedPosts.next.title}
+   351→                              </Link>
+   352→                            </h6>
+   353→                            <time dateTime={relatedPosts.next.datetime} className="posts__date">
+   354→                              {relatedPosts.next.date}
+   355→                            </time>
+   356→                          </div>
+   357→                        </li>
+   358→                      </ul>
+   359→                      <a href={`/news/${relatedPosts.next.slug}`} className="btn-nav">
+   360→                        <i className="fas fa-chevron-right"></i>
+   361→                      </a>
+   362→                    </div>
+   363→                    {/* Next Post / End */}
+   364→                  </div>
+   365→                </div>
+   366→              </div>
+   367→              {/* Related Posts / End */}
+   368→
+   369→              {/* Post Comments */}
+   370→              <div className="post-comments card card--lg">
+   371→                <header className="post-commments__header card__header">
+   372→                  <h4>
+   373→                    Comments ({commentsCount})
+   374→                  </h4>
+   375→                </header>
+   376→                <div className="post-comments__content card__content">
+   377→                  <ul className="comments">
+   378→                    {comments.map((c, i) => renderComment(c, i))}
+   379→                  </ul>
+   380→                </div>
+   381→              </div>
+   382→              {/* Post Comments / End */}
+   383→
+   384→              {/* Post Comment Form */}
+   385→              <div className="post-comment-form card card--lg">
+   386→                <header className="post-comment-form__header card__header">
+   387→                  <h4>{commentForm.title}</h4>
+   388→                </header>
+   389→                <div className="post-comment-form__content card__content">
+   390→                  <form action="#" className="comment-form">
+   391→                    <div className="row">
+   392→                      {commentForm.fields.map((field, i) => (
+   393→                        <div key={i} className="col-md-6">
+   394→                          <div className="form-group">
+   395→                            <label className="control-label" htmlFor={field.name}>
+   396→                              {field.label}
+   397→                            </label>{" "}
+   398→                            <input
+   399→                              type={field.type}
+   400→                              id={field.name}
+   401→                              name={field.name}
+   402→                              className="form-control"
+   403→                            />
+   404→                          </div>
+   405→                        </div>
+   406→                      ))}
+   407→                    </div>
+   408→                    <div className="form-group">
+   409→                      <label className="control-label" htmlFor={commentForm.textarea.name}>
+   410→                        {commentForm.textarea.label}
+   411→                      </label>{" "}
+   412→                      <textarea
+   413→                        name={commentForm.textarea.name}
+   414→                        id={commentForm.textarea.name}
+   415→                        rows={commentForm.textarea.rows}
+   416→                        className="form-control"
+   417→                      ></textarea>
+   418→                    </div>
+   419→                    <div className="form-group">
+   420→                      <button type="submit" className="btn btn-default btn-block btn-lg">
+   421→                        {commentForm.submitText}
+   422→                      </button>
+   423→                    </div>
+   424→                  </form>
+   425→                </div>
+   426→              </div>
+   427→              {/* Post Comment Form / End */}
+   428→            </div>
+   429→            {/* Content / End */}
+   430→
+   431→            {/* Sidebar */}
+   432→            <div id="sidebar" className="sidebar col-lg-4">
+   433→              {/* Widget: Social Buttons */}
+   434→              <aside className="widget widget--sidebar widget-social">
+   435→                {sidebar.socialButtons.map((btn, i) => (
+   436→                  <a
+   437→                    key={i}
+   438→                    href={btn.url}
+   439→                    className={`btn-social-counter btn-social-counter--${btn.platform}`}
+   440→                    target="_blank"
+   441→                    rel="noopener noreferrer"
+   442→                  >
+   443→                    <div className="btn-social-counter__icon">
+   444→                      <i className={btn.iconClass}></i>
+   445→                    </div>
+   446→                    <h6 className="btn-social-counter__title">{btn.title}</h6>
+   447→                    <span className="btn-social-counter__count">
+   448→                      <span className="btn-social-counter__count-num">{btn.countNum}</span>
+   449→                      {btn.countLabel}
+   450→                    </span>{" "}
+   451→                    <span className="btn-social-counter__add-icon"></span>
+   452→                  </a>
+   453→                ))}
+   454→              </aside>
+   455→              {/* Widget: Social Buttons / End */}
+   456→
+   457→              {/* Widget: Popular News */}
+   458→              <aside className="widget widget--sidebar card widget-popular-posts">
+   459→                <div className="widget__title card__header">
+   460→                  <h4>{sidebar.popularNews.title}</h4>
+   461→                </div>
+   462→                <div className="widget__content card__content">
+   463→                  <ul className="posts posts--simple-list">
+   464→                    {sidebar.popularNews.items.map((item: any, i: number) => (
+   465→                      <li key={i} className={`posts__item ${item.categoryClass}`}>
+   466→                        <figure className="posts__thumb">
+   467→                          <Link href={`/news/${item.slug}`}>
+   468→                            <img src={item.image} alt={item.title} />
+   469→                          </Link>
+   470→                        </figure>
+   471→                        <div className="posts__inner">
+   472→                          <div className="posts__cat">
+   473→                            <span className="label posts__cat-label">{item.categoryLabel}</span>
+   474→                          </div>
+   475→                          <h6 className="posts__title">
+   476→                            <Link href={`/news/${item.slug}`}>{item.title}</Link>
+   477→                          </h6>
+   478→                          <time dateTime={item.datetime} className="posts__date">
+   479→                            {item.date}
+   480→                          </time>
+   481→                        </div>
+   482→                      </li>
+   483→                    ))}
+   484→                  </ul>
+   485→                </div>
+   486→              </aside>
+   487→              {/* Widget: Popular News / End */}
+   488→
+   489→              {/* Widget: Tag Cloud */}
+   490→              <aside className="widget widget--sidebar card widget-tagcloud">
+   491→                <div className="widget__title card__header">
+   492→                  <h4>{sidebar.tagCloud.title}</h4>
+   493→                </div>
+   494→                <div className="widget__content card__content">
+   495→                  <div className="tagcloud">
+   496→                    {sidebar.tagCloud.tags.map((tag: string, i: number) => (
+   497→                      <React.Fragment key={i}>
+   498→                        <a href="#" className="btn btn-primary btn-xs btn-outline btn-sm">
+   499→                          {tag}
+   500→                        </a>{" "}
+   501→                      </React.Fragment>
+   502→                    ))}
+   503→                  </div>
+   504→                </div>
+   505→              </aside>
+   506→              {/* Widget: Tag Cloud / End */}
+   507→
+   508→              {/* Widget: Banner */}
+   509→              <aside className="widget card widget--sidebar widget-banner">
+   510→                <div className="widget__title card__header">
+   511→                  <h4>{sidebar.banner.title}</h4>
+   512→                </div>
+   513→                <div className="widget__content card__content">
+   514→                  <figure className="widget-banner__img">
+   515→                    <a href={sidebar.banner.url}>
+   516→                      <img src={sidebar.banner.image} alt="Banner" />
+   517→                    </a>
+   518→                  </figure>
+   519→                </div>
+   520→              </aside>
+   521→              {/* Widget: Banner / End */}
+   522→
+   523→              {/* Widget: Trending News */}
+   524→              <aside className="widget widget--sidebar card widget-tabbed">
+   525→                <div className="widget__title card__header">
+   526→                  <h4>{sidebar.trendingNews.title}</h4>
+   527→                </div>
+   528→                <div className="widget__content card__content">
+   529→                  <div className="widget-tabbed__tabs">
+   530→                    <ul className="nav nav-tabs nav-justified widget-tabbed__nav" role="tablist">
+   531→                      {sidebar.trendingNews.tabs.map((tab: any, i: number) => (
+   532→                        <li key={i} className="nav-item">
+   533→                          <a
+   534→                            href={`#${tab.id}`}
+   535→                            className={`nav-link${tab.active ? " active" : ""}`}
+   536→                            aria-controls={tab.id}
+   537→                            role="tab"
+   538→                            data-toggle="tab"
+   539→                          >
+   540→                            {tab.label}
+   541→                          </a>
+   542→                        </li>
+   543→                      ))}
+   544→                    </ul>
+   545→                    <div className="tab-content widget-tabbed__tab-content">
+   546→                      {sidebar.trendingNews.tabs.map((tab: any, i: number) => (
+   547→                        <div
+   548→                          key={i}
+   549→                          role="tabpanel"
+   550→                          className={`tab-pane fade${tab.active ? " show active" : ""}`}
+   551→                          id={tab.id}
+   552→                        >
+   553→                          <ul className="posts posts--simple-list">
+   554→                            {tab.items.map((item: any, j: number) => (
+   555→                              <li key={j} className={`posts__item ${item.categoryClass}`}>
+   556→                                <div className="posts__inner">
+   557→                                  <div className="posts__cat">
+   558→                                    <span className="label posts__cat-label">{item.categoryLabel}</span>
+   559→                                  </div>
+   560→                                  <h6 className="posts__title">
+   561→                                    <a href="#">{item.title}</a>
+   562→                                  </h6>
+   563→                                  <time dateTime={item.datetime} className="posts__date">
+   564→                                    {item.date}
+   565→                                  </time>
+   566→                                  <div className="posts__excerpt">{item.excerpt}</div>
+   567→                                </div>
+   568→                              </li>
+   569→                            ))}
+   570→                          </ul>
+   571→                        </div>
+   572→                      ))}
+   573→                    </div>
+   574→                  </div>
+   575→                </div>
+   576→              </aside>
+   577→              {/* Widget: Trending News / End */}
+   578→
+   579→              {/* Widget: Match Announcement */}
+   580→              <aside className="widget widget--sidebar card widget-preview">
+   581→                <div className="widget__title card__header">
+   582→                  <h4>{sidebar.topNextMatch.title}</h4>
+   583→                </div>
+   584→                <div className="widget__content card__content">
+   585→                  {/* Match Preview */}
+   586→                  <div className="match-preview">
+   587→                    <section className="match-preview__body">
+   588→                      <header className="match-preview__header">
+   589→                        <h3 className="match-preview__title">{sidebar.topNextMatch.matchTitle}</h3>
+   590→                        <time className="match-preview__date" dateTime="2017-05-17">
+   591→                          {sidebar.topNextMatch.matchDate}
+   592→                        </time>
+   593→                      </header>
+   594→                      <div className="match-preview__content">
+   595→                        <div className="match-preview__team match-preview__team--first">
+   596→                          <figure className="match-preview__team-logo">
+   597→                            <img src={sidebar.topNextMatch.team1.logo} alt={sidebar.topNextMatch.team1.name} />
+   598→                          </figure>
+   599→                          <h5 className="match-preview__team-name">{sidebar.topNextMatch.team1.name}</h5>
+   600→                          <div className="match-preview__team-info">{sidebar.topNextMatch.team1.info}</div>
+   601→                        </div>
+   602→                        <div className="match-preview__vs">
+   603→                          <div className="match-preview__conj">VS</div>
+   604→                          <div className="match-preview__match-info">
+   605→                            <time className="match-preview__match-time" dateTime="2018-08-07 08:00">
+   606→                              {sidebar.topNextMatch.matchTime}
+   607→                            </time>
+   608→                            <div className="match-preview__match-place">{sidebar.topNextMatch.matchPlace}</div>
+   609→                          </div>
+   610→                        </div>
+   611→                        <div className="match-preview__team match-preview__team--second">
+   612→                          <figure className="match-preview__team-logo">
+   613→                            <img src={sidebar.topNextMatch.team2.logo} alt={sidebar.topNextMatch.team2.name} />
+   614→                          </figure>
+   615→                          <h5 className="match-preview__team-name">{sidebar.topNextMatch.team2.name}</h5>
+   616→                          <div className="match-preview__team-info">{sidebar.topNextMatch.team2.info}</div>
+   617→                        </div>
+   618→                      </div>
+   619→                      <div className="match-preview__action">
+   620→                        <a href="#" className="btn btn-default btn-block">
+   621→                          {sidebar.topNextMatch.buyTicketsText}
+   622→                        </a>
+   623→                      </div>
+   624→                    </section>
+   625→                    <section className="match-preview__countdown countdown">
+   626→                      <h4 className="countdown__title">{sidebar.topNextMatch.countdownTitle}</h4>
+   627→                      <div className="countdown__content">
+   628→                        <div className="countdown-counter" data-date={sidebar.topNextMatch.countdownDate}>
+   629→                          <div className="countdown-counter__item countdown-counter__item--days">
+   630→                            00 <span className="countdown-counter__label">days</span>
+   631→                          </div>
+   632→                          <div className="countdown-counter__item countdown-counter__item--hours">
+   633→                            00 <span className="countdown-counter__label">hours</span>
+   634→                          </div>
+   635→                          <div className="countdown-counter__item countdown-counter__item--mins">
+   636→                            00 <span className="countdown-counter__label">mins</span>
+   637→                          </div>
+   638→                          <div className="countdown-counter__item countdown-counter__item--secs">
+   639→                            00 <span className="countdown-counter__label">secs</span>
+   640→                          </div>
+   641→                        </div>
+   642→                      </div>
+   643→                    </section>
+   644→                  </div>
+   645→                  {/* Match Preview / End */}
+   646→                </div>
+   647→              </aside>
+   648→              {/* Widget: Match Announcement / End */}
+   649→
+   650→              {/* Widget: Newsletter */}
+   651→              <aside className="widget widget--sidebar card widget-newsletter">
+   652→                <div className="widget__title card__header">
+   653→                  <h4>{sidebar.newsletter.title}</h4>
+   654→                </div>
+   655→                <div className="widget__content card__content">
+   656→                  <h5 className="widget-newsletter__subtitle">{sidebar.newsletter.subtitle}</h5>
+   657→                  <div className="widget-newsletter__desc">
+   658→                    <p>{sidebar.newsletter.description}</p>
+   659→                  </div>
+   660→                  <form action="#" id="newsletter" className="inline-form">
+   661→                    <div className="input-group">
+   662→                      <input
+   663→                        type="email"
+   664→                        className="form-control"
+   665→                        placeholder={sidebar.newsletter.placeholder}
+   666→                      />
+   667→                      <span className="input-group-append">
+   668→                        <button className="btn btn-lg btn-default" type="button">
+   669→                          {sidebar.newsletter.buttonText}
+   670→                        </button>
+   671→                      </span>
+   672→                    </div>
+   673→                  </form>
+   674→                </div>
+   675→              </aside>
+   676→              {/* Widget: Newsletter / End */}
+   677→            </div>
+   678→            {/* Sidebar / End */}
+   679→          </div>
+   680→        </div>
+   681→      </div>
+   682→      {/* Content / End */}
+   683→
+   684→      <Footer />
+   685→    </div>
+   686→  );
+   687→}
+   688→
