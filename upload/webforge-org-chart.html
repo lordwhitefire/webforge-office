@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebForge Agent Registry — Org Chart</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  :root {
+    --bg: #0F172A;
+    --bg-panel: #1E293B;
+    --bg-card: #334155;
+    --text: #F1F5F9;
+    --text-muted: #94A3B8;
+    --border: #475569;
+    --exec: #A78BFA;
+    --intel: #60A5FA;
+    --build: #34D399;
+    --quality: #FB7185;
+    --docs: #FBBF24;
+    --hr: #22D3EE;
+    --meta: #F472B6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+  }
+  #topbar h1 {
+    font-size: 16px; font-weight: 700; white-space: nowrap;
+    background: linear-gradient(90deg, var(--exec), var(--intel), var(--build), var(--quality), var(--docs));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #topbar .stats {
+    font-size: 12px; color: var(--text-muted);
+    background: var(--bg-card); padding: 4px 10px; border-radius: 6px;
+  }
+  #search {
+    flex: 1; max-width: 280px; min-width: 140px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 6px 12px; border-radius: 6px;
+    font-size: 13px; outline: none;
+  }
+  #search:focus { border-color: var(--intel); }
+  #search::placeholder { color: var(--text-muted); }
+  .btn {
+    background: var(--bg-card); color: var(--text);
+    border: 1px solid var(--border); padding: 6px 12px;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--border); }
+  .btn-primary { background: var(--intel); border-color: var(--intel); color: #fff; }
+  .btn-primary:hover { background: #3B82F6; }
+
+  /* ── Legend ── */
+  #legend {
+    position: fixed; bottom: 16px; left: 16px; z-index: 100;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    font-size: 12px;
+  }
+  #legend h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+               color: var(--text-muted); margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* ── Info panel ── */
+  #info-panel {
+    position: fixed; top: 64px; right: 16px; z-index: 100;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px;
+    width: 280px; max-height: 70vh; overflow-y: auto;
+    display: none;
+  }
+  #info-panel.visible { display: block; }
+  #info-panel h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  #info-panel .role { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  #info-panel .field { margin: 8px 0; }
+  #info-panel .field-label { font-size: 10px; text-transform: uppercase;
+                             letter-spacing: 0.5px; color: var(--text-muted); }
+  #info-panel .field-value { font-size: 13px; margin-top: 2px; }
+  #info-panel .close {
+    position: absolute; top: 8px; right: 12px;
+    background: none; border: none; color: var(--text-muted);
+    font-size: 18px; cursor: pointer;
+  }
+  #info-panel .close:hover { color: var(--text); }
+
+  /* ── Chart ── */
+  #chart-container {
+    position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+  }
+  svg { width: 100%; height: 100%; }
+
+  /* ── Tree nodes ── */
+  .node circle {
+    cursor: pointer;
+    stroke-width: 2px;
+    transition: r 0.15s;
+  }
+  .node circle:hover { filter: brightness(1.3); }
+  .node text {
+    font-size: 11px;
+    fill: var(--text);
+    pointer-events: none;
+    text-anchor: start;
+  }
+  .node--internal text { font-weight: 600; }
+  .node--leaf text { fill: var(--text-muted); font-size: 10px; }
+
+  .link {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1px;
+    opacity: 0.5;
+  }
+
+  /* Department colors */
+  .dept-Executive > circle { fill: var(--exec); stroke: #7C3AED; }
+  .dept-Intelligence > circle { fill: var(--intel); stroke: #2563EB; }
+  .dept-Build > circle { fill: var(--build); stroke: #059669; }
+  .dept-Quality > circle { fill: var(--quality); stroke: #E11D48; }
+  .dept-Documentation > circle { fill: var(--docs); stroke: #D97706; }
+  .dept-HR > circle { fill: var(--hr); stroke: #0891B2; }
+  .dept-Meta > circle { fill: var(--meta); stroke: #DB2777; }
+
+  .node.highlighted > circle {
+    stroke: #fff; stroke-width: 3px;
+    filter: drop-shadow(0 0 6px #fff);
+  }
+  .node.search-match > circle {
+    stroke: #FDE047; stroke-width: 3px;
+    filter: drop-shadow(0 0 8px #FDE047);
+  }
+
+  /* Zoom controls */
+  #zoom-controls {
+    position: fixed; bottom: 16px; right: 16px; z-index: 100;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  #zoom-controls .btn { width: 36px; height: 36px; padding: 0; font-size: 16px; }
+
+  /* Help text */
+  #help {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 99; font-size: 11px; color: var(--text-muted);
+    background: var(--bg-panel); padding: 6px 14px; border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>WebForge Agent Registry</h1>
+  <span class="stats" id="stats">— agents</span>
+  <input type="text" id="search" placeholder="Search agents (e.g. Probe, Sr-Hale, Jr-Cobalt)..." />
+  <button class="btn" onclick="expandAll()">Expand All</button>
+  <button class="btn" onclick="collapseAll()">Collapse All</button>
+  <button class="btn btn-primary" onclick="resetView()">Reset View</button>
+</div>
+
+<div id="chart-container">
+  <svg id="chart"></svg>
+</div>
+
+<div id="info-panel">
+  <button class="close" onclick="closeInfo()">&times;</button>
+  <h2 id="info-name"></h2>
+  <div class="role" id="info-role"></div>
+  <div class="field"><div class="field-label">Department</div>
+    <div class="field-value" id="info-dept"></div></div>
+  <div class="field" id="info-areas-field"><div class="field-label">Areas</div>
+    <div class="field-value" id="info-areas"></div></div>
+  <div class="field"><div class="field-label">Function</div>
+    <div class="field-value" id="info-function"></div></div>
+  <div class="field" id="info-reports-field"><div class="field-label">Reports To</div>
+    <div class="field-value" id="info-reports"></div></div>
+  <div class="field" id="info-manages-field"><div class="field-label">Direct Reports</div>
+    <div class="field-value" id="info-manages"></div></div>
+</div>
+
+<div id="legend">
+  <h3>Departments</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--exec)"></div>Executive (CEO, Hermes)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--hr)"></div>HR (Voss, Rook, Weld)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--meta)"></div>Meta Engineering (Daedalus, Forge, Anvil, Loom, Compass)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--intel)"></div>Intelligence (38)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--build)"></div>Build (69)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--quality)"></div>Quality Council (108)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--docs)"></div>Documentation (60)</div>
+</div>
+
+<div id="zoom-controls">
+  <button class="btn" onclick="zoomIn()">+</button>
+  <button class="btn" onclick="zoomOut()">&minus;</button>
+</div>
+
+<div id="help">Click a node to expand/collapse &nbsp;|&nbsp; Scroll to zoom &nbsp;|&nbsp; Drag to pan &nbsp;|&nbsp; Click info-panel to close</div>
+
+<script>
+// ── Tree data (injected from Python) ──
+const treeData = {"name": "CEO", "role": "Chief Executive Officer", "dept": "Executive", "function": "Oversees all departments, coordinates strategy, makes final decisions", "children": [{"name": "Hermes", "role": "COO / Scheduler", "dept": "Executive", "function": "Automaton: wakes agents in sequence, manages handovers, monitors stalls. HR and Meta Engineering report to Hermes.", "children": [{"name": "Voss", "role": "HR Director", "dept": "HR", "function": "Heads the HR Department — receives all recruiting and termination requests, makes final decisions, reports to Hermes. Manages both temporary numbered agents and permanent named agents.", "children": [{"name": "Rook", "role": "Registry Manager", "dept": "HR", "function": "Maintains the Agent Registry file. Handles all additions, activations, and deactivations of named agents. Never creates a duplicate — always checks the registry first."}, {"name": "Weld", "role": "Assignment Officer", "dept": "HR", "function": "Assigns newly recruited agents to the department that requested them. Tracks who is working on what."}]}, {"name": "Daedalus", "role": "Meta Engineering Director", "dept": "Meta", "function": "Heads Meta Engineering — maintains WebForge itself. Builds new MCPs, fixes bugs, creates agents, tests the system.", "children": [{"name": "Forge", "role": "MCP Builder", "dept": "Meta", "function": "Builds new MCPs when WebForge needs new capabilities."}, {"name": "Anvil", "role": "MCP Fixer", "dept": "Meta", "function": "Fixes bugs in existing MCPs."}, {"name": "Loom", "role": "Agent Creator", "dept": "Meta", "function": "Creates new named agents when HR needs more (works with Rook)."}, {"name": "Compass", "role": "System Tester", "dept": "Meta", "function": "Tests the whole WebForge system to find issues before they break projects."}]}]}, {"name": "Athena", "role": "Intelligence Director", "dept": "Intelligence", "function": "Heads the Intelligence department — research, assess, and set standards before building starts (38 agents)", "children": [{"name": "Probe Team", "role": "Lead, Assets & Readiness", "dept": "Intelligence", "function": "Assets & readiness assessment across all 82 areas", "children": [{"name": "Probe-Orion", "role": "Probe Agent", "dept": "Intelligence", "areas": "01-05", "function": "Assets & readiness assessment for areas 01-05"}, {"name": "Probe-Wren", "role": "Probe Agent", "dept": "Intelligence", "areas": "06-10", "function": "Assets & readiness assessment for areas 06-10"}, {"name": "Probe-Beacon", "role": "Probe Agent", "dept": "Intelligence", "areas": "11-15", "function": "Assets & readiness assessment for areas 11-15"}, {"name": "Probe-Sable", "role": "Probe Agent", "dept": "Intelligence", "areas": "16-20", "function": "Assets & readiness assessment for areas 16-20"}, {"name": "Probe-Quartz", "role": "Probe Agent", "dept": "Intelligence", "areas": "21-25", "function": "Assets & readiness assessment for areas 21-25"}, {"name": "Probe-Flint", "role": "Probe Agent", "dept": "Intelligence", "areas": "26-30", "function": "Assets & readiness assessment for areas 26-30"}, {"name": "Probe-Ridge", "role": "Probe Agent", "dept": "Intelligence", "areas": "31-35", "function": "Assets & readiness assessment for areas 31-35"}, {"name": "Probe-Marsh", "role": "Probe Agent", "dept": "Intelligence", "areas": "36-40", "function": "Assets & readiness assessment for areas 36-40"}, {"name": "Probe-Coral", "role": "Probe Agent", "dept": "Intelligence", "areas": "41-45", "function": "Assets & readiness assessment for areas 41-45"}, {"name": "Probe-Vale", "role": "Probe Agent", "dept": "Intelligence", "areas": "46-50", "function": "Assets & readiness assessment for areas 46-50"}, {"name": "Probe-Thorne", "role": "Probe Agent", "dept": "Intelligence", "areas": "51-55", "function": "Assets & readiness assessment for areas 51-55"}, {"name": "Probe-Brisk", "role": "Probe Agent", "dept": "Intelligence", "areas": "56-60", "function": "Assets & readiness assessment for areas 56-60"}, {"name": "Probe-Hollow", "role": "Probe Agent", "dept": "Intelligence", "areas": "61-65", "function": "Assets & readiness assessment for areas 61-65"}, {"name": "Probe-Crag", "role": "Probe Agent", "dept": "Intelligence", "areas": "66-70", "function": "Assets & readiness assessment for areas 66-70"}, {"name": "Probe-Drift", "role": "Probe Agent", "dept": "Intelligence", "areas": "71-75", "function": "Assets & readiness assessment for areas 71-75"}, {"name": "Probe-Ember", "role": "Probe Agent", "dept": "Intelligence", "areas": "76-80", "function": "Assets & readiness assessment for areas 76-80"}, {"name": "Probe-Lyric", "role": "Probe Agent", "dept": "Intelligence", "areas": "81-82", "function": "Assets & readiness assessment for areas 81-82"}]}, {"name": "Odin Team", "role": "Lead, Standards Research & Selection", "dept": "Intelligence", "function": "Standards research & selection across all 82 areas", "children": [{"name": "Odin-Sage", "role": "Odin Agent", "dept": "Intelligence", "areas": "01-05", "function": "Standards research & selection for areas 01-05"}, {"name": "Odin-Reed", "role": "Odin Agent", "dept": "Intelligence", "areas": "06-10", "function": "Standards research & selection for areas 06-10"}, {"name": "Odin-Birch", "role": "Odin Agent", "dept": "Intelligence", "areas": "11-15", "function": "Standards research & selection for areas 11-15"}, {"name": "Odin-Cliff", "role": "Odin Agent", "dept": "Intelligence", "areas": "16-20", "function": "Standards research & selection for areas 16-20"}, {"name": "Odin-Moss", "role": "Odin Agent", "dept": "Intelligence", "areas": "21-25", "function": "Standards research & selection for areas 21-25"}, {"name": "Odin-Slate", "role": "Odin Agent", "dept": "Intelligence", "areas": "26-30", "function": "Standards research & selection for areas 26-30"}, {"name": "Odin-Fern", "role": "Odin Agent", "dept": "Intelligence", "areas": "31-35", "function": "Standards research & selection for areas 31-35"}, {"name": "Odin-Pike", "role": "Odin Agent", "dept": "Intelligence", "areas": "36-40", "function": "Standards research & selection for areas 36-40"}, {"name": "Odin-Wisp", "role": "Odin Agent", "dept": "Intelligence", "areas": "41-45", "function": "Standards research & selection for areas 41-45"}, {"name": "Odin-Cove", "role": "Odin Agent", "dept": "Intelligence", "areas": "46-50", "function": "Standards research & selection for areas 46-50"}, {"name": "Odin-Bramble", "role": "Odin Agent", "dept": "Intelligence", "areas": "51-55", "function": "Standards research & selection for areas 51-55"}, {"name": "Odin-Talon", "role": "Odin Agent", "dept": "Intelligence", "areas": "56-60", "function": "Standards research & selection for areas 56-60"}, {"name": "Odin-Marrow", "role": "Odin Agent", "dept": "Intelligence", "areas": "61-65", "function": "Standards research & selection for areas 61-65"}, {"name": "Odin-Glade", "role": "Odin Agent", "dept": "Intelligence", "areas": "66-70", "function": "Standards research & selection for areas 66-70"}, {"name": "Odin-Heron", "role": "Odin Agent", "dept": "Intelligence", "areas": "71-75", "function": "Standards research & selection for areas 71-75"}, {"name": "Odin-Frost", "role": "Odin Agent", "dept": "Intelligence", "areas": "76-80", "function": "Standards research & selection for areas 76-80"}, {"name": "Odin-Aster", "role": "Odin Agent", "dept": "Intelligence", "areas": "81-82", "function": "Standards research & selection for areas 81-82"}]}, {"name": "Dorian", "role": "UI Researcher", "dept": "Intelligence", "function": "UI research, internet reference design search, reports to Aurora"}]}, {"name": "Hephaestus", "role": "Build Director", "dept": "Build", "function": "Heads the Build department — actually build the website/app (69 agents)", "children": [{"name": "Aurora", "role": "Frontend Head", "dept": "Build", "function": "Leads aurora sub-department", "children": [{"name": "Lead-Faro", "role": "Tech Lead", "dept": "Build", "function": "Manages all 4 Senior Developers", "children": [{"name": "Sr-Hale", "role": "Senior Developer", "dept": "Build", "function": "Manages 5 junior developers", "children": [{"name": "Jr-Hawk", "role": "Junior Developer", "dept": "Build", "areas": "01-05", "function": "Frontend development for areas 01-05"}, {"name": "Jr-Finch", "role": "Junior Developer", "dept": "Build", "areas": "06-10", "function": "Frontend development for areas 06-10"}, {"name": "Jr-Wisp", "role": "Junior Developer", "dept": "Build", "areas": "11-15", "function": "Frontend development for areas 11-15"}, {"name": "Jr-Cole", "role": "Junior Developer", "dept": "Build", "areas": "16-20", "function": "Frontend development for areas 16-20"}, {"name": "Jr-Reed", "role": "Junior Developer", "dept": "Build", "areas": "21-25", "function": "Frontend development for areas 21-25"}]}, {"name": "Sr-Vance", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Sage", "role": "Junior Developer", "dept": "Build", "areas": "26-30", "function": "Frontend development for areas 26-30"}, {"name": "Jr-Birch", "role": "Junior Developer", "dept": "Build", "areas": "31-35", "function": "Frontend development for areas 31-35"}, {"name": "Jr-Pike", "role": "Junior Developer", "dept": "Build", "areas": "36-40", "function": "Frontend development for areas 36-40"}, {"name": "Jr-Moss", "role": "Junior Developer", "dept": "Build", "areas": "41-45", "function": "Frontend development for areas 41-45"}]}, {"name": "Sr-Brook", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Cliff", "role": "Junior Developer", "dept": "Build", "areas": "46-50", "function": "Frontend development for areas 46-50"}, {"name": "Jr-Fern", "role": "Junior Developer", "dept": "Build", "areas": "51-55", "function": "Frontend development for areas 51-55"}, {"name": "Jr-Slate", "role": "Junior Developer", "dept": "Build", "areas": "56-60", "function": "Frontend development for areas 56-60"}, {"name": "Jr-Wren", "role": "Junior Developer", "dept": "Build", "areas": "61-65", "function": "Frontend development for areas 61-65"}]}, {"name": "Sr-Quill2", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Cove", "role": "Junior Developer", "dept": "Build", "areas": "66-70", "function": "Frontend development for areas 66-70"}, {"name": "Jr-Bram", "role": "Junior Developer", "dept": "Build", "areas": "71-75", "function": "Frontend development for areas 71-75"}, {"name": "Jr-Talon", "role": "Junior Developer", "dept": "Build", "areas": "76-80", "function": "Frontend development for areas 76-80"}, {"name": "Jr-Aster", "role": "Junior Developer", "dept": "Build", "areas": "81-82", "function": "Frontend development for areas 81-82"}]}]}]}, {"name": "Titan", "role": "Backend Head", "dept": "Build", "function": "Leads titan sub-department", "children": [{"name": "Lead-Terra", "role": "Tech Lead", "dept": "Build", "function": "Manages all 4 Senior Developers", "children": [{"name": "Sr-Stone", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Granite", "role": "Junior Developer", "dept": "Build", "areas": "01-05", "function": "Backend development for areas 01-05"}, {"name": "Jr-Slate", "role": "Junior Developer", "dept": "Build", "areas": "06-10", "function": "Backend development for areas 06-10"}, {"name": "Jr-Marble", "role": "Junior Developer", "dept": "Build", "areas": "11-15", "function": "Backend development for areas 11-15"}, {"name": "Jr-Quartz", "role": "Junior Developer", "dept": "Build", "areas": "16-20", "function": "Backend development for areas 16-20"}]}, {"name": "Sr-Iron", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Copper", "role": "Junior Developer", "dept": "Build", "areas": "21-25", "function": "Backend development for areas 21-25"}, {"name": "Jr-Bronze", "role": "Junior Developer", "dept": "Build", "areas": "26-30", "function": "Backend development for areas 26-30"}, {"name": "Jr-Silver", "role": "Junior Developer", "dept": "Build", "areas": "31-35", "function": "Backend development for areas 31-35"}, {"name": "Jr-Gold", "role": "Junior Developer", "dept": "Build", "areas": "36-40", "function": "Backend development for areas 36-40"}]}, {"name": "Sr-Wood", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Oak", "role": "Junior Developer", "dept": "Build", "areas": "41-45", "function": "Backend development for areas 41-45"}, {"name": "Jr-Pine", "role": "Junior Developer", "dept": "Build", "areas": "46-50", "function": "Backend development for areas 46-50"}, {"name": "Jr-Cedar", "role": "Junior Developer", "dept": "Build", "areas": "51-55", "function": "Backend development for areas 51-55"}, {"name": "Jr-Birch", "role": "Junior Developer", "dept": "Build", "areas": "56-60", "function": "Backend development for areas 56-60"}]}, {"name": "Sr-Steel", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Titan", "role": "Junior Developer", "dept": "Build", "areas": "61-65", "function": "Backend development for areas 61-65"}, {"name": "Jr-Vanadium", "role": "Junior Developer", "dept": "Build", "areas": "66-70", "function": "Backend development for areas 66-70"}, {"name": "Jr-Chromium", "role": "Junior Developer", "dept": "Build", "areas": "71-75", "function": "Backend development for areas 71-75"}, {"name": "Jr-Nickel", "role": "Junior Developer", "dept": "Build", "areas": "76-80", "function": "Backend development for areas 76-80"}, {"name": "Jr-Cobalt", "role": "Junior Developer", "dept": "Build", "areas": "81-82", "function": "Backend development for areas 81-82"}]}]}]}, {"name": "Zephyr", "role": "Database/Infra Head", "dept": "Build", "function": "Leads zephyr sub-department", "children": [{"name": "Lead-Zen", "role": "Tech Lead", "dept": "Build", "function": "Manages all 4 Senior Developers", "children": [{"name": "Sr-Cloud", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Sky", "role": "Junior Developer", "dept": "Build", "areas": "01-05", "function": "Database/Infra development for areas 01-05"}, {"name": "Jr-Storm", "role": "Junior Developer", "dept": "Build", "areas": "06-10", "function": "Database/Infra development for areas 06-10"}, {"name": "Jr-Rain", "role": "Junior Developer", "dept": "Build", "areas": "11-15", "function": "Database/Infra development for areas 11-15"}, {"name": "Jr-Wind", "role": "Junior Developer", "dept": "Build", "areas": "16-20", "function": "Database/Infra development for areas 16-20"}]}, {"name": "Sr-Earth", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Mountain", "role": "Junior Developer", "dept": "Build", "areas": "21-25", "function": "Database/Infra development for areas 21-25"}, {"name": "Jr-Hill", "role": "Junior Developer", "dept": "Build", "areas": "26-30", "function": "Database/Infra development for areas 26-30"}, {"name": "Jr-Valley", "role": "Junior Developer", "dept": "Build", "areas": "31-35", "function": "Database/Infra development for areas 31-35"}, {"name": "Jr-Plain", "role": "Junior Developer", "dept": "Build", "areas": "36-40", "function": "Database/Infra development for areas 36-40"}]}, {"name": "Sr-Fire", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-Flame", "role": "Junior Developer", "dept": "Build", "areas": "41-45", "function": "Database/Infra development for areas 41-45"}, {"name": "Jr-Ember", "role": "Junior Developer", "dept": "Build", "areas": "46-50", "function": "Database/Infra development for areas 46-50"}, {"name": "Jr-Ash", "role": "Junior Developer", "dept": "Build", "areas": "51-55", "function": "Database/Infra development for areas 51-55"}, {"name": "Jr-Coal", "role": "Junior Developer", "dept": "Build", "areas": "56-60", "function": "Database/Infra development for areas 56-60"}]}, {"name": "Sr-Water", "role": "Senior Developer", "dept": "Build", "function": "Manages 4 junior developers", "children": [{"name": "Jr-River", "role": "Junior Developer", "dept": "Build", "areas": "61-65", "function": "Database/Infra development for areas 61-65"}, {"name": "Jr-Lake", "role": "Junior Developer", "dept": "Build", "areas": "66-70", "function": "Database/Infra development for areas 66-70"}, {"name": "Jr-Ocean", "role": "Junior Developer", "dept": "Build", "areas": "71-75", "function": "Database/Infra development for areas 71-75"}, {"name": "Jr-Sea", "role": "Junior Developer", "dept": "Build", "areas": "76-80", "function": "Database/Infra development for areas 76-80"}, {"name": "Jr-Lake2", "role": "Junior Developer", "dept": "Build", "areas": "81-82", "function": "Database/Infra development for areas 81-82"}]}]}]}]}, {"name": "Minos", "role": "Quality Director", "dept": "Quality", "function": "Heads the Quality Council — test, review, secure, and fix (108 agents)", "children": [{"name": "Verdict Team", "role": "Lead, Standards Compliance", "dept": "Quality", "function": "Standards compliance across all 82 areas", "children": [{"name": "Verdict-Lance", "role": "Verdict Agent", "dept": "Quality", "areas": "01-05", "function": "Standards compliance for areas 01-05"}, {"name": "Verdict-Hazel", "role": "Verdict Agent", "dept": "Quality", "areas": "06-10", "function": "Standards compliance for areas 06-10"}, {"name": "Verdict-Onyx", "role": "Verdict Agent", "dept": "Quality", "areas": "11-15", "function": "Standards compliance for areas 11-15"}, {"name": "Verdict-Brook", "role": "Verdict Agent", "dept": "Quality", "areas": "16-20", "function": "Standards compliance for areas 16-20"}, {"name": "Verdict-Garnet", "role": "Verdict Agent", "dept": "Quality", "areas": "21-25", "function": "Standards compliance for areas 21-25"}, {"name": "Verdict-Fenn", "role": "Verdict Agent", "dept": "Quality", "areas": "26-30", "function": "Standards compliance for areas 26-30"}, {"name": "Verdict-Storm", "role": "Verdict Agent", "dept": "Quality", "areas": "31-35", "function": "Standards compliance for areas 31-35"}, {"name": "Verdict-Clove", "role": "Verdict Agent", "dept": "Quality", "areas": "36-40", "function": "Standards compliance for areas 36-40"}, {"name": "Verdict-Ridley", "role": "Verdict Agent", "dept": "Quality", "areas": "41-45", "function": "Standards compliance for areas 41-45"}, {"name": "Verdict-Hawke", "role": "Verdict Agent", "dept": "Quality", "areas": "46-50", "function": "Standards compliance for areas 46-50"}, {"name": "Verdict-Wilder", "role": "Verdict Agent", "dept": "Quality", "areas": "51-55", "function": "Standards compliance for areas 51-55"}, {"name": "Verdict-Pike2", "role": "Verdict Agent", "dept": "Quality", "areas": "56-60", "function": "Standards compliance for areas 56-60"}, {"name": "Verdict-Sloane", "role": "Verdict Agent", "dept": "Quality", "areas": "61-65", "function": "Standards compliance for areas 61-65"}, {"name": "Verdict-Reign", "role": "Verdict Agent", "dept": "Quality", "areas": "66-70", "function": "Standards compliance for areas 66-70"}, {"name": "Verdict-Vance2", "role": "Verdict Agent", "dept": "Quality", "areas": "71-75", "function": "Standards compliance for areas 71-75"}, {"name": "Verdict-Knox", "role": "Verdict Agent", "dept": "Quality", "areas": "76-80", "function": "Standards compliance for areas 76-80"}, {"name": "Verdict-Wren2", "role": "Verdict Agent", "dept": "Quality", "areas": "81-82", "function": "Standards compliance for areas 81-82"}]}, {"name": "Nemesis Team", "role": "Lead, Functional Testing", "dept": "Quality", "function": "Functional testing: unit, integration, e2e, and patching (55 agents)", "children": [{"name": "Pixel-Core", "role": "Lead, Unit/Integration Tests", "dept": "Quality", "function": "Oversees Pixel batch agents, coordinates test strategy", "children": [{"name": "Pixel-Sage", "role": "Pixel Agent", "dept": "Quality", "areas": "01-05", "function": "Unit/integration test scripts for areas 01-05"}, {"name": "Pixel-Reed", "role": "Pixel Agent", "dept": "Quality", "areas": "06-10", "function": "Unit/integration test scripts for areas 06-10"}, {"name": "Pixel-Birch", "role": "Pixel Agent", "dept": "Quality", "areas": "11-15", "function": "Unit/integration test scripts for areas 11-15"}, {"name": "Pixel-Cliff", "role": "Pixel Agent", "dept": "Quality", "areas": "16-20", "function": "Unit/integration test scripts for areas 16-20"}, {"name": "Pixel-Moss", "role": "Pixel Agent", "dept": "Quality", "areas": "21-25", "function": "Unit/integration test scripts for areas 21-25"}, {"name": "Pixel-Slate", "role": "Pixel Agent", "dept": "Quality", "areas": "26-30", "function": "Unit/integration test scripts for areas 26-30"}, {"name": "Pixel-Fern", "role": "Pixel Agent", "dept": "Quality", "areas": "31-35", "function": "Unit/integration test scripts for areas 31-35"}, {"name": "Pixel-Pike", "role": "Pixel Agent", "dept": "Quality", "areas": "36-40", "function": "Unit/integration test scripts for areas 36-40"}, {"name": "Pixel-Wisp", "role": "Pixel Agent", "dept": "Quality", "areas": "41-45", "function": "Unit/integration test scripts for areas 41-45"}, {"name": "Pixel-Cove", "role": "Pixel Agent", "dept": "Quality", "areas": "46-50", "function": "Unit/integration test scripts for areas 46-50"}, {"name": "Pixel-Bramble", "role": "Pixel Agent", "dept": "Quality", "areas": "51-55", "function": "Unit/integration test scripts for areas 51-55"}, {"name": "Pixel-Talon", "role": "Pixel Agent", "dept": "Quality", "areas": "56-60", "function": "Unit/integration test scripts for areas 56-60"}, {"name": "Pixel-Marrow", "role": "Pixel Agent", "dept": "Quality", "areas": "61-65", "function": "Unit/integration test scripts for areas 61-65"}, {"name": "Pixel-Glade", "role": "Pixel Agent", "dept": "Quality", "areas": "66-70", "function": "Unit/integration test scripts for areas 66-70"}, {"name": "Pixel-Heron", "role": "Pixel Agent", "dept": "Quality", "areas": "71-75", "function": "Unit/integration test scripts for areas 71-75"}, {"name": "Pixel-Frost", "role": "Pixel Agent", "dept": "Quality", "areas": "76-80", "function": "Unit/integration test scripts for areas 76-80"}, {"name": "Pixel-Aster", "role": "Pixel Agent", "dept": "Quality", "areas": "81-82", "function": "Unit/integration test scripts for areas 81-82"}]}, {"name": "Sentry-Core", "role": "Lead, Test Reviewer", "dept": "Quality", "function": "Oversees Sentry batch agents, reviews and approves test scripts", "children": [{"name": "Sentry-Sage", "role": "Sentry Agent", "dept": "Quality", "areas": "01-05", "function": "Test script reviewer for areas 01-05"}, {"name": "Sentry-Reed", "role": "Sentry Agent", "dept": "Quality", "areas": "06-10", "function": "Test script reviewer for areas 06-10"}, {"name": "Sentry-Birch", "role": "Sentry Agent", "dept": "Quality", "areas": "11-15", "function": "Test script reviewer for areas 11-15"}, {"name": "Sentry-Cliff", "role": "Sentry Agent", "dept": "Quality", "areas": "16-20", "function": "Test script reviewer for areas 16-20"}, {"name": "Sentry-Moss", "role": "Sentry Agent", "dept": "Quality", "areas": "21-25", "function": "Test script reviewer for areas 21-25"}, {"name": "Sentry-Slate", "role": "Sentry Agent", "dept": "Quality", "areas": "26-30", "function": "Test script reviewer for areas 26-30"}, {"name": "Sentry-Fern", "role": "Sentry Agent", "dept": "Quality", "areas": "31-35", "function": "Test script reviewer for areas 31-35"}, {"name": "Sentry-Pike", "role": "Sentry Agent", "dept": "Quality", "areas": "36-40", "function": "Test script reviewer for areas 36-40"}, {"name": "Sentry-Wisp", "role": "Sentry Agent", "dept": "Quality", "areas": "41-45", "function": "Test script reviewer for areas 41-45"}, {"name": "Sentry-Cove", "role": "Sentry Agent", "dept": "Quality", "areas": "46-50", "function": "Test script reviewer for areas 46-50"}, {"name": "Sentry-Bramble", "role": "Sentry Agent", "dept": "Quality", "areas": "51-55", "function": "Test script reviewer for areas 51-55"}, {"name": "Sentry-Talon", "role": "Sentry Agent", "dept": "Quality", "areas": "56-60", "function": "Test script reviewer for areas 56-60"}, {"name": "Sentry-Marrow", "role": "Sentry Agent", "dept": "Quality", "areas": "61-65", "function": "Test script reviewer for areas 61-65"}, {"name": "Sentry-Glade", "role": "Sentry Agent", "dept": "Quality", "areas": "66-70", "function": "Test script reviewer for areas 66-70"}, {"name": "Sentry-Heron", "role": "Sentry Agent", "dept": "Quality", "areas": "71-75", "function": "Test script reviewer for areas 71-75"}, {"name": "Sentry-Frost", "role": "Sentry Agent", "dept": "Quality", "areas": "76-80", "function": "Test script reviewer for areas 76-80"}, {"name": "Sentry-Aster", "role": "Sentry Agent", "dept": "Quality", "areas": "81-82", "function": "Test script reviewer for areas 81-82"}]}, {"name": "Scalpel-Core", "role": "Lead, E2E Tests", "dept": "Quality", "function": "Oversees Scalpel batch agents, coordinates e2e testing strategy", "children": [{"name": "Scalpel-Sage", "role": "Scalpel Agent", "dept": "Quality", "areas": "01-05", "function": "E2E test scripts for areas 01-05"}, {"name": "Scalpel-Reed", "role": "Scalpel Agent", "dept": "Quality", "areas": "06-10", "function": "E2E test scripts for areas 06-10"}, {"name": "Scalpel-Birch", "role": "Scalpel Agent", "dept": "Quality", "areas": "11-15", "function": "E2E test scripts for areas 11-15"}, {"name": "Scalpel-Cliff", "role": "Scalpel Agent", "dept": "Quality", "areas": "16-20", "function": "E2E test scripts for areas 16-20"}, {"name": "Scalpel-Moss", "role": "Scalpel Agent", "dept": "Quality", "areas": "21-25", "function": "E2E test scripts for areas 21-25"}, {"name": "Scalpel-Slate", "role": "Scalpel Agent", "dept": "Quality", "areas": "26-30", "function": "E2E test scripts for areas 26-30"}, {"name": "Scalpel-Fern", "role": "Scalpel Agent", "dept": "Quality", "areas": "31-35", "function": "E2E test scripts for areas 31-35"}, {"name": "Scalpel-Pike", "role": "Scalpel Agent", "dept": "Quality", "areas": "36-40", "function": "E2E test scripts for areas 36-40"}, {"name": "Scalpel-Wisp", "role": "Scalpel Agent", "dept": "Quality", "areas": "41-45", "function": "E2E test scripts for areas 41-45"}, {"name": "Scalpel-Cove", "role": "Scalpel Agent", "dept": "Quality", "areas": "46-50", "function": "E2E test scripts for areas 46-50"}, {"name": "Scalpel-Bramble", "role": "Scalpel Agent", "dept": "Quality", "areas": "51-55", "function": "E2E test scripts for areas 51-55"}, {"name": "Scalpel-Talon", "role": "Scalpel Agent", "dept": "Quality", "areas": "56-60", "function": "E2E test scripts for areas 56-60"}, {"name": "Scalpel-Marrow", "role": "Scalpel Agent", "dept": "Quality", "areas": "61-65", "function": "E2E test scripts for areas 61-65"}, {"name": "Scalpel-Glade", "role": "Scalpel Agent", "dept": "Quality", "areas": "66-70", "function": "E2E test scripts for areas 66-70"}, {"name": "Scalpel-Heron", "role": "Scalpel Agent", "dept": "Quality", "areas": "71-75", "function": "E2E test scripts for areas 71-75"}, {"name": "Scalpel-Frost", "role": "Scalpel Agent", "dept": "Quality", "areas": "76-80", "function": "E2E test scripts for areas 76-80"}, {"name": "Scalpel-Aster", "role": "Scalpel Agent", "dept": "Quality", "areas": "81-82", "function": "E2E test scripts for areas 81-82"}]}, {"name": "Patch-Core", "role": "Lead, Fixer", "dept": "Quality", "function": "Oversees patch operations, coordinates fix strategy"}]}, {"name": "Janus Team", "role": "Lead, Security & Compliance", "dept": "Quality", "function": "Security & compliance across all 82 areas (18 agents)", "children": [{"name": "Janus-Core", "role": "Lead, Security & Compliance", "dept": "Quality", "function": "Oversees all security operations, reports to Hermes", "children": [{"name": "Janus-Sage", "role": "Janus Agent", "dept": "Quality", "areas": "01-05", "function": "Security & compliance checks for areas 01-05"}, {"name": "Janus-Reed", "role": "Janus Agent", "dept": "Quality", "areas": "06-10", "function": "Security & compliance checks for areas 06-10"}, {"name": "Janus-Birch", "role": "Janus Agent", "dept": "Quality", "areas": "11-15", "function": "Security & compliance checks for areas 11-15"}, {"name": "Janus-Cliff", "role": "Janus Agent", "dept": "Quality", "areas": "16-20", "function": "Security & compliance checks for areas 16-20"}, {"name": "Janus-Moss", "role": "Janus Agent", "dept": "Quality", "areas": "21-25", "function": "Security & compliance checks for areas 21-25"}, {"name": "Janus-Slate", "role": "Janus Agent", "dept": "Quality", "areas": "26-30", "function": "Security & compliance checks for areas 26-30"}, {"name": "Janus-Fern", "role": "Janus Agent", "dept": "Quality", "areas": "31-35", "function": "Security & compliance checks for areas 31-35"}, {"name": "Janus-Pike", "role": "Janus Agent", "dept": "Quality", "areas": "36-40", "function": "Security & compliance checks for areas 36-40"}, {"name": "Janus-Wisp", "role": "Janus Agent", "dept": "Quality", "areas": "41-45", "function": "Security & compliance checks for areas 41-45"}, {"name": "Janus-Cove", "role": "Janus Agent", "dept": "Quality", "areas": "46-50", "function": "Security & compliance checks for areas 46-50"}, {"name": "Janus-Bramble", "role": "Janus Agent", "dept": "Quality", "areas": "51-55", "function": "Security & compliance checks for areas 51-55"}, {"name": "Janus-Talon", "role": "Janus Agent", "dept": "Quality", "areas": "56-60", "function": "Security & compliance checks for areas 56-60"}, {"name": "Janus-Marrow", "role": "Janus Agent", "dept": "Quality", "areas": "61-65", "function": "Security & compliance checks for areas 61-65"}, {"name": "Janus-Glade", "role": "Janus Agent", "dept": "Quality", "areas": "66-70", "function": "Security & compliance checks for areas 66-70"}, {"name": "Janus-Heron", "role": "Janus Agent", "dept": "Quality", "areas": "71-75", "function": "Security & compliance checks for areas 71-75"}, {"name": "Janus-Frost", "role": "Janus Agent", "dept": "Quality", "areas": "76-80", "function": "Security & compliance checks for areas 76-80"}, {"name": "Janus-Aster", "role": "Janus Agent", "dept": "Quality", "areas": "81-82", "function": "Security & compliance checks for areas 81-82"}]}]}, {"name": "Pulse Team", "role": "Lead, Bug Fixing", "dept": "Quality", "function": "Bug fixing across all 82 areas (18 agents)", "children": [{"name": "Pulse-Core", "role": "Lead, Bug Fixer", "dept": "Quality", "function": "Oversees all bug fix operations, coordinates fix strategy", "children": [{"name": "Pulse-Sage", "role": "Pulse Agent", "dept": "Quality", "areas": "01-05", "function": "Bug fixing for areas 01-05, monitors error logs"}, {"name": "Pulse-Reed", "role": "Pulse Agent", "dept": "Quality", "areas": "06-10", "function": "Bug fixing for areas 06-10, monitors error logs"}, {"name": "Pulse-Birch", "role": "Pulse Agent", "dept": "Quality", "areas": "11-15", "function": "Bug fixing for areas 11-15, monitors error logs"}, {"name": "Pulse-Cliff", "role": "Pulse Agent", "dept": "Quality", "areas": "16-20", "function": "Bug fixing for areas 16-20, monitors error logs"}, {"name": "Pulse-Moss", "role": "Pulse Agent", "dept": "Quality", "areas": "21-25", "function": "Bug fixing for areas 21-25, monitors error logs"}, {"name": "Pulse-Slate", "role": "Pulse Agent", "dept": "Quality", "areas": "26-30", "function": "Bug fixing for areas 26-30, monitors error logs"}, {"name": "Pulse-Fern", "role": "Pulse Agent", "dept": "Quality", "areas": "31-35", "function": "Bug fixing for areas 31-35, monitors error logs"}, {"name": "Pulse-Pike", "role": "Pulse Agent", "dept": "Quality", "areas": "36-40", "function": "Bug fixing for areas 36-40, monitors error logs"}, {"name": "Pulse-Wisp", "role": "Pulse Agent", "dept": "Quality", "areas": "41-45", "function": "Bug fixing for areas 41-45, monitors error logs"}, {"name": "Pulse-Cove", "role": "Pulse Agent", "dept": "Quality", "areas": "46-50", "function": "Bug fixing for areas 46-50, monitors error logs"}, {"name": "Pulse-Bramble", "role": "Pulse Agent", "dept": "Quality", "areas": "51-55", "function": "Bug fixing for areas 51-55, monitors error logs"}, {"name": "Pulse-Talon", "role": "Pulse Agent", "dept": "Quality", "areas": "56-60", "function": "Bug fixing for areas 56-60, monitors error logs"}, {"name": "Pulse-Marrow", "role": "Pulse Agent", "dept": "Quality", "areas": "61-65", "function": "Bug fixing for areas 61-65, monitors error logs"}, {"name": "Pulse-Glade", "role": "Pulse Agent", "dept": "Quality", "areas": "66-70", "function": "Bug fixing for areas 66-70, monitors error logs"}, {"name": "Pulse-Heron", "role": "Pulse Agent", "dept": "Quality", "areas": "71-75", "function": "Bug fixing for areas 71-75, monitors error logs"}, {"name": "Pulse-Frost", "role": "Pulse Agent", "dept": "Quality", "areas": "76-80", "function": "Bug fixing for areas 76-80, monitors error logs"}, {"name": "Pulse-Aster", "role": "Pulse Agent", "dept": "Quality", "areas": "81-82", "function": "Bug fixing for areas 81-82, monitors error logs"}]}]}]}, {"name": "Thoth", "role": "Documentation Director", "dept": "Documentation", "function": "Heads the Documentation department — write and maintain all guides, memory, and real-time docs (60 agents)", "children": [{"name": "Quill Team", "role": "Lead, Documentation", "dept": "Documentation", "function": "Core documentation team (5 agents)", "children": [{"name": "Quill", "role": "Lead, Documentation", "dept": "Documentation", "function": "Oversees all documentation operations"}, {"name": "Scroll", "role": "README + Changelog", "dept": "Documentation", "function": "Maintains project README and changelog"}, {"name": "Stamp", "role": "Commit Messages + Progress", "dept": "Documentation", "function": "Manages commit message standards and progress tracking"}, {"name": "Ledger", "role": "Environment Docs", "dept": "Documentation", "function": "Maintains .env.example and environment documentation"}, {"name": "Draft", "role": "Component/API Docs", "dept": "Documentation", "function": "Manages component and API documentation"}]}, {"name": "Memory Team", "role": "Project Memory", "dept": "Documentation", "function": "Tracks project memory and decisions (3 agents)", "children": [{"name": "Memory-Architecture", "role": "Architecture Memory", "dept": "Documentation", "function": "Tracks architecture changes, maintains Gen 001, Gen 002, etc."}, {"name": "Memory-Choices", "role": "Non-Standard Choices", "dept": "Documentation", "function": "Documents non-standard technical choices and decisions"}, {"name": "Memory-Forgotten", "role": "Forgotten Rules", "dept": "Documentation", "function": "Maintains system rules, 128-line compaction"}]}, {"name": "Embedded Documentation", "role": "Embedded Docs Lead", "dept": "Documentation", "function": "51 embedded doc agents across 3 departments", "children": [{"name": "Doc-Intelligence", "role": "Embedded Docs (Intelligence)", "dept": "Documentation", "function": "Real-time documentation of Intelligence team decisions (17 agents)", "children": [{"name": "Doc-Intelligence-Sage", "role": "Doc Agent", "dept": "Documentation", "areas": "01-05", "function": "Real-time documentation of Intelligence decisions for areas 01-05"}, {"name": "Doc-Intelligence-Reed", "role": "Doc Agent", "dept": "Documentation", "areas": "06-10", "function": "Real-time documentation of Intelligence decisions for areas 06-10"}, {"name": "Doc-Intelligence-Birch", "role": "Doc Agent", "dept": "Documentation", "areas": "11-15", "function": "Real-time documentation of Intelligence decisions for areas 11-15"}, {"name": "Doc-Intelligence-Cliff", "role": "Doc Agent", "dept": "Documentation", "areas": "16-20", "function": "Real-time documentation of Intelligence decisions for areas 16-20"}, {"name": "Doc-Intelligence-Moss", "role": "Doc Agent", "dept": "Documentation", "areas": "21-25", "function": "Real-time documentation of Intelligence decisions for areas 21-25"}, {"name": "Doc-Intelligence-Slate", "role": "Doc Agent", "dept": "Documentation", "areas": "26-30", "function": "Real-time documentation of Intelligence decisions for areas 26-30"}, {"name": "Doc-Intelligence-Fern", "role": "Doc Agent", "dept": "Documentation", "areas": "31-35", "function": "Real-time documentation of Intelligence decisions for areas 31-35"}, {"name": "Doc-Intelligence-Pike", "role": "Doc Agent", "dept": "Documentation", "areas": "36-40", "function": "Real-time documentation of Intelligence decisions for areas 36-40"}, {"name": "Doc-Intelligence-Wisp", "role": "Doc Agent", "dept": "Documentation", "areas": "41-45", "function": "Real-time documentation of Intelligence decisions for areas 41-45"}, {"name": "Doc-Intelligence-Cove", "role": "Doc Agent", "dept": "Documentation", "areas": "46-50", "function": "Real-time documentation of Intelligence decisions for areas 46-50"}, {"name": "Doc-Intelligence-Bramble", "role": "Doc Agent", "dept": "Documentation", "areas": "51-55", "function": "Real-time documentation of Intelligence decisions for areas 51-55"}, {"name": "Doc-Intelligence-Talon", "role": "Doc Agent", "dept": "Documentation", "areas": "56-60", "function": "Real-time documentation of Intelligence decisions for areas 56-60"}, {"name": "Doc-Intelligence-Marrow", "role": "Doc Agent", "dept": "Documentation", "areas": "61-65", "function": "Real-time documentation of Intelligence decisions for areas 61-65"}, {"name": "Doc-Intelligence-Glade", "role": "Doc Agent", "dept": "Documentation", "areas": "66-70", "function": "Real-time documentation of Intelligence decisions for areas 66-70"}, {"name": "Doc-Intelligence-Heron", "role": "Doc Agent", "dept": "Documentation", "areas": "71-75", "function": "Real-time documentation of Intelligence decisions for areas 71-75"}, {"name": "Doc-Intelligence-Frost", "role": "Doc Agent", "dept": "Documentation", "areas": "76-80", "function": "Real-time documentation of Intelligence decisions for areas 76-80"}, {"name": "Doc-Intelligence-Aster", "role": "Doc Agent", "dept": "Documentation", "areas": "81-82", "function": "Real-time documentation of Intelligence decisions for areas 81-82"}]}, {"name": "Doc-Build", "role": "Embedded Docs (Build)", "dept": "Documentation", "function": "Real-time documentation of Build team decisions (17 agents)", "children": [{"name": "Doc-Build-Sage", "role": "Doc Agent", "dept": "Documentation", "areas": "01-05", "function": "Real-time documentation of Build decisions for areas 01-05"}, {"name": "Doc-Build-Reed", "role": "Doc Agent", "dept": "Documentation", "areas": "06-10", "function": "Real-time documentation of Build decisions for areas 06-10"}, {"name": "Doc-Build-Birch", "role": "Doc Agent", "dept": "Documentation", "areas": "11-15", "function": "Real-time documentation of Build decisions for areas 11-15"}, {"name": "Doc-Build-Cliff", "role": "Doc Agent", "dept": "Documentation", "areas": "16-20", "function": "Real-time documentation of Build decisions for areas 16-20"}, {"name": "Doc-Build-Moss", "role": "Doc Agent", "dept": "Documentation", "areas": "21-25", "function": "Real-time documentation of Build decisions for areas 21-25"}, {"name": "Doc-Build-Slate", "role": "Doc Agent", "dept": "Documentation", "areas": "26-30", "function": "Real-time documentation of Build decisions for areas 26-30"}, {"name": "Doc-Build-Fern", "role": "Doc Agent", "dept": "Documentation", "areas": "31-35", "function": "Real-time documentation of Build decisions for areas 31-35"}, {"name": "Doc-Build-Pike", "role": "Doc Agent", "dept": "Documentation", "areas": "36-40", "function": "Real-time documentation of Build decisions for areas 36-40"}, {"name": "Doc-Build-Wisp", "role": "Doc Agent", "dept": "Documentation", "areas": "41-45", "function": "Real-time documentation of Build decisions for areas 41-45"}, {"name": "Doc-Build-Cove", "role": "Doc Agent", "dept": "Documentation", "areas": "46-50", "function": "Real-time documentation of Build decisions for areas 46-50"}, {"name": "Doc-Build-Bramble", "role": "Doc Agent", "dept": "Documentation", "areas": "51-55", "function": "Real-time documentation of Build decisions for areas 51-55"}, {"name": "Doc-Build-Talon", "role": "Doc Agent", "dept": "Documentation", "areas": "56-60", "function": "Real-time documentation of Build decisions for areas 56-60"}, {"name": "Doc-Build-Marrow", "role": "Doc Agent", "dept": "Documentation", "areas": "61-65", "function": "Real-time documentation of Build decisions for areas 61-65"}, {"name": "Doc-Build-Glade", "role": "Doc Agent", "dept": "Documentation", "areas": "66-70", "function": "Real-time documentation of Build decisions for areas 66-70"}, {"name": "Doc-Build-Heron", "role": "Doc Agent", "dept": "Documentation", "areas": "71-75", "function": "Real-time documentation of Build decisions for areas 71-75"}, {"name": "Doc-Build-Frost", "role": "Doc Agent", "dept": "Documentation", "areas": "76-80", "function": "Real-time documentation of Build decisions for areas 76-80"}, {"name": "Doc-Build-Aster", "role": "Doc Agent", "dept": "Documentation", "areas": "81-82", "function": "Real-time documentation of Build decisions for areas 81-82"}]}, {"name": "Doc-Quality", "role": "Embedded Docs (Quality)", "dept": "Documentation", "function": "Real-time documentation of Quality team decisions (17 agents)", "children": [{"name": "Doc-Quality-Sage", "role": "Doc Agent", "dept": "Documentation", "areas": "01-05", "function": "Real-time documentation of Quality decisions for areas 01-05"}, {"name": "Doc-Quality-Reed", "role": "Doc Agent", "dept": "Documentation", "areas": "06-10", "function": "Real-time documentation of Quality decisions for areas 06-10"}, {"name": "Doc-Quality-Birch", "role": "Doc Agent", "dept": "Documentation", "areas": "11-15", "function": "Real-time documentation of Quality decisions for areas 11-15"}, {"name": "Doc-Quality-Cliff", "role": "Doc Agent", "dept": "Documentation", "areas": "16-20", "function": "Real-time documentation of Quality decisions for areas 16-20"}, {"name": "Doc-Quality-Moss", "role": "Doc Agent", "dept": "Documentation", "areas": "21-25", "function": "Real-time documentation of Quality decisions for areas 21-25"}, {"name": "Doc-Quality-Slate", "role": "Doc Agent", "dept": "Documentation", "areas": "26-30", "function": "Real-time documentation of Quality decisions for areas 26-30"}, {"name": "Doc-Quality-Fern", "role": "Doc Agent", "dept": "Documentation", "areas": "31-35", "function": "Real-time documentation of Quality decisions for areas 31-35"}, {"name": "Doc-Quality-Pike", "role": "Doc Agent", "dept": "Documentation", "areas": "36-40", "function": "Real-time documentation of Quality decisions for areas 36-40"}, {"name": "Doc-Quality-Wisp", "role": "Doc Agent", "dept": "Documentation", "areas": "41-45", "function": "Real-time documentation of Quality decisions for areas 41-45"}, {"name": "Doc-Quality-Cove", "role": "Doc Agent", "dept": "Documentation", "areas": "46-50", "function": "Real-time documentation of Quality decisions for areas 46-50"}, {"name": "Doc-Quality-Bramble", "role": "Doc Agent", "dept": "Documentation", "areas": "51-55", "function": "Real-time documentation of Quality decisions for areas 51-55"}, {"name": "Doc-Quality-Talon", "role": "Doc Agent", "dept": "Documentation", "areas": "56-60", "function": "Real-time documentation of Quality decisions for areas 56-60"}, {"name": "Doc-Quality-Marrow", "role": "Doc Agent", "dept": "Documentation", "areas": "61-65", "function": "Real-time documentation of Quality decisions for areas 61-65"}, {"name": "Doc-Quality-Glade", "role": "Doc Agent", "dept": "Documentation", "areas": "66-70", "function": "Real-time documentation of Quality decisions for areas 66-70"}, {"name": "Doc-Quality-Heron", "role": "Doc Agent", "dept": "Documentation", "areas": "71-75", "function": "Real-time documentation of Quality decisions for areas 71-75"}, {"name": "Doc-Quality-Frost", "role": "Doc Agent", "dept": "Documentation", "areas": "76-80", "function": "Real-time documentation of Quality decisions for areas 76-80"}, {"name": "Doc-Quality-Aster", "role": "Doc Agent", "dept": "Documentation", "areas": "81-82", "function": "Real-time documentation of Quality decisions for areas 81-82"}]}]}]}]};
+
+// ── Department colors ──
+const deptColors = {
+  Executive: "#A78BFA",
+  HR: "#22D3EE",
+  Intelligence: "#60A5FA",
+  Build: "#34D399",
+  Quality: "#FB7185",
+  Documentation: "#FBBF24",
+};
+
+// ── Build parent map and count ──
+const parentMap = {};
+let totalAgents = 0;
+(function buildParentMap(node, parent = null) {
+  parentMap[node.name] = parent;
+  if (!node.children || node.children.length === 0) totalAgents++;
+  if (node.children) {
+    node.children.forEach(c => buildParentMap(c, node));
+  }
+})(treeData);
+
+// Count ALL nodes (internal + leaf)
+function countAll(node) {
+  let n = 1;
+  if (node.children) node.children.forEach(c => n += countAll(c));
+  return n;
+}
+const allNodes = countAll(treeData);
+document.getElementById('stats').textContent = allNodes + ' agents';
+
+// ── Set up SVG ──
+const container = document.getElementById('chart-container');
+const width = container.clientWidth;
+const height = container.clientHeight;
+
+const svg = d3.select('#chart');
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom()
+  .scaleExtent([0.1, 3])
+  .on('zoom', (event) => g.attr('transform', event.transform));
+svg.call(zoom);
+
+// ── Tree layout ──
+const root = d3.hierarchy(treeData);
+root.x0 = height / 2;
+root.y0 = 0;
+
+// Collapse all initially except first 2 levels
+root.descendants().forEach((d, i) => {
+  if (d.depth > 1 && d.children) {
+    d._children = d.children;
+    d.children = null;
+  }
+});
+
+const treeLayout = d3.tree().nodeSize([22, 220]);
+
+let i = 0;
+const duration = 400;
+
+function update(source) {
+  treeLayout(root);
+  const nodes = root.descendants();
+  const links = root.links();
+
+  // ── Nodes ──
+  const node = g.selectAll('g.node')
+    .data(nodes, d => d.id || (d.id = ++i));
+
+  const nodeEnter = node.enter().append('g')
+    .attr('class', d => 'node dept-' + (d.data.dept || 'Unknown') +
+                        (d._children ? ' collapsed' : ''))
+    .attr('transform', d => `translate(${source.y0},${source.x0})`)
+    .on('click', (event, d) => {
+      event.stopPropagation();
+      toggle(d);
+      update(d);
+      showInfo(d);
+    })
+    .on('mouseenter', (event, d) => {
+      d3.select(event.currentTarget).classed('highlighted', true);
+    })
+    .on('mouseleave', (event, d) => {
+      d3.select(event.currentTarget).classed('highlighted', false);
+    });
+
+  nodeEnter.append('circle')
+    .attr('r', d => d.depth === 0 ? 10 : d.depth === 1 ? 8 : d.depth === 2 ? 6 : 4)
+    .style('fill-opacity', d => d._children ? 0.3 : 1);
+
+  nodeEnter.append('text')
+    .attr('dy', '0.31em')
+    .attr('x', d => (d._children || d.children) ? 12 : 8)
+    .attr('text-anchor', 'start')
+    .text(d => d.data.name)
+    .style('fill-opacity', 0)
+    .style('font-weight', d => d.depth <= 2 ? 600 : 400)
+    .style('font-size', d => d.depth === 0 ? '14px' : d.depth === 1 ? '12px' : '11px');
+
+  // Update
+  const nodeUpdate = nodeEnter.merge(node);
+  nodeUpdate.transition().duration(duration)
+    .attr('transform', d => `translate(${d.y},${d.x})`);
+  nodeUpdate.select('circle')
+    .attr('r', d => d.depth === 0 ? 10 : d.depth === 1 ? 8 : d.depth === 2 ? 6 : 4)
+    .style('fill-opacity', d => d._children ? 0.3 : 1);
+  nodeUpdate.select('text')
+    .transition().duration(duration)
+    .style('fill-opacity', 1)
+    .style('font-weight', d => d.depth <= 2 ? 600 : 400);
+
+  // Exit
+  const nodeExit = node.exit().transition().duration(duration)
+    .attr('transform', d => `translate(${source.y},${source.x})`)
+    .remove();
+  nodeExit.select('circle').attr('r', 1e-6);
+  nodeExit.select('text').style('fill-opacity', 1e-6);
+
+  // ── Links ──
+  const link = g.selectAll('path.link')
+    .data(links, d => d.target.id);
+
+  const linkEnter = link.enter().insert('path', 'g')
+    .attr('class', 'link')
+    .attr('d', d => {
+      const o = { x: source.x0, y: source.y0 };
+      return diagonal(o, o);
+    });
+
+  linkEnter.merge(link).transition().duration(duration)
+    .attr('d', d => diagonal(d.source, d.target));
+
+  link.exit().transition().duration(duration)
+    .attr('d', d => {
+      const o = { x: source.x, y: source.y };
+      return diagonal(o, o);
+    })
+    .remove();
+
+  // Save positions
+  root.eachBefore(d => {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+function diagonal(s, t) {
+  return `M${s.y},${s.x}
+          C${(s.y + t.y) / 2},${s.x}
+           ${(s.y + t.y) / 2},${t.x}
+           ${t.y},${t.x}`;
+}
+
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else if (d._children) {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+// ── Info panel ──
+function showInfo(d) {
+  const panel = document.getElementById('info-panel');
+  document.getElementById('info-name').textContent = d.data.name;
+  document.getElementById('info-role').textContent = d.data.role || '—';
+  document.getElementById('info-dept').textContent = d.data.dept || '—';
+
+  const areasField = document.getElementById('info-areas-field');
+  if (d.data.areas) {
+    areasField.style.display = 'block';
+    document.getElementById('info-areas').textContent = d.data.areas;
+  } else {
+    areasField.style.display = 'none';
+  }
+
+  document.getElementById('info-function').textContent = d.data.function || '—';
+
+  const parent = parentMap[d.data.name];
+  const reportsField = document.getElementById('info-reports-field');
+  if (parent) {
+    reportsField.style.display = 'block';
+    document.getElementById('info-reports').textContent = parent.name + ' (' + parent.role + ')';
+  } else {
+    reportsField.style.display = 'none';
+  }
+
+  const managesField = document.getElementById('info-manages-field');
+  const children = d.data.children || d.data._children;
+  if (children && children.length > 0) {
+    managesField.style.display = 'block';
+    const names = children.slice(0, 8).map(c => c.name).join(', ');
+    const extra = children.length > 8 ? ` ... +${children.length - 8} more` : '';
+    document.getElementById('info-manages').textContent =
+      `${children.length} direct reports: ${names}${extra}`;
+  } else {
+    managesField.style.display = 'none';
+  }
+
+  panel.classList.add('visible');
+}
+
+function closeInfo() {
+  document.getElementById('info-panel').classList.remove('visible');
+}
+
+// ── Controls ──
+function expandAll() {
+  root.descendants().forEach(d => {
+    if (d._children) { d.children = d._children; d._children = null; }
+  });
+  update(root);
+}
+
+function collapseAll() {
+  root.descendants().forEach(d => {
+    if (d.depth > 1 && d.children) {
+      d._children = d.children;
+      d.children = null;
+    }
+  });
+  update(root);
+}
+
+function resetView() {
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+}
+
+function zoomIn() {
+  svg.transition().duration(200).call(zoom.scaleBy, 1.3);
+}
+function zoomOut() {
+  svg.transition().duration(200).call(zoom.scaleBy, 1 / 1.3);
+}
+
+// ── Search ──
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLowerCase();
+  d3.selectAll('.node').classed('search-match', false);
+
+  if (!query) return;
+
+  // Find matching nodes
+  const matches = root.descendants().filter(d =>
+    d.data.name.toLowerCase().includes(query) ||
+    (d.data.role && d.data.role.toLowerCase().includes(query)) ||
+    (d.data.dept && d.data.dept.toLowerCase().includes(query))
+  );
+
+  // Expand path to matches
+  matches.forEach(m => {
+    let parent = m.parent;
+    while (parent) {
+      if (parent._children) {
+        parent.children = parent._children;
+        parent._children = null;
+      }
+      parent = parent.parent;
+    }
+  });
+  update(root);
+
+  // Highlight matches
+  d3.selectAll('.node').each(function(d) {
+    if (matches.includes(d)) {
+      d3.select(this).classed('search-match', true);
+    }
+  });
+});
+
+// Click background to close info
+svg.on('click', () => closeInfo());
+
+// ── Initial render ──
+update(root);
+
+// Center the tree initially
+setTimeout(() => {
+  const bbox = g.node().getBBox();
+  const scale = Math.min(width / (bbox.width + 100), height / (bbox.height + 100), 1);
+  const tx = (width - bbox.width * scale) / 2 - bbox.x * scale;
+  const ty = (height - bbox.height * scale) / 2 - bbox.y * scale + 30;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+}, 100);
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  // SVG is 100% so it auto-resizes; no action needed
+});
+</script>
+
+</body>
+</html>
