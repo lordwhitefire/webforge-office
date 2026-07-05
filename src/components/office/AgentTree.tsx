@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 // ── Types ──
 
 interface AgentStateInfo {
-  state: string; // idle, active, waiting, sleeping, no_response
+  state: string;
   task: string | null;
   retries: number;
   watching: Array<{ name: string; taskId?: string; retries: number }>;
@@ -25,57 +25,6 @@ interface AgentNode {
   roleTier: string;
   subordinates: string[];
 }
-
-// ── Hierarchy (embedded — matches agents.json) ──
-
-const HIERARCHY: Record<string, AgentNode> = {
-  CEO: { name: "CEO", title: "Chief Executive Officer", department: "executive", roleTier: "director", subordinates: ["Hermes"] },
-  Hermes: { name: "Hermes", title: "COO / Coordinator", department: "executive", roleTier: "director", subordinates: ["Athena", "Hephaestus", "Minos", "Thoth", "Voss", "Daedalus"] },
-  Hephaestus: { name: "Hephaestus", title: "Build Director", department: "build", roleTier: "director", subordinates: ["Aurora", "Titan", "Zephyr"] },
-  Athena: { name: "Athena", title: "Intelligence Director", department: "intelligence", roleTier: "director", subordinates: ["Probe-Lead", "Odin-Lead", "Dorian"] },
-  Minos: { name: "Minos", title: "Quality Director", department: "quality", roleTier: "director", subordinates: ["Verdict-Brook", "Scalpel-Core", "Janus-Core", "Pulse-Core", "Sentry-Core", "Pixel-Core"] },
-  Thoth: { name: "Thoth", title: "Documentation Director", department: "documentation", roleTier: "director", subordinates: ["Quill", "Scroll", "Stamp", "Ledger", "Draft"] },
-  Voss: { name: "Voss", title: "HR Director", department: "hr", roleTier: "director", subordinates: ["Rook", "Weld"] },
-  Daedalus: { name: "Daedalus", title: "Meta Engineering Director", department: "meta", roleTier: "director", subordinates: ["Forge", "Anvil", "Loom", "Compass"] },
-  Aurora: { name: "Aurora", title: "Frontend Lead", department: "build", roleTier: "lead", subordinates: ["Lead-Faro"] },
-  Titan: { name: "Titan", title: "Backend Lead", department: "build", roleTier: "lead", subordinates: ["Lead-Terra"] },
-  Zephyr: { name: "Zephyr", title: "DB/Infra Lead", department: "build", roleTier: "lead", subordinates: ["Lead-Zen"] },
-  "Lead-Faro": { name: "Lead-Faro", title: "Frontend Tech Lead", department: "build", roleTier: "lead", subordinates: ["Sr-Hale", "Sr-Vance", "Sr-Brook", "Sr-Quill2"] },
-  "Lead-Terra": { name: "Lead-Terra", title: "Backend Tech Lead", department: "build", roleTier: "lead", subordinates: ["Sr-Stone", "Sr-Iron", "Sr-Earth", "Sr-Cloud"] },
-  "Lead-Zen": { name: "Lead-Zen", title: "DB/Infra Tech Lead", department: "build", roleTier: "lead", subordinates: ["Sr-Water", "Sr-Wood", "Sr-Fire", "Sr-Steel"] },
-  "Sr-Hale": { name: "Sr-Hale", title: "Senior Frontend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Hawk", "Jr-Finch", "Jr-Wisp", "Jr-Cole", "Jr-Reed"] },
-  "Sr-Vance": { name: "Sr-Vance", title: "Senior Frontend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Sage", "Jr-Birch", "Jr-Pike", "Jr-Moss"] },
-  "Sr-Brook": { name: "Sr-Brook", title: "Senior Frontend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Cliff", "Jr-Fern", "Jr-Slate", "Jr-Wren"] },
-  "Sr-Quill2": { name: "Sr-Quill2", title: "Senior Frontend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Cove", "Jr-Bram", "Jr-Talon", "Jr-Aster"] },
-  "Sr-Stone": { name: "Sr-Stone", title: "Senior Backend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Granite", "Jr-Slate", "Jr-Marble", "Jr-Quartz"] },
-  "Sr-Iron": { name: "Sr-Iron", title: "Senior Backend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Copper", "Jr-Bronze", "Jr-Silver", "Jr-Gold"] },
-  "Sr-Earth": { name: "Sr-Earth", title: "Senior Backend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Oak", "Jr-Pine", "Jr-Cedar", "Jr-Birch"] },
-  "Sr-Cloud": { name: "Sr-Cloud", title: "Senior Backend Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Titan", "Jr-Vanadium", "Jr-Chromium", "Jr-Nickel", "Jr-Cobalt"] },
-  "Sr-Water": { name: "Sr-Water", title: "Senior DB/Infra Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Ash", "Jr-Nickel"] },
-  "Sr-Wood": { name: "Sr-Wood", title: "Senior DB/Infra Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Coal"] },
-  "Sr-Fire": { name: "Sr-Fire", title: "Senior DB/Infra Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Ember"] },
-  "Sr-Steel": { name: "Sr-Steel", title: "Senior DB/Infra Developer", department: "build", roleTier: "lead", subordinates: ["Jr-Flame"] },
-  "Probe-Lead": { name: "Probe-Lead", title: "Probe Team Lead", department: "intelligence", roleTier: "lead", subordinates: [] },
-  "Odin-Lead": { name: "Odin-Lead", title: "Odin Team Lead", department: "intelligence", roleTier: "lead", subordinates: [] },
-  Dorian: { name: "Dorian", title: "UI/UX Researcher", department: "intelligence", roleTier: "worker", subordinates: [] },
-  Quill: { name: "Quill", title: "Documentation Writer", department: "documentation", roleTier: "worker", subordinates: [] },
-  Scroll: { name: "Scroll", title: "Real-time Documenter", department: "documentation", roleTier: "worker", subordinates: [] },
-  Stamp: { name: "Stamp", title: "Git Committer", department: "documentation", roleTier: "worker", subordinates: [] },
-  Ledger: { name: "Ledger", title: "Decision Recorder", department: "documentation", roleTier: "worker", subordinates: [] },
-  Draft: { name: "Draft", title: "Documentation Drafter", department: "documentation", roleTier: "worker", subordinates: [] },
-  Rook: { name: "Rook", title: "Registry Manager", department: "hr", roleTier: "worker", subordinates: [] },
-  Weld: { name: "Weld", title: "Assignment Officer", department: "hr", roleTier: "worker", subordinates: [] },
-  Forge: { name: "Forge", title: "MCP Builder", department: "meta", roleTier: "worker", subordinates: [] },
-  Anvil: { name: "Anvil", title: "MCP Fixer", department: "meta", roleTier: "worker", subordinates: [] },
-  Loom: { name: "Loom", title: "Agent Creator", department: "meta", roleTier: "worker", subordinates: [] },
-  Compass: { name: "Compass", title: "System Tester", department: "meta", roleTier: "worker", subordinates: [] },
-  "Scalpel-Core": { name: "Scalpel-Core", title: "Code Review Lead", department: "quality", roleTier: "lead", subordinates: [] },
-  "Janus-Core": { name: "Janus-Core", title: "Compliance Lead", department: "quality", roleTier: "lead", subordinates: [] },
-  "Pulse-Core": { name: "Pulse-Core", title: "Testing Lead", department: "quality", roleTier: "lead", subordinates: [] },
-  "Sentry-Core": { name: "Sentry-Core", title: "Security Lead", department: "quality", roleTier: "lead", subordinates: [] },
-  "Pixel-Core": { name: "Pixel-Core", title: "Visual Testing Lead", department: "quality", roleTier: "lead", subordinates: [] },
-  "Verdict-Brook": { name: "Verdict-Brook", title: "Standards Compliance", department: "quality", roleTier: "worker", subordinates: [] },
-};
 
 // ── State icons ──
 
@@ -92,8 +41,29 @@ const STATE_CONFIG: Record<string, { icon: typeof Circle; color: string; label: 
 
 export function AgentTree() {
   const [states, setStates] = useState<Record<string, AgentStateInfo>>({});
+  const [hierarchy, setHierarchy] = useState<Record<string, AgentNode>>({});
   const [expanded, setExpanded] = useState<Set<string>>(new Set(["CEO", "Hermes", "Hephaestus"]));
   const [lastUpdate, setLastUpdate] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  // Load hierarchy once
+  useEffect(() => {
+    fetch("/api/agent/hierarchy", { cache: "no-store" })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok && data.hierarchy) {
+          setHierarchy(data.hierarchy);
+          // Auto-expand CEO, Hermes, and any director that has active children
+          const initial = new Set(["CEO", "Hermes"]);
+          for (const [name, node] of Object.entries(data.hierarchy as Record<string, AgentNode>)) {
+            if (node.roleTier === "director") initial.add(name);
+          }
+          setExpanded(initial);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   // Poll for states every 2 seconds
   const poll = useCallback(async () => {
@@ -130,6 +100,14 @@ export function AgentTree() {
   const sleepingCount = Object.values(states).filter(s => s.state === "sleeping").length;
   const noResponseCount = Object.values(states).filter(s => s.state === "no_response").length;
 
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/40">
+        <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/40">
       {/* Header */}
@@ -137,7 +115,7 @@ export function AgentTree() {
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-bold text-slate-200">Agent Tree</h3>
           <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400">
-            {Object.keys(states).length} active
+            {Object.keys(hierarchy).length} agents
           </span>
         </div>
         <div className="flex items-center gap-2 text-[10px]">
@@ -155,6 +133,7 @@ export function AgentTree() {
         <TreeNode
           name="CEO"
           depth={0}
+          hierarchy={hierarchy}
           states={states}
           expanded={expanded}
           onToggle={toggleExpand}
@@ -184,17 +163,19 @@ export function AgentTree() {
 function TreeNode({
   name,
   depth,
+  hierarchy,
   states,
   expanded,
   onToggle,
 }: {
   name: string;
   depth: number;
+  hierarchy: Record<string, AgentNode>;
   states: Record<string, AgentStateInfo>;
   expanded: Set<string>;
   onToggle: (name: string) => void;
 }) {
-  const node = HIERARCHY[name];
+  const node = hierarchy[name];
   if (!node) return null;
 
   const stateInfo = states[name];
@@ -204,11 +185,14 @@ function TreeNode({
   const hasChildren = node.subordinates.length > 0;
   const isExpanded = expanded.has(name);
 
-  // Check if any child is active (auto-expand)
+  // Check if any child is active (auto-expand indicator)
   const childActive = node.subordinates.some(childName => {
     const childState = states[childName]?.state;
     return childState === "active" || childState === "waiting" || childState === "no_response";
   });
+
+  // For deep trees, limit display of titles
+  const showTitle = depth <= 3;
 
   return (
     <div>
@@ -217,20 +201,20 @@ function TreeNode({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors",
+          "flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors cursor-pointer",
           stateCfg.bg,
           "hover:bg-slate-800/50"
         )}
-        style={{ marginLeft: `${depth * 16}px` }}
+        style={{ marginLeft: `${Math.min(depth * 16, 200)}px` }}
         onClick={() => hasChildren && onToggle(name)}
       >
         {/* Expand/collapse */}
         {hasChildren ? (
-          <button className="text-slate-500 hover:text-slate-300">
+          <button className="text-slate-500 hover:text-slate-300 shrink-0">
             {isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
           </button>
         ) : (
-          <div className="w-3" />
+          <div className="w-3 shrink-0" />
         )}
 
         {/* State icon */}
@@ -250,7 +234,7 @@ function TreeNode({
           )}>
             {name}
           </span>
-          {depth <= 2 && (
+          {showTitle && (
             <span className="text-[9px] text-slate-600 truncate hidden sm:inline">
               {node.title}
             </span>
@@ -259,7 +243,7 @@ function TreeNode({
 
         {/* Watching info */}
         {stateInfo?.watching && stateInfo.watching.length > 0 && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             {stateInfo.watching.map((w, i) => (
               <span
                 key={i}
@@ -279,13 +263,13 @@ function TreeNode({
 
         {/* Task badge */}
         {stateInfo?.task && (
-          <span className="rounded-full bg-slate-700/50 px-1.5 py-0.5 text-[8px] font-mono text-slate-400">
+          <span className="rounded-full bg-slate-700/50 px-1.5 py-0.5 text-[8px] font-mono text-slate-400 shrink-0">
             {stateInfo.task}
           </span>
         )}
 
         {/* State label */}
-        <span className={cn("text-[8px] font-medium uppercase tracking-wide", stateCfg.color)}>
+        <span className={cn("text-[8px] font-medium uppercase tracking-wide shrink-0", stateCfg.color)}>
           {stateCfg.label}
         </span>
       </motion.div>
@@ -305,6 +289,7 @@ function TreeNode({
                 key={childName}
                 name={childName}
                 depth={depth + 1}
+                hierarchy={hierarchy}
                 states={states}
                 expanded={expanded}
                 onToggle={onToggle}
