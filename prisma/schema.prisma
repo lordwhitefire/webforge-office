@@ -114,16 +114,17 @@ model Decision {
   @@index([taskId])
 }
 
-// ── Agent States (real-time tracking for UI) ──
+// ── Agent States (real-time tracking for UI + watchdog) ──
 
 model AgentState {
-  agent      String   @id
-  state      String   @default("idle") // idle, active, waiting, sleeping, no_response
-  task       String?  // current task ID being worked on
-  retries    Int      @default(0) // check-in retry count for subordinates
-  watching   String?  // JSON array of subordinates being watched
-  lastActive DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  agent        String   @id
+  state        String   @default("idle") // idle, active, waiting, sleeping, no_response
+  task         String?  // current task ID being worked on
+  retries      Int      @default(0) // check-in retry count for current subordinate
+  watching     String?  // JSON array of subordinates being watched [{name, taskId, retries, lastCheckin}]
+  lastActive   DateTime @default(now())
+  lastCheckin  DateTime? // last time this agent was checked on by its superior
+  updatedAt    DateTime @updatedAt
 }
 
 // ── Sequence Counters (atomic ID generation) ──

@@ -75,6 +75,9 @@ export interface RuntimeResult {
 
 // ── Agent state tracking ──
 
+const CHECKIN_INTERVAL_MS = parseInt(process.env.CHECKIN_INTERVAL_MS || "180000"); // 3 min default, override for testing
+const MAX_RETRIES = 5; // 5 retries before reporting failure
+
 async function setAgentState(agent: string, state: string, task?: string) {
   console.log(`[State] ${agent} → ${state}${task ? ` (task: ${task})` : ""}`);
   await prisma.agentState.upsert({
@@ -87,6 +90,116 @@ async function setAgentState(agent: string, state: string, task?: string) {
 async function getAgentState(agent: string): Promise<string> {
   const record = await prisma.agentState.findUnique({ where: { agent } });
   return record?.state || "idle";
+}
+
+async function updateLastCheckin(agent: string) {
+  await prisma.agentState.update({
+    where: { agent },
+    data: { lastCheckin: new Date() },
+  });
+}
+
+async function setAgentWatching(agent: string, watching: Array<{name: string; taskId?: string; retries: number}>) {
+  await prisma.agentState.update({
+    where: { agent },
+    data: { watching: JSON.stringify(watching) },
+  });
+}
+
+async function getAgentWatching(agent: string): Promise<Array<{name: string; taskId?: string; retries: number}>> {
+  const record = await prisma.agentState.findUnique({ where: { agent } });
+  if (!record?.watching) return [];
+  try {
+    return JSON.parse(record.watching);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Watchdog — monitors a subordinate while the parent is waiting.
+ *
+ * Every CHECKIN_INTERVAL_MS (3 min), checks if the subordinate has responded.
+ * After MAX_RETRIES (5) with no response, reports failure.
+ *
+ * Returns:
+ *   - "done" if the subordinate's state becomes "sleeping" (finished)
+ *   - "no_response" after MAX_RETRIES failed check-ins
+ *   - Never returns "working" — it keeps looping until done or no_response
+ */
+async function watchSubordinate(
+  parentName: string,
+  subagentName: string,
+  subagentPromise: Promise<RuntimeResult>,
+): Promise<{ status: "done"; result: RuntimeResult } | { status: "no_response"; retries: number }> {
+  let retries = 0;
+
+  // Start the check-in loop
+  const checkinLoop = new Promise<{ status: "no_response"; retries: number }>(async (resolve) => {
+    while (retries < MAX_RETRIES) {
+      // Wait 3 minutes
+      await new Promise(r => setTimeout(r, CHECKIN_INTERVAL_MS));
+
+      // Check subordinate's state
+      const state = await getAgentState(subagentName);
+      console.log(`[Watchdog] ${parentName} checks ${subagentName}: state=${state}, retry ${retries + 1}/${MAX_RETRIES}`);
+
+      if (state === "sleeping" || state === "idle") {
+        // Subordinate finished — don't report no_response
+        return; // loop exits, subagentPromise will resolve
+      }
+
+      retries++;
+      // Update watching list with retry count
+      const watching = await getAgentWatching(parentName);
+      const updated = watching.map(w =>
+        w.name === subagentName ? { ...w, retries } : w
+      );
+      await setAgentWatching(parentName, updated);
+
+      // Send a check-in mailbox message
+      try {
+        const msgId = await nextId("msg");
+        await prisma.message.create({
+          data: {
+            id: msgId,
+            fromAgent: parentName,
+            toAgent: subagentName,
+            type: "QUESTION",
+            subject: `Check-in ${retries}/${MAX_RETRIES}: Are you done?`,
+            body: `This is check-in #${retries} of ${MAX_RETRIES}. Please respond with your status.`,
+            status: "unread",
+          },
+        });
+        console.log(`[Watchdog] ${parentName} → ${subagentName}: check-in ${retries}/${MAX_RETRIES}`);
+      } catch {}
+
+      if (retries >= MAX_RETRIES) {
+        console.log(`[Watchdog] ${parentName}: ${subagentName} NOT RESPONDING after ${MAX_RETRIES} retries`);
+        // Mark subordinate as no_response
+        await setAgentState(subagentName, "no_response");
+        resolve({ status: "no_response", retries });
+        return;
+      }
+    }
+  });
+
+  // Race: subagent completes vs watchdog times out
+  try {
+    const result = await Promise.race([
+      subagentPromise.then(r => ({ status: "done" as const, result: r })),
+      checkinLoop,
+    ]);
+
+    if (result.status === "done") {
+      return result;
+    } else {
+      return result; // no_response
+    }
+  } catch (e: any) {
+    // Subagent threw an error
+    return { status: "no_response", retries: MAX_RETRIES };
+  }
 }
 
 // ── API key ──
@@ -352,17 +465,31 @@ function buildToolDefs(config: AgentConfig): Record<string, ToolDef> {
         console.log(`[Delegate] ${config.name} → ${subagentName}: ${input.description}`);
         console.log(`[Delegate]   Prompt: ${input.prompt.slice(0, 120)}...`);
 
-        // PARENT LOOP PAUSES HERE — subagent runs SYNCHRONOUSLY
-        setAgentState(config.name, "waiting", input.taskId);
+        // PARENT LOOP PAUSES HERE — set state to waiting
+        await setAgentState(config.name, "waiting", input.taskId);
 
-        try {
-          const subResult = await agentLoop(subagentName, input.prompt);
+        // Add subordinate to watching list
+        const watching = await getAgentWatching(config.name);
+        watching.push({ name: subagentName, taskId: input.taskId, retries: 0 });
+        await setAgentWatching(config.name, watching);
 
-          // PARENT RESUMES — subagent's result is the tool result
-          setAgentState(config.name, "active", input.taskId);
+        // Start subagent loop (returns a promise)
+        const subagentPromise = agentLoop(subagentName, input.prompt);
 
+        // Run watchdog concurrently — checks every 3 min, 5 retries max
+        const watchResult = await watchSubordinate(config.name, subagentName, subagentPromise);
+
+        // Remove subordinate from watching list
+        const updatedWatching = (await getAgentWatching(config.name))
+          .filter(w => w.name !== subagentName);
+        await setAgentWatching(config.name, updatedWatching);
+
+        // PARENT RESUMES
+        await setAgentState(config.name, "active", input.taskId);
+
+        if (watchResult.status === "done") {
+          const subResult = watchResult.result;
           console.log(`[Delegate] ${subagentName} → ${config.name}: result received (${subResult.text.slice(0, 100)}...)`);
-
           return {
             ok: true,
             agent: subagentName,
@@ -370,13 +497,14 @@ function buildToolDefs(config: AgentConfig): Record<string, ToolDef> {
             toolCalls: subResult.toolCalls.length,
             output: `<task agent="${subagentName}" state="completed">\n${subResult.text}\n</task>`,
           };
-        } catch (e: any) {
-          setAgentState(config.name, "active", input.taskId);
-          console.error(`[Delegate] ${subagentName} FAILED: ${e.message}`);
+        } else {
+          // Subordinate didn't respond after 5 retries
+          console.log(`[Delegate] ${subagentName} → ${config.name}: NO RESPONSE after ${watchResult.retries} retries`);
           return {
             ok: false,
-            error: `${subagentName} failed: ${e.message}`,
-            output: `<task agent="${subagentName}" state="error">\n${e.message}\n</task>`,
+            agent: subagentName,
+            error: `${subagentName} did not respond after ${watchResult.retries} check-ins (15 minutes).`,
+            output: `<task agent="${subagentName}" state="no_response">\n${subagentName} did not respond after ${watchResult.retries} check-ins.\n</task>`,
           };
         }
       },
@@ -633,11 +761,29 @@ export async function runAgent(options: {
 
 // ── Get all agent states (for UI) ──
 
-export async function getAgentStates(): Promise<Record<string, { state: string; task: string | null }>> {
+export async function getAgentStates(): Promise<Record<string, {
+  state: string;
+  task: string | null;
+  retries: number;
+  watching: Array<{name: string; taskId?: string; retries: number}>;
+  lastActive: Date;
+  lastCheckin: Date | null;
+}>> {
   const states = await prisma.agentState.findMany();
-  const result: Record<string, { state: string; task: string | null }> = {};
+  const result: Record<string, any> = {};
   for (const s of states) {
-    result[s.agent] = { state: s.state, task: s.task };
+    let watching: Array<{name: string; taskId?: string; retries: number}> = [];
+    try {
+      watching = s.watching ? JSON.parse(s.watching) : [];
+    } catch {}
+    result[s.agent] = {
+      state: s.state,
+      task: s.task,
+      retries: s.retries,
+      watching,
+      lastActive: s.lastActive,
+      lastCheckin: s.lastCheckin,
+    };
   }
   return result;
 }
