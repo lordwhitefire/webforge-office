@@ -9,7 +9,7 @@
  * Tools are defined in tools/*.ts and use the Vercel AI SDK's tool() function.
  */
 
-import { tool, jsonSchema } from "ai";
+import { tool, jsonSchema, type Tool } from "ai";
 import { execSync } from "child_process";
 import { join } from "path";
 import { homedir } from "os";
@@ -231,7 +231,7 @@ export const gitCommitTool = tool({
 
 // ── All tools map ──
 
-const ALL_TOOLS = {
+const ALL_TOOLS: Record<string, Tool> = {
   "task.create": taskCreateTool,
   "task.list": taskListTool,
   "task.show": taskShowTool,
@@ -242,6 +242,14 @@ const ALL_TOOLS = {
   "git.commit": gitCommitTool,
 };
 
+// task.delegate is added dynamically (it needs runAgent which creates a circular dep)
+let _delegateTool: Tool | null = null;
+
+export function setDelegateTool(tool: Tool) {
+  _delegateTool = tool;
+  ALL_TOOLS["task.delegate"] = tool;
+}
+
 // ── Get tools for an agent ──
 
 export function getToolListForAgent(
@@ -251,9 +259,9 @@ export function getToolListForAgent(
 ): string[] {
   const tools: string[] = [];
 
-  // Directors and leads: task + mailbox tools
+  // Directors and leads: task + mailbox + delegate tools
   if (roleTier === "director" || roleTier === "lead") {
-    tools.push("task.create", "task.list", "task.show");
+    tools.push("task.create", "task.list", "task.show", "task.delegate");
     tools.push("mailbox.send", "mailbox.read");
   }
 
