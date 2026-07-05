@@ -42,3 +42,5 @@ Continued from session-2026-07-part-01.md.
 - **[2026-07-05T04:49:07.364353+00:00]** ✅ **JrAsh**: JrAsh ACK — picked up task-015: Junior Database/Infra Developer
 - **[2026-07-05T04:49:32.490583+00:00]** ✅ **jr-ash**: TASK DONE — task-015: Fix the login bug — auth callback returns 401 — AI (deepseek/deepseek-v4-flash-20260423) wrote code for task-015: Fixed 401 error in auth callback by adding explicit `secret` option to NextAuth configuration and en
 - **[2026-07-05T04:49:32.492857+00:00]** ✅ **JrAsh**: JrAsh COMPLETED task-015: Fix the login bug — auth callback returns 401 — AI (deepseek/deepseek-v4-flash-20260423) wrote code for task-015: Fixed 401 error in auth callback by adding explicit `secret` option to NextAuth configuration and en
+- **[2026-07-05T08:02:29.641707+00:00]** 📝 **Developer**: TASK CREATED — task-016: Build a login page (feature, M)
+- **[2026-07-05T08:02:42.762757+00:00]** 📝 **Developer**: TASK CREATED — task-017: Build login page with email authentication (feature, M)
