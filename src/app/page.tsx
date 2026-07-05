@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { CEOOffice } from "@/components/office/CEOOffice";
 import { OfficeFloor } from "@/components/office/OfficeFloor";
+import { AgentTree } from "@/components/office/AgentTree";
 import { ChatPanel } from "@/components/office/ChatPanel";
 import { TaskBoard } from "@/components/office/TaskBoard";
 import { StandupModal } from "@/components/office/StandupModal";
@@ -231,14 +232,16 @@ export default function Home() {
 
         {/* Office + Chat side-by-side */}
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_380px]">
-          {/* Office floor */}
+          {/* Office floor + Agent tree */}
           <div className="flex flex-col gap-3">
             <OfficeFloor onAgentClick={handleAgentClick} />
+            <div className="lg:h-[400px]">
+              <AgentTree />
+            </div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-[11px] text-slate-400">
               <span className="font-semibold text-amber-300">Tip:</span>{" "}
               Click any agent to walk them to the CEO office and chat.
-              Tell Hermes what you want built — he&apos;ll route it through the
-              SQLite-backed pipeline. Polling every 3s.
+              The agent tree below shows real-time status — active, watching, sleeping.
             </div>
           </div>
 
