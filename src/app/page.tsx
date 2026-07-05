@@ -7,11 +7,13 @@ import { OfficeFloor } from "@/components/office/OfficeFloor";
 import { AgentTree } from "@/components/office/AgentTree";
 import { CampusMap2D } from "@/components/office/CampusMap2D";
 import { CampusMap3D } from "@/components/office/CampusMap3D";
+import { SpyCam } from "@/components/office/SpyCam";
 import { ChatPanel } from "@/components/office/ChatPanel";
 import { TaskBoard } from "@/components/office/TaskBoard";
 import { StandupModal } from "@/components/office/StandupModal";
 import { NotificationsPanel } from "@/components/office/NotificationsPanel";
 import { cn } from "@/lib/utils";
+import type { Building } from "@/data/buildings";
 import {
   useOfficeStore,
   type OfficeTask,
@@ -203,7 +205,10 @@ export default function Home() {
   // 2D/3D view toggle
   const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
 
-  // Agent states for 3D view
+  // Spy cam — when set, shows building interior
+  const [spyCamBuilding, setSpyCamBuilding] = useState<Building | null>(null);
+
+  // Agent states for 3D view + spy cam
   const [agentStates, setAgentStates] = useState<Record<string, { state: string; task: string | null; watching: any[] }>>({});
 
   // Poll agent states for 3D view
@@ -283,14 +288,25 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Map view */}
+            {/* Map view — 2D, 3D, or Spy Cam */}
             <div className="lg:h-[500px]">
-              {viewMode === "2d" ? (
-                <CampusMap2D onAgentClick={handleAgentClick} />
+              {spyCamBuilding ? (
+                <SpyCam
+                  building={spyCamBuilding}
+                  agentStates={agentStates}
+                  onAgentClick={handleAgentClick}
+                  onExit={() => setSpyCamBuilding(null)}
+                />
+              ) : viewMode === "2d" ? (
+                <CampusMap2D
+                  onAgentClick={handleAgentClick}
+                  onBuildingClick={(b) => setSpyCamBuilding(b)}
+                />
               ) : (
                 <CampusMap3D
                   agentStates={agentStates}
                   onAgentClick={handleAgentClick}
+                  onBuildingClick={(b) => setSpyCamBuilding(b)}
                 />
               )}
             </div>
@@ -299,9 +315,11 @@ export default function Home() {
             </div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-[11px] text-slate-400">
               <span className="font-semibold text-amber-300">Tip:</span>{" "}
-              {viewMode === "2d"
-                ? "Scroll to zoom · Drag to pan · Right-click an agent for Call/Dismiss · Click building for info"
-                : "WASD to walk · Mouse to look · Click building to inspect · Scroll to zoom"}
+              {spyCamBuilding
+                ? "📹 Spy Cam — click any agent to call them · scroll to zoom · drag to orbit"
+                : viewMode === "2d"
+                ? "Scroll to zoom · Drag to pan · Right-click agent for Call/Dismiss · Click building for Spy Cam"
+                : "WASD to walk · Mouse to look · Click building for Spy Cam · Scroll to zoom"}
             </div>
           </div>
 
