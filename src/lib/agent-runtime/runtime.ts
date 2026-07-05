@@ -19,7 +19,6 @@
 import { PrismaClient } from "@prisma/client";
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
-import { homedir } from "os";
 import { execSync } from "child_process";
 
 // Prisma singleton (prevents Next.js hot-reload issues)
@@ -29,7 +28,7 @@ if (!globalForPrisma.prisma) {
   globalForPrisma.prisma = prisma;
 }
 
-const WEBFORGE_HOME = join(homedir(), "webforge");
+const WEBFORGE_HOME = join(process.cwd(), "src");
 const SKILLS_DIR = join(WEBFORGE_HOME, "skills");
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "deepseek/deepseek-v4-flash";

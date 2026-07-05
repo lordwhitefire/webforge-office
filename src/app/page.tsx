@@ -269,14 +269,14 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-2 border-t border-slate-800 pt-3 text-center text-[11px] text-slate-500">
-          WebForge Office · SQLite + Mailbox + Runs ·{" "}
+          WebForge Office · TypeScript Agent Runtime ·{" "}
           <a
-            href="https://github.com/lordwhitefire/webforge"
+            href="https://github.com/lordwhitefire/webforge-office"
             className="text-amber-400 hover:underline"
             target="_blank"
             rel="noreferrer"
           >
-            ~/webforge
+            webforge-office
           </a>
         </footer>
       </div>

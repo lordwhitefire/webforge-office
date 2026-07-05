@@ -201,7 +201,7 @@ export function ChatPanel({ agentName, onClose }: ChatPanelProps) {
             <p className="mt-1.5 px-1 text-[10px] text-slate-600">
               Powered by{" "}
               <code className="rounded bg-slate-800 px-1 py-0.5 text-slate-400">
-                python3 ~/webforge/agents/{agent.name.toLowerCase()}.py
+                WebForge Agent Runtime (DeepSeek v4 Flash)
               </code>
             </p>
           </div>
