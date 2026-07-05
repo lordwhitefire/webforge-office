@@ -1,15 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { CEOOffice } from "@/components/office/CEOOffice";
 import { OfficeFloor } from "@/components/office/OfficeFloor";
 import { AgentTree } from "@/components/office/AgentTree";
 import { CampusMap2D } from "@/components/office/CampusMap2D";
+import { CampusMap3D } from "@/components/office/CampusMap3D";
 import { ChatPanel } from "@/components/office/ChatPanel";
 import { TaskBoard } from "@/components/office/TaskBoard";
 import { StandupModal } from "@/components/office/StandupModal";
 import { NotificationsPanel } from "@/components/office/NotificationsPanel";
+import { cn } from "@/lib/utils";
 import {
   useOfficeStore,
   type OfficeTask,
@@ -198,6 +200,26 @@ export default function Home() {
   const blockedCount = tasks.filter((t) => t.status === "blocked").length;
   const workingAgents = agents.filter((a) => a.status === "working").length;
 
+  // 2D/3D view toggle
+  const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
+
+  // Agent states for 3D view
+  const [agentStates, setAgentStates] = useState<Record<string, { state: string; task: string | null; watching: any[] }>>({});
+
+  // Poll agent states for 3D view
+  useEffect(() => {
+    const poll3D = async () => {
+      try {
+        const res = await fetch("/api/agent/states", { cache: "no-store" });
+        const data = await res.json();
+        if (data.ok && data.states) setAgentStates(data.states);
+      } catch {}
+    };
+    void poll3D();
+    const id = setInterval(() => void poll3D(), 2000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       {/* Top status bar */}
@@ -235,16 +257,51 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_380px]">
           {/* Campus map + Agent tree */}
           <div className="flex flex-col gap-3">
+            {/* 2D/3D Toggle */}
+            <div className="flex items-center gap-2">
+              <button
+                className={cn(
+                  "rounded-lg px-3 py-1 text-[11px] font-medium transition-colors",
+                  viewMode === "2d"
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    : "bg-slate-800/50 text-slate-400 border border-slate-700"
+                )}
+                onClick={() => setViewMode("2d")}
+              >
+                🗺️ 2D Map
+              </button>
+              <button
+                className={cn(
+                  "rounded-lg px-3 py-1 text-[11px] font-medium transition-colors",
+                  viewMode === "3d"
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    : "bg-slate-800/50 text-slate-400 border border-slate-700"
+                )}
+                onClick={() => setViewMode("3d")}
+              >
+                🏢 3D Walk
+              </button>
+            </div>
+
+            {/* Map view */}
             <div className="lg:h-[500px]">
-              <CampusMap2D onAgentClick={handleAgentClick} />
+              {viewMode === "2d" ? (
+                <CampusMap2D onAgentClick={handleAgentClick} />
+              ) : (
+                <CampusMap3D
+                  agentStates={agentStates}
+                  onAgentClick={handleAgentClick}
+                />
+              )}
             </div>
             <div className="lg:h-[300px]">
               <AgentTree />
             </div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-[11px] text-slate-400">
               <span className="font-semibold text-amber-300">Tip:</span>{" "}
-              Scroll to zoom · Drag to pan · Right-click an agent for Call/Dismiss · Click a building for info.
-              Zoom in to see agent symbols and names.
+              {viewMode === "2d"
+                ? "Scroll to zoom · Drag to pan · Right-click an agent for Call/Dismiss · Click building for info"
+                : "WASD to walk · Mouse to look · Click building to inspect · Scroll to zoom"}
             </div>
           </div>
 
