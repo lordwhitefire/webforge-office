@@ -9,146 +9,78 @@ OpenCode will read these files and become the WebForge agent organization.
 
 ```
 webforge-opencode/
-  agents/               ← 284 agent markdown files (one per agent, except CEO)
-    hermes.md            ← The primary agent (you talk to him)
-    hephaestus.md        ← Build Director
-    athena.md            ← Intelligence Director
-    minos.md             ← Quality Director
-    thoth.md             ← Documentation Director
-    voss.md              ← HR Director
-    daedalus.md          ← Meta Engineering Director
-    aurora.md            ← Frontend Lead
-    titan.md             ← Backend Lead
-    zephyr.md            ← DB/Infra Lead
-    sr-hale.md           ← Senior Developer
-    jr-hawk.md           ← Junior Developer (writes code)
-    ... (274 more)
-  tools/                 ← Custom tools (TypeScript)
-    mailbox.ts           ← Agent-to-agent messaging (chain of command enforced)
-    memory.ts            ← Project memory read/write (Law 2 + Law 6)
-    registry.ts          ← Look up agent info and relationships
-    status.ts            ← Report status to superior (watchdog pattern)
-  opencode.json          ← Makes Hermes the default agent, hides built-in agents
+  opencode.json              ← Config: Hermes = default, built-in agents disabled
+  .webforge/
+    agents.json              ← Agent registry (285 agents, for chain of command)
+  agents/                    ← 284 agent markdown files (CEO is the user)
+    hermes.md                ← Primary agent (you talk to him)
+    hephaestus.md            ← Build Director
+    athena.md                ← Intelligence Director
+    ... (284 total, each with full skill content)
+  tools/                     ← 7 custom tools (TypeScript)
+    mailbox.ts               ← Agent messaging (chain of command enforced)
+    memory.ts                ← Project memory read/write (Law 2 + Law 6)
+    registry.ts              ← Look up agent info and relationships
+    status.ts                ← Report status to superior (watchdog)
+    safe_edit.ts             ← Safe file editing (Law 2 + Law 5 + Law 6)
+    safe_bash.ts             ← Safe bash commands (blocks dangerous ops)
+    revoke.ts                ← Strip tools from misbehaving agents
 ```
 
-## How Agent Files Work
+## Installation — Step by Step
 
-Each agent file has two parts:
+### Step 1: Copy agent files
 
-### 1. YAML Frontmatter (permissions and config)
-
-```yaml
----
-description: "Build Director — Build department"
-mode: subagent           ← subagent = can be called by other agents
-color: "#10b981"         ← Department color
-steps: 10                ← Max LLM iterations before stopping
-hidden: false            ← false = visible in agent list
-permission:              ← What this agent CAN and CANNOT do
-  read: allow             ← Can read files
-  edit: deny              ← Cannot edit files (directors don't code)
-  bash: deny              ← Cannot run commands
-  task: allow             ← CAN delegate to subagents
-  websearch: deny         ← Cannot search the web
-  question: allow         ← Can ask the user questions
-  skill: allow            ← Can load skills
----
-```
-
-### 2. System Prompt (the skill .md content)
-
-The body of the file IS the system prompt. OpenCode reads this and
-the AI becomes that character. It knows its name, its job, its boss,
-its subordinates, what it should do, and what it should NOT do.
-
-## How Permissions Work
-
-Permissions are the core of WebForge. Each agent type gets different tools:
-
-| Agent Type | read | edit | bash | task | websearch | What they do |
-|---|---|---|---|---|---|---|
-| Directors (Hermes, Hephaestus, etc.) | ✅ | ❌ | ❌ | ✅ | ❌ | Coordinate, delegate |
-| Leads (Aurora, Titan, etc.) | ✅ | ❌ | ❌ | ✅ | ❌ | Manage teams |
-| Intelligence (Probe, Odin) | ✅ | ❌ | ❌ | ❌ | ✅ | Research only |
-| Juniors (Jr-Hawk, etc.) | ✅ | ✅ | ✅ | ❌ | ❌ | Write code (only ones who can) |
-| Quality (Verdict, Scalpel) | ✅ | ❌ | ✅ | ❌ | ❌ | Test, review (no editing) |
-| Documentation (Quill, etc.) | ✅ | ✅ | ❌ | ❌ | ❌ | Write docs only |
-| HR (Rook, Weld) | ✅ | ❌ | ❌ | ❌ | ❌ | Manage registry |
-
-The key insight: you restrict AI by REMOVING TOOLS, not by writing rules.
-If an agent doesn't have the `edit` tool, it literally cannot edit files.
-No prompt can override this — the tool simply isn't available.
-
-## How Delegation Works
-
-OpenCode's built-in `task` tool lets one agent spawn another as a subagent.
-
-When Hermes calls:
-```
-task({ subagent_type: "hephaestus", prompt: "Build a login page" })
-```
-
-OpenCode:
-1. Loads the `hephaestus.md` agent file
-2. Creates a child session with Hephaestus's permissions
-3. Hephaestus runs his own LLM loop with his own tools
-4. When Hephaestus is done, the result comes back to Hermes
-5. Hermes continues
-
-This IS the synchronous delegation chain. Results bubble back up.
-
-## How the Chain of Command Is Enforced
-
-Two layers:
-
-**Layer 1: Tool availability (hard enforcement)**
-- Only directors and leads have `task: allow` (can delegate)
-- Juniors have `task: deny` (cannot delegate — they're the bottom)
-- An agent can only spawn subagents that have agent files in `.opencode/agents/`
-
-**Layer 2: Mailbox tool (soft enforcement)**
-- The `mailbox.ts` tool checks the registry before sending
-- If an agent tries to message someone outside their chain → BLOCKED
-- Example: Jr-Hawk cannot message Hermes directly
-
-## Step-by-Step Integration Instructions
-
-### Step 1: Copy the files
-
-Copy the entire `webforge-opencode/` folder into your project:
+Copy the agents to OpenCode's global agents directory:
 
 ```bash
-# From your project root:
-cp -r webforge-opencode/. .opencode/
+mkdir -p ~/.config/opencode/agents/
+cp webforge-opencode/agents/*.md ~/.config/opencode/agents/
 ```
 
-This puts:
-- `agents/` → `.opencode/agents/` (284 agent files)
-- `tools/` → `.opencode/tools/` (4 custom tools)
-- `opencode.json` → `.opencode/opencode.json`
-
-### Step 2: Copy the agents.json registry
-
-The custom tools need the agent registry to enforce the chain of command.
-Copy it from WebForge Office:
+Or copy to a specific project:
 
 ```bash
-mkdir -p .webforge
-cp src/lib/agent-runtime/agents.json .webforge/agents.json
+mkdir -p .opencode/agents/
+cp webforge-opencode/agents/*.md .opencode/agents/
 ```
 
-### Step 3: Copy the skill files (if not already in agent files)
+### Step 2: Copy tool files
 
-The agent markdown files already contain the skill content as their system prompt.
-You do NOT need to copy skill files separately — they're embedded.
+Copy the tools to OpenCode's global tools directory:
 
-### Step 4: Configure OpenCode
+```bash
+mkdir -p ~/.config/opencode/tools/
+cp webforge-opencode/tools/*.ts ~/.config/opencode/tools/
+```
 
-The `opencode.json` file does two things:
-1. Makes Hermes the default agent (you talk to Hermes, not OpenCode's "build" agent)
-2. Disables OpenCode's built-in "build" and "plan" agents
+Or copy to a specific project:
 
-If you want to keep OpenCode's built-in agents, remove the `agents` section from `opencode.json`.
+```bash
+mkdir -p .opencode/tools/
+cp webforge-opencode/tools/*.ts .opencode/tools/
+```
+
+### Step 3: Copy the config
+
+Merge the opencode.json with your existing config:
+
+```bash
+cp webforge-opencode/opencode.json ~/.config/opencode/opencode.json
+```
+
+Or merge manually. The key settings are:
+- `"default_agent": "hermes"` — makes Hermes the default when you open OpenCode
+- `"agent": { "build": { "disable": true }, "plan": { "disable": true } }` — hides built-in agents
+
+### Step 4: Copy the registry
+
+The custom tools need the agent registry for chain of command:
+
+```bash
+mkdir -p .webforge/
+cp webforge-opencode/.webforge/agents.json .webforge/agents.json
+```
 
 ### Step 5: Start OpenCode
 
@@ -156,134 +88,242 @@ If you want to keep OpenCode's built-in agents, remove the `agents` section from
 opencode
 ```
 
-You should see Hermes as the default agent. Type a message:
-```
-Build a login page
+Hermes should be the default agent. Type a message and he will coordinate.
+
+---
+
+## Agent File Format (from OpenCode official docs)
+
+Each agent is a markdown file. The filename becomes the agent name.
+Example: `hermes.md` creates an agent named `hermes`.
+
+### YAML Frontmatter
+
+```yaml
+---
+description: "COO / Coordinator — executive department"
+mode: primary              # or "subagent"
+model: ""                  # Optional — leave empty to use OpenCode's default model
+color: "#f59e0b"          # Hex color for the agent
+steps: 10                  # Max LLM iterations before stopping
+permission:                # What this agent CAN and CANNOT do
+  read: allow              # "allow", "deny", or "ask"
+  edit: deny
+  bash: deny
+  task: allow              # Can spawn subagents
+  websearch: deny
+  webfetch: deny
+  glob: allow
+  grep: allow
+  list: allow
+  todowrite: deny
+  question: allow
+  skill: allow
+---
+
+(System prompt content goes here — the skill .md)
 ```
 
-Hermes will:
-1. Think about the request (using whatever model OpenCode is configured with)
-2. Call the `task` tool to delegate to Hephaestus
-3. Hephaestus will delegate to Aurora or Titan
-4. The chain continues down to a Junior
-5. The Junior writes the code (they're the only one with `edit` and `bash`)
-6. Results bubble back up to Hermes
-7. Hermes tells you it's done
+### Important config keys (from official docs):
 
-### Step 6: Verify the chain
+- **`description`** — REQUIRED. Brief description of what the agent does.
+- **`mode`** — `primary` (you interact with it directly) or `subagent` (called by other agents)
+- **`model`** — Optional. Which AI model to use. Leave empty to use OpenCode's configured model.
+- **`steps`** — Max number of agentic iterations before forcing text-only response.
+- **`permission`** — Tool permissions. Each tool can be `allow`, `deny`, or `ask`.
+- **`disable`** — Set to `true` to disable an agent (used in opencode.json for built-in agents).
+- **`hidden`** — Set to `true` to hide from the @ autocomplete menu.
+- **`color`** — Hex color code (e.g., `#FF5733`) for the agent.
 
-Watch the terminal. You should see:
+### Config file format (from official docs):
+
+The config key is `"agent"` (singular), NOT `"agents"` (plural):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "hermes",
+  "agent": {
+    "build": { "disable": true },
+    "plan": { "disable": true }
+  }
+}
 ```
-[hermes] Running...
-[hermes] Calling task tool: delegate to hephaestus
-  [hephaestus] Running...
-  [hephaestus] Calling task tool: delegate to aurora
-    [aurora] Running...
-    [aurora] Calling task tool: delegate to lead-faro
-      ...
+
+Note: It's `"disable": true` (not `"disabled": true`).
+
+---
+
+## Custom Tool Format (from OpenCode official docs)
+
+Tools are TypeScript or JavaScript files. The filename becomes the tool name.
+Example: `mailbox.ts` creates a tool named `mailbox`.
+
+### Using the tool() helper (recommended by docs):
+
+```typescript
+import { tool } from "@opencode-ai/plugin"
+
+export default tool({
+  description: "Send a message to another agent",
+  args: {
+    to: tool.schema.string().describe("Agent name"),
+    body: tool.schema.string().describe("Message body"),
+  },
+  async execute(args, context) {
+    // context.agent = the agent calling this tool
+    return "Message sent"
+  },
+})
 ```
 
-If an agent tries to do something it doesn't have permission for,
-OpenCode will block it — the tool simply isn't available.
+### Using plain object export (also supported):
+
+```typescript
+export default {
+  description: "Send a message to another agent",
+  args: {
+    to: { type: "string", description: "Agent name" },
+    body: { type: "string", description: "Message body" },
+  },
+  async execute(args, context) {
+    return "Message sent"
+  },
+}
+```
+
+### Tool locations (from official docs):
+
+- **Global:** `~/.config/opencode/tools/`
+- **Per-project:** `.opencode/tools/`
+
+Files in these directories are automatically loaded at startup.
+
+---
+
+## Permission System (from official docs)
+
+Permissions control which tools each agent can use. Three values:
+
+| Value | Meaning |
+|---|---|
+| `allow` | Agent can use this tool freely |
+| `deny` | Agent cannot use this tool at all |
+| `ask` | Agent must ask for user approval before using this tool |
+
+### Available permission keys:
+
+| Key | What it controls |
+|---|---|
+| `read` | Reading files |
+| `edit` | Editing/writing files |
+| `bash` | Running shell commands |
+| `task` | Spawning subagents (delegation) |
+| `websearch` | Web search |
+| `webfetch` | Fetching web pages |
+| `glob` | File pattern matching |
+| `grep` | Searching file contents |
+| `list` | Listing directories |
+| `todowrite` | Writing to-do lists |
+| `question` | Asking the user questions |
+| `skill` | Loading skill files |
+| `external_directory` | Accessing directories outside the project |
+
+### WebForge permission matrix:
+
+| Agent Type | read | edit | bash | task | websearch | What they do |
+|---|---|---|---|---|---|---|
+| Hermes (primary) | allow | deny | deny | allow | deny | Coordinate, delegate |
+| Directors | allow | deny | deny | allow | deny | Manage departments |
+| Leads | allow | deny | deny | allow | deny | Manage teams |
+| Juniors | allow | allow | allow | deny | deny | Write code (only ones) |
+| Intelligence | allow | deny | deny | deny | allow | Research only |
+| Quality | allow | deny | allow | deny | deny | Test, review |
+| Documentation | allow | allow | deny | deny | deny | Write docs |
+| HR | allow | deny | deny | deny | deny | Manage registry |
+
+---
+
+## How Delegation Works
+
+OpenCode's built-in `task` tool lets one agent spawn another as a subagent.
+
+When Hermes calls the `task` tool with `subagent_type: "hephaestus"`:
+1. OpenCode loads the `hephaestus.md` agent file
+2. Creates a child session with Hephaestus's permissions
+3. Hephaestus runs his own LLM loop with his own tools
+4. When done, the result comes back to Hermes
+5. Hermes continues
+
+This IS the synchronous delegation chain. Results bubble back up.
+
+Only agents with `task: allow` in their permissions can delegate.
+That means only directors and leads — juniors have `task: deny`.
+
+---
+
+## The 6 Laws — How Each Is Enforced
+
+### Law 1: Task size limit
+- Future: custom `safe_task` tool that checks file count
+
+### Law 2: 300-line rule
+- ENFORCED in `safe_edit.ts` — checks file length before writing
+- ENFORCED in `memory.ts` — checks file length before writing
+
+### Law 3: Real-time documentation
+- ENFORCED in `memory.ts` — every write is logged
+- ENFORCED in `status.ts` — all status changes are logged
+
+### Law 4: Chain of command
+- ENFORCED in `mailbox.ts` — checks registry before sending messages
+- ENFORCED via tool availability — only directors/leads have `task: allow`
+
+### Law 5: No inference
+- PARTIALLY ENFORCED in `safe_edit.ts` — scans for inference patterns:
+  - "I assume", "I guess", "probably", "I think this should"
+  - Hardcoded API keys, passwords
+- ENFORCED via `revoke.ts` — Daedalus can strip tools from violators
+- The system prompt also tells agents not to infer
+
+### Law 6: Documentation
+- ENFORCED in `memory.ts` and `status.ts` — all actions logged
+- ENFORCED in `safe_edit.ts` and `safe_bash.ts` — all operations logged
+
+---
 
 ## Model Configuration
 
-This integration does NOT force any specific model. OpenCode uses whatever
-model you have configured. You can use:
-- DeepSeek (via OpenRouter)
-- GLM (via Z.ai)
-- Claude
-- GPT
-- Any model OpenCode supports
+This integration does NOT force any specific model.
+OpenCode uses whatever model you have configured.
 
-To set the model, use OpenCode's normal configuration:
+To set a model:
 ```bash
 opencode --model deepseek/deepseek-v4-flash
 ```
 
-Or set it in `opencode.json`:
+Or in opencode.json:
 ```json
 {
-  "default_agent": "hermes",
   "model": "deepseek/deepseek-v4-flash"
 }
 ```
 
-Or leave it unset and OpenCode will use its default.
-
-## The 6 Laws
-
-### How each law is enforced:
-
-**Law 1: Task size limit**
-- Not yet automated in this package
-- Future: a custom `safe_task` tool that checks file count before creating
-
-**Law 2: 300-line rule**
-- ENFORCED in `memory.ts` — the write action checks line count
-- Future: a custom `safe_edit` tool that checks file length
-
-**Law 3: Real-time documentation**
-- ENFORCED in `memory.ts` — every write is logged
-- The `status.ts` tool also logs status changes
-
-**Law 4: Chain of command**
-- ENFORCED in `mailbox.ts` — checks registry before sending
-- ENFORCED via tool availability — only directors/leads have `task: allow`
-
-**Law 5: No inference**
-- PARTIALLY ENFORCED — the system prompt tells agents not to infer
-- Future: a Flagger tool that scans outputs for inference patterns
-- Future: a Reviewer agent that reads flags and decides
-
-**Law 6: Documentation**
-- ENFORCED in `memory.ts` and `status.ts` — all actions are logged
-
-## Adding More Custom Tools
-
-To add a new tool:
-
-1. Create a TypeScript file in `.opencode/tools/`
-2. Use this format:
-
-```typescript
-export default {
-  description: "What this tool does",
-  args: {
-    param1: { type: "string", description: "Parameter description" },
-  },
-  async execute(args, context) {
-    // context.agent = the agent calling this tool
-    // Do your work here
-    return "Result"
-  },
-}
+Or per-agent in the agent's markdown frontmatter:
+```yaml
+---
+model: deepseek/deepseek-v4-flash
+---
 ```
 
-3. Restart OpenCode — the tool is automatically loaded
-4. Add the tool name to agent permissions in their YAML frontmatter
+If model is not set, OpenCode uses its default.
 
-## Adding More Agents
-
-To add a new agent:
-
-1. Create a markdown file in `.opencode/agents/<name>.md`
-2. Add YAML frontmatter with permissions
-3. Add the system prompt as the body
-4. Add the agent to `.webforge/agents.json` (for chain of command)
-5. Restart OpenCode
-
-## Source
-
-All files in this package were generated from:
-- **WebForge Office** (https://github.com/lordwhitefire/webforge-office)
-  - `src/lib/agent-runtime/agents.json` — agent registry (285 agents)
-  - `src/skills/` — 285 skill .md files (system prompts)
-  - Agent hierarchy, permissions, and chain of command
+---
 
 ## References
 
-- OpenCode agent docs: https://opencode.ai/docs/agents
-- OpenCode config docs: https://opencode.ai/docs/config
-- OpenCode ecosystem: https://opencode.ai/docs/ecosystem
-- OpenCode source: https://github.com/lordwhitefire/opencode
+- OpenCode Agents docs: https://opencode.ai/docs/agents
+- OpenCode Config docs: https://opencode.ai/docs/config
+- OpenCode Custom Tools docs: https://opencode.ai/docs/custom-tools
+- OpenCode Plugins docs: https://opencode.ai/docs/plugins
+- OpenCode source code: https://github.com/sst/opencode
