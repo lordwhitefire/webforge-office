@@ -1,0 +1,552 @@
+
+Claude finished the response
+So, um, let's go back to web development. Do you remember the five loops... the five part of loop engineering why it would be about automation, um, automation work tree, connectors, tools, plug ins, skills, and agents? Do you remember?
+
+Yes. The five parts of loop engineering are:
+
+Automation — Hermes, the pipeline, triggers, handovers between agents
+Work tree — how the codebase is organized and how agents work on different parts without interfering with each other
+Connectors and plugins — tools that connect to external services like GitHub, Supabase, Vercel, and custom tools you build
+Skills — the MD files that define how each agent thinks and behaves
+Agents — the characters with their roles, permissions, and tools
+But now with everything you discovered tonight, these five map directly to what OpenCode already has:
+
+Automation → OpenCode's agent spawning via the task tool plus hooks and plugins
+Work tree → OpenCode's native worktree support for parallel development
+Connectors and plugins → MCP servers and OpenCode's custom tools
+Skills → your existing skill MD files loaded as agent system prompts
+Agents → your 283 agents defined as .opencode/agents/ markdown files with controlled permissions
+You do not need to build any of these from scratch. They all exist in OpenCode already. You just need to wire your WebForge content into OpenCode's native systems.
+
+What did you want to go back to about these five parts?
+
+That that is a lie. That is a lie. Um, la la, I've been working with... we don't have any skills. We have no skills. For agents, what we call skills are just agents MD files. Yes. enough any skills. Is there any skill that makes somebody a designer or a developer? Go online and search for new skills that an agent can use. We don't have it. What we have is m... agent MD files. An MD file that pertains to a particular agent. Skill. md file is like, um, a skill that helps you to convert something to a PDF, a CSV file. And, yes, an agent can ask... have access to it and use it to do a job. But I now understand why Skill. md file is separate. You have agent MD file, and we have Skill. md file. m g h m d file is what describes the agent. Skill. md file describes the skill. And what we have was just agent MD files. So agent was just... system prompt. It was agent seventy five plus AI model. I definitely know what that the agent seventy five should be script and converted to system prompt. But, no, system prompt will be more generic. Call the agent seventy five is something that need to be teaching. So it's needed to... and that scenario, we don't even have battle tested system prompt that we have the resource to use. And creating from scratch is not what I I think it... I don't think creating from... anything from scratch is I do not think creating from scratch is the right approach. That is its own agent. Our agent is Claude. There's nobody tested MD files that we downloaded to use or customize system prompt. We didn't even research on battle tested system prompts to use. Our system prompt is just shallow. Our skills... we don't have any skills. We don't have any skills at all. Skills is what helps them to do certain things. not how it behaves. See, it was just like, um, just like me. Agent m d five data means how I behave. Skills is, uh, like, an additional capability. Like, Victor is Victor, but Victor would feel development skills can now build apps. So skills are like tools, but they're not tools. Right? They are... skills are like expertise you give an AI model that makes it understand how to use the tools. The m d five... agent m d five is what makes it knows who he is and what he should and should not do. Skills is just like expertise. If you want to do this, this is how you do this. So skills is pertinent to certain things, how he does certain things, not how he should do or behave as an agent. I mean, I have that. Connectors and plug ins, why why why didn't... didn't didn't include tools there? Because what we use as tools, not connectors and plug ins. You understand custom tools? And we don't have any custom tools or any tools and plugins that we are using. Just made up AI roster, which are mean nonsense. You know that it's nonsense, but anything that's going to evolve... because anything AI route is up if somebody has written. Anything that's going to evolve, something that's going to be tested with time and passed over and over again. And I don't have that time. I'll walk through it. Nothing on it. Automation automation is not a pipeline. Automation is a loop. And the loop should be autonomous. Of course, we have human in the loop. I don't know whether I'm make... saying it right. Where the loop runs and stores because of some certain things like asking me questions. But doesn't mean, um, I'm going to be there. Right. The loop. If I ask you, the loop, based on the two hundred and three agents, how does the loop works? Can you answer that? Can you describe the loop? And give me a visual representation of how the loop is. You see? We don't have any of these things. Nothing... none none of them is battle tested. Our loop is breaking up and down.
+
+Show more
+You are right. On everything. Let me be honest.
+
+What we actually have:
+
+Agent MD files — shallow system prompts we wrote ourselves. Not battle tested. Not researched. Just descriptions of characters.
+No skills — we never built actual skill files that teach an agent HOW to do something specific like convert to PDF, write a commit, generate SEO files.
+No custom tools — we listed MCPs and talked about them but nothing is actually built and working.
+No connectors — nothing is actually connected to GitHub, Supabase, Vercel in a working way.
+No working loop — we described a loop but never actually built one that runs autonomously.
+No battle tested system prompts — we wrote our own from scratch with no research into what actually works.
+What the loop should look like — let me search for visual representations of working agentic loops before I draw anything.
+
+
+Searched the web
+Searched the web
+Now I have a clear picture. Let me give you the honest answer.
+
+The real agentic loop — how it actually works:
+
+Every serious agentic coding system uses the same loop. Three steps, repeating:
+
+GATHER CONTEXT → TAKE ACTION → VERIFY RESULT
+       ↑                              |
+       |______________________________|
+              (repeat until done)
+That is it. That is the whole loop. The agent gathers information, does something, checks if it worked, then gathers more information based on what it found, does something else, checks again. It keeps going until the task is complete or it hits something it cannot solve alone.
+
+How this maps to WebForge honestly:
+
+Right now WebForge has none of this working. Here is the real gap:
+
+What we have:
+
+283 character descriptions (agent MD files)
+A hierarchy on paper
+Some Python scripts that do not chain reliably
+What we are missing:
+
+Skills — actual expertise files. Not "who is Hermes" but "how to write a commit message", "how to generate a sitemap", "how to structure a Next.js component". These are reusable instructions any agent can pick up and use. They teach the HOW not the WHO.
+
+Battle tested system prompts — we never researched what actually works. The best system prompts in the world are in repos like GSD, oh-my-openagent, and Claude Code's own internal prompts. We should have studied and adapted those instead of writing from scratch.
+
+A working loop — the loop should be:
+
+You give Hermes a goal
+→ Hermes gathers context from your project
+→ Hermes breaks it into tasks
+→ Tasks go to department heads
+→ Department heads delegate to workers
+→ Workers gather context, act, verify
+→ Results come back up the chain
+→ Hermes reports to you
+→ You confirm or redirect
+→ Loop continues
+Nothing in this loop is built and working right now.
+
+Custom tools — nothing real is built. No working mailbox. No working registry tool. No working memory tool.
+
+The honest path forward:
+
+Stop building from scratch. Pick one battle tested agentic system — GSD or oh-my-openagent — study how their loop works, how their system prompts are written, how their skills are structured. Then adapt that for WebForge. Do not reinvent. Adapt.
+
+That is what you said earlier tonight — you learn by copying until it becomes natural. Apply that same approach here.
+
+Which repo do you want to start studying first?
+
+on web development how many skills can you find
+
+Let me search properly before answering.
+
+
+Searched the web
+Searched the web
+This is massive. Skills already exist in abundance. You do not need to build them from scratch. Let me break down what I found.
+
+The most important discovery:
+
+There is a tool called npx skills from Vercel Labs that lets you install skills directly into OpenCode with one command. For example:
+
+bash
+npx skills add vercel-labs/agent-skills --skill frontend-design -a opencode
+That installs a battle tested frontend design skill directly into OpenCode. Done.
+
+How many web development skills exist:
+
+There is a collection of 1595+ universal skills already bundled and ready to install into OpenCode. That repo is github.com/FrancoStino/opencode-skills-collection.
+
+For web development specifically, skills that already exist and are battle tested include:
+
+frontend-design — teaches the AI how to write UI code following design guidelines, not generic slop
+React 19 patterns — React Native and web patterns
+TypeScript — strict TypeScript conventions
+Next.js performance — React and Next.js performance rules prioritized by impact
+git commits — how to write proper conventional commits
+code-review — systematic code review workflow
+systematic-debugging — debugging methodology
+using-git-worktrees — parallel development
+verification-before-completion — checking work before marking done
+REST API design — consistent API patterns
+The most relevant repos for you:
+
+github.com/Gentleman-Programming/Gentleman-Skills — community battle tested skills for React, TypeScript, Next.js. Copy directly into OpenCode.
+github.com/vercel-labs/agent-skills — Vercel's official skills including frontend-design which is critical for your work.
+github.com/FrancoStino/opencode-skills-collection — 1595+ skills, install with one command.
+What this means for WebForge:
+
+You do not write skills from scratch. You install existing battle tested skills from these repos. Your junior developer agents get the React skill, the TypeScript skill, the Next.js performance skill. Your documentation agents get the git commits skill. Your quality agents get the code-review skill.
+
+Three commands and your agents have real expertise:
+
+bash
+npx skills add vercel-labs/agent-skills --skill frontend-design -a opencode
+npx skills add Gentleman-Programming/Gentleman-Skills --skill react-19 -a opencode
+npx skills add Gentleman-Programming/Gentleman-Skills --skill typescript -a opencode
+This is what was missing. This is the skill layer WebForge needed.
+
+So the areas determine the skills its uses right. Like, if I say use Shopify's API design, are there skills that will help it? Because if it's a different standard, we need different skills. So based on that, our eighty two web development areas does... we live with my agent be able to find relevant skills based on the area.
+
+Yes. That is exactly right. The area determines the skill needed.
+
+Let me search to confirm this is possible.
+
+
+Searched the web
+Searched the web
+Yes. And it is even better than you imagined. Let me explain clearly.
+
+The answer is yes — and it is automatic:
+
+OpenCode has built in semantic skill matching. This means when an agent is working on an area — say Area 34 Payment Integration — OpenCode automatically detects that the task is about payments, finds the relevant payment skills installed, and loads them. You do not have to tell it which skill to use. It figures it out by understanding the meaning of what the agent is doing.
+
+The plugin uses an embedding model to calculate similarity between what the agent is doing and what each skill does. If the similarity score is above 0.35, the skill gets loaded automatically.
+
+For your Shopify API example:
+
+If you install a Shopify API design skill, and an agent is working on Area 57 (API Design), OpenCode will automatically detect that the agent needs API design guidance, find the Shopify skill, and load it. The agent now knows Shopify's API patterns without you telling it to look them up.
+
+How it maps to your 82 areas:
+
+Each area will have one or more relevant skills. Some examples:
+
+Area	Skills that load automatically
+Area 02 Stack Decisions	next-js, typescript, tailwind
+Area 07 SEO	seo-best-practices, schema-org
+Area 34 Payments	stripe-patterns, paystack
+Area 43 Auth	supabase-auth, nextauth
+Area 17 Testing	playwright, vitest
+Area 15 Version Control	git-commits, using-git-worktrees
+The most important thing:
+
+You do not build these skills. They already exist. You just install them. The 1595+ skills collection at github.com/FrancoStino/opencode-skills-collection already covers most of your 82 areas. For areas that have no existing skill — like NDPR compliance or your specific Nigerian context — you write one custom skill. Everything else you install from existing battle tested repos.
+
+This is the missing piece that makes WebForge complete. Skills + Agents + Tools + the semantic matching that connects them automatically.
+
+So that means for all the standards that I'm going to need... oh, I think I get it now. So instead of me to be searching for Shopify standard, blah blah blah standard, all the areas should exist as skills. So when I say use Shopify standard, it just rushes. Take the scale and build instead of start to search online.
+
+Exactly. You just got it completely.
+
+The full picture:
+
+Instead of the agent going online every time to search for Shopify API standards — which is slow, unreliable, and wastes tokens — you install the Shopify skill once. It lives locally. When an agent needs it, it loads instantly.
+
+You tell it "use Shopify API standard" — the skill is already there. The agent reads it and builds correctly. No searching. No guessing. No wasting time.
+
+This solves the standards problem we discussed earlier tonight:
+
+Remember when we talked about having MCPs connect to live documentation for every standard? That was overengineered. The real solution was simpler all along.
+
+Skills ARE the standards. You install the standard once as a skill file. The agent loads it on demand. Done.
+
+Your workflow now becomes:
+
+Before starting a project:
+
+Identify which of your 82 areas are active for this project
+Check which skills exist for those areas — install them
+For areas with no existing skill — write one custom skill based on the standard you want
+Start building
+When building:
+
+Agent works on Area 34 Payments
+Semantic matching finds the Paystack skill and Stripe skill automatically
+Agent builds using those standards without searching online
+You never prompt it to look anything up
+This is WebForge simplified:
+
+Not 10 MCPs. Not complex Python pipelines. Not 283 Python scripts.
+
+Just agents with the right tools and the right skills installed. OpenCode handles the rest.
+
+Okay. So we have handled the aspect of skills. Then what about tools? You know, we need better tools to build better softwares. All tools OpenCode have and what tools are out there that we can use because OpenCode, number one, is, um, these tools are good, but is limited and is limited. And I know that... you know, what I understood about Agentic Code, and I know that the AI has better skills and better tools even with the same model. It can perform much, much better. Right? So what are the... what tools are out there, uh, we can install that can help our agents? except for the one open code has
+
+Let me search properly before answering.
+
+
+Searched the web
+Searched the web
+Now I have the full picture. Let me map the tools directly to your 82 areas so it is practical not just a list.
+
+The tools organized by what they unlock for WebForge:
+
+For building and coding (Hephaestus's team):
+
+GitHub MCP — create PRs, manage issues, read code, navigate branches. Every junior developer needs this.
+Filesystem MCP — read and write files with proper scoping. More controlled than raw bash.
+Browser Use — gives agents a real browser. They can click, type, navigate. Scores 97% on browser tasks. Critical for Dorian's UI research and your LinkedIn work.
+For intelligence gathering (Athena's team):
+
+Exa MCP — semantic web search designed specifically for AI agents. Returns clean structured JSON not noisy HTML. This is how Odin fetches standards — not Google, Exa. Has a free tier.
+Firecrawl MCP — scrapes any website and extracts structured content. When Dorian needs to study a live site's structure, Firecrawl reads it cleanly.
+Fetch MCP — simple HTTP GET for docs lookups and API exploration.
+For deployment and infrastructure (Zephyr's team):
+
+Vercel MCP — deploy, check status, rollback bad releases, trigger preview builds directly from agent.
+Supabase MCP — you already know this one. Direct database access.
+Sentry MCP — query error data, pull stack traces, the agent sees a spike and fixes it.
+For quality and testing (Minos's team):
+
+Playwright MCP — browser automation for e2e testing. Nemesis's team uses this to run tests.
+Linter MCP — run ESLint and TypeScript checks programmatically.
+For documentation (Thoth's team):
+
+Git MCP — commit, branch, diff. Stamp uses this for conventional commits.
+Figma MCP — reads live Figma structure including hierarchy, spacing tokens, component references. Dorian uses this when you have designs.
+The most important one you do not have:
+
+Composio — one MCP endpoint that connects to 1000+ services with managed auth. Instead of setting up GitHub MCP, Supabase MCP, Vercel MCP separately — Composio handles auth for all of them and routes tool calls automatically. Free tier available.
+Mapped to your 82 areas:
+
+Area	Tool needed
+07 SEO	Exa MCP for research
+15 Version Control	Git MCP
+17 Testing	Playwright MCP
+18 Deployment	Vercel MCP
+19 Monitoring	Sentry MCP
+33 Handoff	GitHub MCP
+34 Payments	Composio → Stripe/Paystack
+43 Auth	Supabase MCP
+57 API Design	Exa MCP + Firecrawl
+80 Third Party	Composio for everything
+Start with these three — they cover the most ground and are free:
+
+Exa MCP — intelligence gathering for all research areas
+GitHub MCP — version control and code management
+Composio — connects everything else with one setup
+Everything else you add as specific areas require them.
+
+Okay. No. I I get it now. I get why you use MCP because no matter how good a tool is, building a tool is not better than using MCP because MCP are tools people already built. So it's in people's tools. I think I think this is making sense now. I think this is making sense now. Alright. Alright. Alright. Alright. So we don't have an MCP for payment and all these things. So So we have tools now. What about inbuilt tools? Oh, we don't need inbuilt tools since we have MCPs for all these things. What about the the the tool that will help to... you know, we talked about the law of inference. You know, talk about an agent that will be in charge of monitoring who infers a lot. I think I think we talked about installing it as a plug in, kind of a safety check. I don't know. Is there... do you think there will be any kind of plug in that will be able to detect inference and flag each other. Hey. I can actually come and look at it and intercept and produce result with its own report attached. Or do you think they'll... they need... we need an agent that will be monitoring it. You know? So we have tools. We have skills. Please answer the question I asked before talking about Before I talk about what else we need to do.
+
+Show more
+Let me search before answering.
+
+
+Searched the web
+Searched the web
+Good. Now I have the full answer. Let me be direct.
+
+Does a plugin exist that detects inference and intercepts it in OpenCode?
+
+Not as a ready-made plugin specifically for OpenCode. But three tools exist that do exactly what you described — and they can be wired in.
+
+The three options:
+
+Option 1 — APort Agent Guardrails
+github.com/aport-ai/guardrails — a pre-action authorization plugin for agent frameworks. Before any tool call executes, it runs a policy check. If the action violates the policy, it blocks it and reports why. This is the closest thing to what you described — an interceptor that sits between the agent and its tools.
+
+Option 2 — DeepEval
+Open source. Runs inside your test suite. Checks tool correctness, argument correctness, and task completion. It catches when an agent uses a tool with wrong arguments — which is a sign of inference. Has a free tier.
+
+Option 3 — Arize Phoenix
+Open source observability platform. Every tool call becomes a traced span. You can see exactly what each agent did, what it inferred, and where it went wrong. Not a blocker — a monitor. But it feeds the reviewer agent you described.
+
+The honest answer for your specific setup:
+
+None of these plug directly into OpenCode as a native plugin yet. The cleanest path for you right now is to build Daedalus as an OpenCode plugin using the tool.execute.before hook we discussed. That hook intercepts every tool call. Daedalus checks if the tool call matches what the agent was asked to do. If not — blocks it and flags you.
+
+That is more reliable than any external tool because it is native to OpenCode and uses your own laws as the rulebook.
+
+Want to move forward and define exactly what Daedalus checks for?
+
+Yes. And it is open source. Let me find the exact repo.
+
+
+Searched the web
+Searched the web
+Found it. And it is open source. Apache 2.0 license. Let me answer your question directly.
+
+Yes. APort Agent Guardrails is exactly what you need. And it is open source.
+
+github.com/aporthq/aport-agent-guardrails
+
+How it works — matching exactly what you described:
+
+The flow is:
+
+Agent thinks → decides to make tool call
+↓
+APort intercepts BEFORE the tool executes
+↓
+Checks the tool name + arguments against policy
+↓
+ALLOW → tool runs
+DENY → tool blocked, signed report generated
+↓
+Report goes to your reviewer agent
+The AI cannot bypass this. It runs in the hook layer — not inside the AI's reasoning. Even if the AI is convinced it should do something, the policy does not care. It checks the tool name and arguments against rules. That is it.
+
+What you can mirror from the code:
+
+The logic you want to understand and adapt is:
+
+The before_tool_call hook — intercepts every tool call before execution
+The passport system — each agent has a document listing exactly what tools it is allowed to use
+The policy evaluator — checks the tool call against the passport and returns allow or deny in 53ms
+The audit log — every decision is signed and logged
+How it maps to your Daedalus idea:
+
+You do not build Daedalus from scratch. You install APort and mirror its logic. APort is the flagger — it catches the tool call and reports it. Your Daedalus agent reads the APort report and decides whether it is inference or a legitimate action. Then escalates to Hermes if needed.
+
+APort does the interception. Daedalus does the judgment. Exactly the separation you described.
+
+One command to install:
+
+bash
+npx @aporthq/aport-agent-guardrails opencode
+That wires it into OpenCode automatically. No code changes needed.
+
+No. Do not worry about it. We are still discussing. Uh, we are still discussing, uh, we need to actually continue. Ah, god. Like, the rule is after I had this Epiphany yesterday, I just left off. I went online YouTube. I searched. I did not say anything about the Jenti code in Dubai. I know about it now. I don't know whether it's hidden knowledge or people that know it. Don't just want to say. But, oh, wait. That's fine. That's actually fine. I don't care. So let's move on. Let's move on. So we got the skills. We got our tools. I don't know any... or did any other tool you think you're going to need that... because we we got our MCPs. I don't think... well, let's not think too much about it. We need Anything else would... you can find something. The problem we had was that we created from scratch, so our our... what we created was not... we're we're having too many errors. So it's best we just go with what we have, then we have... it gives us a gap. We discover we can find a tool to fix that gap easily than trying to create from scratch. I hate that. Well, anyways, anyway, before you can use it, so we have to create something from scratch. But I hate that process, but it's inevitable. So we got our tools. We got our MCPs. Now I know now I know different between MCPs and plug ins and stuff. Plug ins is basically I think plugins are basically things that run automatically, not without the AI. YMCPEs need AI to... y m's... AI runs the MCPs and tools. Oh, well. Well. Well. Well. Okay. Move on to the next thing. And that is... what is it? What is it? Do you think there are tools that All these very salespeople and all these people offer, you know, are their tools are their tools like... is there any... do do they suggest any tools so that I can know in case? And then we'll talk about it... search about it, and then we'll move to the agent. Let's talk about the agents. Yeah.
+
+Show more
+Let me search quickly for what tools web development teams commonly recommend for agentic coding setups.
+
+
+Searched the web
+Searched the web
+Good. Here is the clean consolidated answer.
+
+The recommended MCP stack for web development — what everyone agrees on:
+
+Must have — these come up in every list:
+
+GitHub MCP — manage repos, PRs, issues, branches. Every developer needs this first.
+Exa MCP — semantic web search. Most used search MCP in 2026. Free tier available.
+Firecrawl MCP — scrape any website into clean markdown. Free tier available.
+Playwright MCP — real browser for testing and automation.
+Sentry MCP — error tracking. Agent sees error, reads code, proposes fix.
+Vercel MCP — deploy, check status, rollback.
+Supabase MCP — you already know this one.
+One important new one you did not have:
+
+Context7 MCP — fetches current documentation for any library instead of relying on the AI's outdated training data. When your agent needs to know how the latest Next.js or Supabase feature works — Context7 gets the real current docs. This is huge for avoiding errors caused by outdated knowledge.
+One thing I found that is important:
+
+There is now a difference between MCP (agent to tools) and A2A (agent to agent). A2A is Google's protocol for agents talking to each other. It has 150+ supporting organizations. For WebForge — when your agents need to communicate with each other — A2A is the standard emerging for that. Worth knowing but not urgent right now.
+
+Your stack is now:
+
+Skills + Agents + MCPs + APort guardrails + Context7 for live docs.
+
+That covers everything. Ready to talk about the agents now?
+
+Human940 messages (approximately 320k tokens) have been exchanged in this conversation. To maintain response quality and avoid errors, please start a new conversation to continue.
+
+That is a very long conversation warning. You are right to move on.
+
+Before you start a new conversation — let me summarize where we are so you do not lose anything:
+
+What is decided and done:
+
+WebForge uses OpenCode natively — 283 agents as .opencode/agents/ markdown files
+Skills come from existing repos — Gentleman-Skills, Vercel agent-skills, FrancoStino collection
+MCPs confirmed — GitHub, Exa, Firecrawl, Playwright, Sentry, Vercel, Supabase, Context7
+APort guardrails for inference detection
+Hermes is the default agent — not CEO — you are the CEO
+The 82 areas document is complete and saved
+The WebForge org roster is saved
+The laws document is saved
+Next steps when you open new conversation:
+
+Talk about the agents — how to write the 283 agent MD files properly using battle tested system prompts
+Set up the first working agent (Hermes) and test it
+Install the skills collection
+Wire the MCPs
+Start the new conversation by sharing the WebForge repo link and the laws/org files so the new session has context.
+
+
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check cited sources.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Press and hold to record
+
+
+
+
+Claude finished the response
+
+Claude finished the response The new report to verdict. You are not the agent. The area. We report to verdict. That's easy. 35 areas, the 35 agents. We take their findings and report to verdict. Verdict will check it and know whether there's any discrepancy. Do you think verdict is enough to handle
+
+pasted
+
+my past conversation
+
+
+Recognized prior context and sought clarification on next steps
+Recognized prior context and sought clarification on next steps
+Got it — that's the WebForge conversation that hit the length limit right as you were wrapping up the tools/MCPs discussion. Good news is the summary at the end captured the state cleanly:
+
+Locked in:
+
+283 agents as .opencode/agents/ markdown files, OpenCode-native
+Skills sourced from existing repos (Gentleman-Skills, Vercel agent-skills, FrancoStino collection)
+MCP stack: GitHub, Exa, Firecrawl, Playwright, Sentry, Vercel, Supabase, Context7
+APort guardrails wired in for inference detection (Daedalus reads its reports, escalates to Hermes)
+Hermes = default agent, you're CEO
+82 areas doc, org roster, and laws doc all saved
+Next up, per the handoff:
+
+Write the 283 agent MD files using battle-tested system prompt structure
+Stand up Hermes first and actually test it
+Install the skills collection
+Wire the MCPs in
+Where do you want to start? I'd lean toward getting Hermes working end-to-end first — one real agent responding correctly beats 283 files that haven't been touched yet. But if you'd rather nail down the agent MD template/structure first so you're not rewriting all 283 later, that's a reasonable call too.
+
+aearch about battle tested methods an agent is setup
+
+
+Synthesized agent architecture principles from research foundations
+Synthesized agent architecture principles from research foundations
+Good news — the single most relevant source here isn't a random blog. It's Anthropic's own writeup on how they built the Claude Research multi-agent system, which is literally the orchestrator/subagent pattern you're building with WebForge. Combined with the actual OpenCode docs, here's the real battle-tested picture.
+
+The three things Anthropic found that matter most (from their own engineering post):
+
+"Teach the orchestrator how to delegate" — this is your Verdict/Hermes problem exactly. A subagent needs four things spelled out or it guesses badly: an objective, an output format, which tools/sources to use, and clear task boundaries. Vague delegation ("check this area") is what causes the inference/drift you were worried about. If Hermes's dispatch to a sub-verdict doesn't specify format and boundaries, that sub-verdict will improvise.
+They had the exact failure mode you're trying to prevent. Early versions of their system spawned 50 subagents for a simple query, or let agents wander endlessly. Their fix wasn't a plugin — it was explicit scaling rules in the prompt itself: "for simple queries use 1 subagent with 2-3 calls, for complex ones use up to X." Your "one agent handles max 5 things, then spawns" rule is the same instinct, just numeric instead of complexity-based. Both work; yours is actually easier to enforce because it's a hard count, not a judgment call.
+They watched agents work step-by-step in simulation before trusting the prompts. Not theoretical — they ran the actual prompts and tools and observed failures directly, then patched the specific failure. That's your APort/Daedalus plan basically, but the finding is: the interception layer alone didn't solve it, the prompt rewrite did. So Daedalus watching tool calls is good, but the bigger lever is still writing tighter subagent prompts up front.
+How this maps to OpenCode's actual mechanics (this part is very concrete, worth knowing before you write 283 files):
+
+Agent = a markdown file. YAML frontmatter on top (description, mode: primary/subagent/all, model, permission, temperature), plain prose system prompt below it as the body.
+mode: subagent + hidden: true is what you want for most of your 283 — hidden means it doesn't clutter the @ menu for you, but other agents can still invoke it via the Task tool.
+Critical detail I'd have gotten wrong: when one agent's system prompt needs to delegate to another agent, you reference the subagent by name with no @ — the @ is only for you typing manually in the TUI. So Hermes's body would say something like code-reviewer check this diff for security issues, not @code-reviewer.
+Permissions are your real guardrail, more reliable than any plugin: set edit: deny, bash: deny on anything that should only read and report. That's a structural version of your law — an agent literally cannot exceed its five allowed actions if the permission object doesn't grant them.
+Low temperature (0–0.2) for anything doing checking/verdict work, higher only for brainstorming-type agents.
+One correction to keep in mind going forward: the guide notes explicitly that the prompt engineering part — the actual wording that stops an agent from misbehaving — isn't something anyone publishes. Anthropic said they spent weeks iterating in simulation. So don't expect to write all 283 files once and be done; expect the first working batch (Hermes + maybe 4-5 department heads) to need a few rounds of "watch it fail, patch the prompt" before you template the rest.
+
+Want to start drafting Hermes's actual markdown file next, using this four-part structure (objective / output format / tools+boundaries / escalation rule)?
+
+so where would i get them
+
+
+Searched the web
+Searched the web
+Here are the actual repos you can pull from and mirror, ranked by fit for WebForge:
+
+For the agent files themselves (this is the big one):
+
+github.com/ankitmundada/awesome-opencode-subagents — 100+ subagents, has an install script that lets you browse categories and pull only what you need. Copy files straight into .opencode/agents/.
+github.com/jbeck018/agents-opencode — 95 subagents, organized by domain, each with model tier assigned (haiku/sonnet/opus) based on task complexity — useful reference for deciding which of your 283 need a cheap model vs a strong one.
+github.com/awesome-opencode/awesome-opencode — the curated master list of everything OpenCode-related (plugins, themes, agent collections, memory systems). Worth browsing once just to see what already exists before you build anything from scratch.
+For skills (which you already know about, but confirming source pattern): github.com/VoltAgent/awesome-agent-skills — 1000+ skills, works across Claude Code, OpenCode, Codex, Cursor. This is likely bigger/more current than the FrancoStino/Vercel collections you had before.
+
+For the actual permission/guardrail pattern (relevant to your Daedalus law): github.com/NjengaFelix/opencode-agents shows the exact frontmatter syntax for locking an agent to read-only-plus-git, e.g. bash: "git *": "allow", "*": "deny" — that's your five-things-only rule expressed as literal config instead of a hoped-for prompt instruction.
+
+How I'd actually use these for your 283:
+
+Clone ankitmundada/awesome-opencode-subagents and jbeck018/agents-opencode into a scratch folder.
+Go through your 82-areas doc and for each area, check if one of those ~195 combined agents already covers it close enough to adapt.
+For anything that matches — copy the file, rename it to fit your department naming (Athena/Hephaestus/etc.), keep their frontmatter structure, rewrite the body to match your voice and your escalation rules.
+For anything that doesn't exist yet (your Verdict/congregation logic, Daedalus specifically) — that's the genuinely-from-scratch 10-20%, which is fine since Anthropic's own lesson was you can't avoid that part anyway.
+That should get you to something like 70-80% mirrored, 20-30% original, instead of 283 blank pages.
+
+i will not build from scratch i will rebuild with wht i already have from that repo it must not be 283 i used 283 because i wanted to cover every area if the ones in this repo covers everything i just yse it then
+
+
+Evaluated existing repo coverage against departmental needs comprehensively
+Evaluated existing repo coverage against departmental needs comprehensively
+That's the smarter move — no reason to hand-write 283 when a chunk of the work already exists and is tested.
+
+Here's the practical path to figure out if the repo covers everything:
+
+Step 1 — get the category list from the repos. Let me pull what categories/domains ankitmundada/awesome-opencode-subagents and jbeck018/agents-opencode actually cover, so you can see the shape of what's already built.
+
+
+Navigated rate limit constraints through strategic retry sequencing
+Navigated rate limit constraints through strategic retry sequencing
+
+
+You are out of free messages until 6:10 AM
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
