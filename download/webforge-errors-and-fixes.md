@@ -393,6 +393,39 @@ You are a senior <role> specializing in <expertise>.
 
 ---
 
+## Error #10 — Agent Template Is Too Fragile (The Root Cause)
+
+**Status:** `[APPLIED]` (2026-07-09 — CEO confirmed: design master template + clone OpenCode)
+
+**Symptom:** Hermes tries to recruit, fails, tries to use Athena to recruit, fails, tries to use Voss. The permissions restrict him but the system isn't optimized for correct behavior. Agents know WHAT to do and WHAT NOT to do, but not HOW. The model sees loopholes because the template doesn't specify procedures.
+
+**Root Cause:** The v2.1 template was too simple compared to the awesome-opencode repos. It lacked procedures, expertise depth, checklists, anti-patterns, and code examples. The back-and-forth between here and OpenCode is too stressful — integration is a pain.
+
+**Battle-Tested Fix Applied:**
+
+1. **Master Template Designed** — `webforge-agent-template-spec.md`. A superset of all 3 repo dialects (ankitmundada, jbeck018, wshobson). Template + Identity = any agent. If the template can't reproduce an agent from those repos, the template is broken.
+
+2. **Clone OpenCode** — stop integrating. Fork the repo, rip out built-in agents, make it ours. On-demand fetching (Context7 for library docs, custom MCP for agent MD files) — no bundling 2000+ files.
+
+**Key Design Decisions:**
+- **Dual-mode Capabilities** — accepts `###` subsections OR freeform bullet blocks
+- **Dual-mode Response Approach** — accepts numbered list OR phased workflow
+- **Mandatory:** Identity, Purpose, Capabilities, Workflow, When Invoked, Communication, Escalation, Boundaries, Examples, Reference
+- **Conditional (domain experts):** Expertise, Approach, Guidelines, Checklists, Scenarios, Response Style, Best Practices, Anti-Patterns, Advanced Capabilities, Testing Commands, Framework Adapters
+
+**CEO Decisions Confirmed:**
+- ✅ Adopt the master template structure
+- ✅ Clone OpenCode (stop integrating)
+- ✅ On-demand skill fetching (Context7 + custom MCP, no bundling)
+
+**Next Steps:**
+1. Lock the template (build a validator)
+2. Rewrite the 3 permanent agents using the template
+3. Clone OpenCode (2-3 weeks)
+4. Build Voss's agent factory (template + identity = agent)
+
+---
+
 ## Lessons Learned (Add to This Section as We Learn)
 
 1. **Don't build custom wrappers for things OpenCode supports natively.** `safe_task` was a subprocess wrapper for something OpenCode's permission system already handled via glob patterns. Native > custom. (Error #4)
