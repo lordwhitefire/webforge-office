@@ -1,0 +1,33 @@
+{
+  "title": "Audio Interfaces – Music Place",
+  "h1": "",
+  "productCount": 5,
+  "products": [
+    {
+      "name": "DDJ-SX2 DJ Controller for Serato DJ",
+      "price": "$850.75",
+      "url": "https://musicplace.themerex.net/product/barrington-br-fr401-double-french-horn/"
+    },
+    {
+      "name": "DDJ-SX2 DJ Controller for Serato DJ",
+      "price": "$850.75",
+      "url": "https://musicplace.themerex.net/product/ddj-sx2-dj-controller-for-serato-dj/"
+    },
+    {
+      "name": "Pioneer DDJSR Pro DJ Controller",
+      "price": "$450.75",
+      "url": "https://musicplace.themerex.net/product/pioneer-ddjsr-pro-dj-controller/"
+    },
+    {
+      "name": "USB DJ Controller with Trigger Pads",
+      "price": "$350.75",
+      "url": "https://musicplace.themerex.net/product/usb-dj-controller-with-trigger-pads/"
+    },
+    {
+      "name": "Tama S.L.P. Big Black Steel Snare Drum",
+      "price": "",
+      "url": "https://musicplace.themerex.net/product/tama-s-l-p-big-black-steel-snare-drum/"
+    }
+  ],
+  "url": "https://musicplace.themerex.net/product-category/recording/audio-interfaces/"
+}

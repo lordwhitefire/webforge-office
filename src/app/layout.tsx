@@ -1,41 +1,21 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from "next"
+import { Hind, Lato } from "next/font/google"
+import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const hind = Hind({ subsets: ["latin"], variable: "--font-hind", weight: ["300", "400", "600", "700"] })
+const lato = Lato({ subsets: ["latin"], variable: "--font-lato", weight: ["300", "400", "700"] })
 
 export const metadata: Metadata = {
-  title: "WebForge Office — AI Agent Organization",
-  description: "Visual office for the WebForge AI agent organization. SQLite-backed, crash-recoverable, real inter-agent mailboxes.",
-  keywords: ["WebForge", "AI agents", "Kanban", "Next.js", "SQLite"],
-  authors: [{ name: "WebForge" }],
-  icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
-  },
-};
+  title: "Music Place — Professional Music Equipment & Instruments",
+  description: "Your premier destination for professional music instruments, recording equipment, and DJ gear.",
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
+    <html lang="en" className={`${hind.variable} ${lato.variable}`}>
+      <body className="font-sans antialiased">
         {children}
-        <Toaster />
       </body>
     </html>
-  );
+  )
 }

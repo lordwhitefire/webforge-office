@@ -1,406 +1,87 @@
-"use client";
+import { Header } from "@/components/store/Header"
+import { Footer } from "@/components/store/Footer"
+import { ProductCard } from "@/components/store/ProductCard"
+import { getProducts, getBestSellers, getFeaturedProducts, getBlogPosts } from "@/lib/data"
+import { Truck, ShieldCheck, Headphones, RefreshCw } from "lucide-react"
+import Link from "next/link"
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { CEOOffice } from "@/components/office/CEOOffice";
-import { OfficeFloor } from "@/components/office/OfficeFloor";
-import { AgentTree } from "@/components/office/AgentTree";
-import { CampusMap2D } from "@/components/office/CampusMap2D";
-import { CampusMap3D } from "@/components/office/CampusMap3D";
-import { SpyCam } from "@/components/office/SpyCam";
-import { ChatPanel } from "@/components/office/ChatPanel";
-import { TaskBoard } from "@/components/office/TaskBoard";
-import { StandupModal } from "@/components/office/StandupModal";
-import { NotificationsPanel } from "@/components/office/NotificationsPanel";
-import { cn } from "@/lib/utils";
-import type { Building } from "@/data/buildings";
-import {
-  useOfficeStore,
-  type OfficeTask,
-  type OfficeMessage,
-} from "@/components/office/store";
-
-export default function Home() {
-  const initAgents = useOfficeStore((s) => s.initAgents);
-  const sendToCeo = useOfficeStore((s) => s.sendToCeo);
-  const setActiveAgent = useOfficeStore((s) => s.setActiveAgent);
-  const activeAgent = useOfficeStore((s) => s.activeAgent);
-  const setTasks = useOfficeStore((s) => s.setTasks);
-  const setMessages = useOfficeStore((s) => s.setMessages);
-  const setRuns = useOfficeStore((s) => s.setRuns);
-  const openStandup = useOfficeStore((s) => s.openStandup);
-  const standupOpen = useOfficeStore((s) => s.standupOpen);
-  const closeStandup = useOfficeStore((s) => s.closeStandup);
-  const setStandupOutput = useOfficeStore((s) => s.setStandupOutput);
-  const setReaperSummary = useOfficeStore((s) => s.setReaperSummary);
-  const messages = useOfficeStore((s) => s.messages);
-  const tasks = useOfficeStore((s) => s.tasks);
-  const agents = useOfficeStore((s) => s.agents);
-
-  const prevNotifCount = useRef(0);
-  const prevTaskIds = useRef<Set<string>>(new Set());
-
-  // Initialize agents + run reaper on mount
-  useEffect(() => {
-    initAgents();
-
-    // Run the reaper on startup to clean up orphaned runs
-    fetch("/api/init", { method: "POST" })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.ok && data.reaped) {
-          const s = data.reaped as { total?: number };
-          if (s.total && s.total > 0) {
-            toast.info(`Reaper cleaned up ${s.total} orphaned run(s)`);
-          }
-          setReaperSummary(data.reaped);
-        }
-      })
-      .catch(() => {
-        // Silent — reaper failure shouldn't block the UI
-      });
-  }, [initAgents, setReaperSummary]);
-
-  // ── Polling: tasks + notifications + runs every 3s ──
-  const poll = useCallback(async () => {
-    // Tasks
-    try {
-      const res = await fetch("/api/tasks", { cache: "no-store" });
-      const data = await res.json();
-      if (data.ok && Array.isArray(data.tasks)) {
-        const newTasks = data.tasks as OfficeTask[];
-
-        const currentIds = new Set(newTasks.map((t) => t.id));
-        for (const t of newTasks) {
-          if (!prevTaskIds.current.has(t.id)) {
-            if (prevTaskIds.current.size > 0) {
-              toast.success("New task on the board", {
-                description: `${t.id}: ${t.title}`,
-              });
-            }
-          }
-        }
-        prevTaskIds.current = currentIds;
-        setTasks(newTasks);
-
-        // Derive "working" status from tasks
-        const owners = new Set(
-          newTasks
-            .filter((t) => t.status === "doing" && t.owner)
-            .map((t) => (t.owner as string).toLowerCase())
-        );
-        const blockedOwners = new Set(
-          newTasks
-            .filter((t) => t.status === "blocked" && t.owner)
-            .map((t) => (t.owner as string).toLowerCase())
-        );
-
-        useOfficeStore.setState((s) => ({
-          agents: s.agents.map((a) => {
-            if (a.thinking) return a;
-            if (blockedOwners.has(a.name.toLowerCase())) {
-              return { ...a, status: "blocked" };
-            }
-            if (owners.has(a.name.toLowerCase())) {
-              return { ...a, status: "working" };
-            }
-            if (
-              (a.status === "working" || a.status === "blocked") &&
-              !owners.has(a.name.toLowerCase()) &&
-              !blockedOwners.has(a.name.toLowerCase())
-            ) {
-              return { ...a, status: "idle" };
-            }
-            return a;
-          }),
-        }));
-      }
-    } catch {
-      // silent
-    }
-
-    // Notifications
-    try {
-      const res = await fetch("/api/notifications", { cache: "no-store" });
-      const data = await res.json();
-      if (data.ok && Array.isArray(data.notifications)) {
-        const unread = data.notifications as OfficeMessage[];
-        if (unread.length > prevNotifCount.current && prevNotifCount.current !== -1) {
-          const newest = unread[unread.length - 1];
-          if (newest && prevNotifCount.current !== 0) {
-            toast(`@${newest.to_agent} got a notification`, {
-              description: `${newest.type}: ${newest.subject.slice(0, 80)}`,
-            });
-          }
-        }
-        prevNotifCount.current = unread.length;
-        setMessages(unread);
-      } else if (data.ok) {
-        prevNotifCount.current = 0;
-        setMessages([]);
-      }
-    } catch {
-      // silent
-    }
-
-    // Runs (just update store, no toasts)
-    try {
-      const res = await fetch("/api/runs?status=running", { cache: "no-store" });
-      const data = await res.json();
-      if (data.ok && Array.isArray(data.runs)) {
-        setRuns(data.runs);
-      }
-    } catch {
-      // silent
-    }
-  }, [setTasks, setMessages, setRuns]);
-
-  useEffect(() => {
-    void poll();
-    const id = setInterval(() => void poll(), 3000);
-    return () => clearInterval(id);
-  }, [poll]);
-
-  // ── Standup ──
-  const fetchStandup = useCallback(async () => {
-    setStandupOutput("", true);
-    try {
-      const res = await fetch("/api/standup", { cache: "no-store" });
-      const data = await res.json();
-      if (data.ok) {
-        setStandupOutput(data.output || "(no output)", false);
-      } else {
-        setStandupOutput(
-          `Failed to load standup: ${data.error || "unknown error"}`,
-          false
-        );
-      }
-    } catch (e) {
-      setStandupOutput(
-        `Network error: ${e instanceof Error ? e.message : "unknown"}`,
-        false
-      );
-    }
-  }, [setStandupOutput]);
-
-  // ── Agent click handler ──
-  const handleAgentClick = useCallback(
-    (name: string) => {
-      if (activeAgent === name) return;
-      sendToCeo(name);
-      setActiveAgent(name);
-      toast(`@${name} is walking to the CEO office`, {
-        description: "Chat panel opened.",
-      });
-    },
-    [activeAgent, sendToCeo, setActiveAgent]
-  );
-
-  const unreadCount = messages.length;
-  const doingCount = tasks.filter((t) => t.status === "doing").length;
-  const doneCount = tasks.filter((t) => t.status === "done").length;
-  const blockedCount = tasks.filter((t) => t.status === "blocked").length;
-  const workingAgents = agents.filter((a) => a.status === "working").length;
-
-  // 2D/3D view toggle
-  const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
-
-  // Spy cam — when set, shows building interior
-  const [spyCamBuilding, setSpyCamBuilding] = useState<Building | null>(null);
-
-  // Agent states for 3D view + spy cam
-  const [agentStates, setAgentStates] = useState<Record<string, { state: string; task: string | null; watching: any[] }>>({});
-
-  // Poll agent states for 3D view
-  useEffect(() => {
-    const poll3D = async () => {
-      try {
-        const res = await fetch("/api/agent/states", { cache: "no-store" });
-        const data = await res.json();
-        if (data.ok && data.states) setAgentStates(data.states);
-      } catch {}
-    };
-    void poll3D();
-    const id = setInterval(() => void poll3D(), 2000);
-    return () => clearInterval(id);
-  }, []);
+export default function HomePage() {
+  const bestSellers = getBestSellers()
+  const featured = getFeaturedProducts()
+  const posts = getBlogPosts().slice(0, 3)
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      {/* Top status bar */}
-      <div className="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/80 px-4 py-2 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 shadow-lg">
-              <span className="text-sm font-black">W</span>
-            </div>
-            <div>
-              <h1 className="text-sm font-bold leading-tight text-amber-100">
-                WebForge Office
-              </h1>
-              <p className="text-[10px] text-slate-500">
-                AI agent organization — live (SQLite-backed)
-              </p>
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">
+        {/* Hero — 4 category tiles per home-1440-01.png */}
+        <section className="grid grid-cols-2 gap-0 md:grid-cols-4">
+          {[
+            { title: "New In Keyboards", sub: "Keyboards & Digital Pianos", link: "/category/midi-controllers", bg: "#1A1C1F" },
+            { title: "Musician's Lifestyle", sub: "Microphones & Gear", link: "/category/audio-interfaces", bg: "#1A1C1F" },
+            { title: "Shop Accessories", sub: "", link: "/category/accessories", bg: "#1A1C1F" },
+            { title: "Mega Sale", sub: "On Every Brand", link: "/sale", bg: "#E21818" },
+          ].map((tile, i) => (
+            <Link key={i} href={tile.link} className="flex h-64 flex-col justify-center p-8 transition-opacity hover:opacity-90" style={{ backgroundColor: tile.bg }}>
+              <h2 className="text-xl font-bold text-white">{tile.title}</h2>
+              {tile.sub && <p className="mt-1 text-sm text-[#9B9C9E]">{tile.sub}</p>}
+              {tile.title === "Mega Sale" && <span className="mt-4 inline-block w-fit rounded bg-white px-4 py-2 text-xs font-bold text-[#E21818]">SHOP NOW</span>}
+            </Link>
+          ))}
+        </section>
+
+        {/* Features strip */}
+        <section className="border-y border-[#33383D] bg-[#1A1C1F]">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4">
+            {[
+              { Icon: Truck, title: "Free Shipping", text: "On orders over $100" },
+              { Icon: ShieldCheck, title: "Secure Payment", text: "100% protected" },
+              { Icon: Headphones, title: "24/7 Support", text: "Always here to help" },
+              { Icon: RefreshCw, title: "Easy Returns", text: "30-day return policy" },
+            ].map((f, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <f.Icon className="h-8 w-8 text-[#E21818]" />
+                <div>
+                  <p className="text-sm font-bold text-white">{f.title}</p>
+                  <p className="text-xs text-[#9B9C9E]">{f.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Best Sellers */}
+        <section className="mx-auto max-w-7xl px-4 py-12">
+          <h2 className="mb-6 text-center text-2xl font-bold text-white">Best Sellers</h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {bestSellers.map(p => <ProductCard key={p.slug} product={p} />)}
+          </div>
+        </section>
+
+        {/* Featured */}
+        <section className="bg-[#1A1C1F] py-12">
+          <div className="mx-auto max-w-7xl px-4">
+            <h2 className="mb-6 text-center text-2xl font-bold text-white">Featured Items</h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {featured.map(p => <ProductCard key={p.slug} product={p} />)}
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 text-[11px]">
-            <StatPill label="Working" value={workingAgents} color="text-yellow-300 bg-yellow-500/10" />
-            <StatPill label="Doing" value={doingCount} color="text-blue-300 bg-blue-500/10" />
-            <StatPill label="Done" value={doneCount} color="text-emerald-300 bg-emerald-500/10" />
-            <StatPill label="Blocked" value={blockedCount} color="text-red-300 bg-red-500/10" />
-            <NotificationsPanel />
+        </section>
+
+        {/* Blog teaser */}
+        <section className="mx-auto max-w-7xl px-4 py-12">
+          <h2 className="mb-6 text-center text-2xl font-bold text-white">What's New</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {posts.map(post => (
+              <Link key={post.slug} href={`/blog/${post.slug}`} className="rounded-lg border border-[#33383D] bg-[#1A1C1F] p-4 hover:border-[#E21818]">
+                <h3 className="mb-2 text-sm font-medium text-white">{post.title}</h3>
+                <p className="text-xs text-[#9B9C9E]">{post.date}</p>
+              </Link>
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="mx-auto flex max-w-[1600px] flex-col gap-3 p-3 lg:p-4">
-        {/* CEO office */}
-        <CEOOffice onOpenStandup={openStandup} unreadCount={unreadCount} />
-
-        {/* Office + Chat side-by-side */}
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_380px]">
-          {/* Campus map + Agent tree */}
-          <div className="flex flex-col gap-3">
-            {/* 2D/3D Toggle */}
-            <div className="flex items-center gap-2">
-              <button
-                className={cn(
-                  "rounded-lg px-3 py-1 text-[11px] font-medium transition-colors",
-                  viewMode === "2d"
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                    : "bg-slate-800/50 text-slate-400 border border-slate-700"
-                )}
-                onClick={() => setViewMode("2d")}
-              >
-                🗺️ 2D Map
-              </button>
-              <button
-                className={cn(
-                  "rounded-lg px-3 py-1 text-[11px] font-medium transition-colors",
-                  viewMode === "3d"
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                    : "bg-slate-800/50 text-slate-400 border border-slate-700"
-                )}
-                onClick={() => setViewMode("3d")}
-              >
-                🏢 3D Walk
-              </button>
-            </div>
-
-            {/* Map view — 2D, 3D, or Spy Cam */}
-            <div className="lg:h-[500px]">
-              {spyCamBuilding ? (
-                <SpyCam
-                  building={spyCamBuilding}
-                  agentStates={agentStates}
-                  onAgentClick={handleAgentClick}
-                  onExit={() => setSpyCamBuilding(null)}
-                />
-              ) : viewMode === "2d" ? (
-                <CampusMap2D
-                  onAgentClick={handleAgentClick}
-                  onBuildingClick={(b) => setSpyCamBuilding(b)}
-                />
-              ) : (
-                <CampusMap3D
-                  agentStates={agentStates}
-                  onAgentClick={handleAgentClick}
-                  onBuildingClick={(b) => setSpyCamBuilding(b)}
-                />
-              )}
-            </div>
-            <div className="lg:h-[300px]">
-              <AgentTree />
-            </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-[11px] text-slate-400">
-              <span className="font-semibold text-amber-300">Tip:</span>{" "}
-              {spyCamBuilding
-                ? "📹 Spy Cam — click any agent to call them · scroll to zoom · drag to orbit"
-                : viewMode === "2d"
-                ? "Scroll to zoom · Drag to pan · Right-click agent for Call/Dismiss · Click building for Spy Cam"
-                : "WASD to walk · Mouse to look · Click building for Spy Cam · Scroll to zoom"}
-            </div>
-          </div>
-
-          {/* Chat panel */}
-          <div className="lg:h-[680px]">
-            {activeAgent ? (
-              <ChatPanel
-                agentName={activeAgent}
-                onClose={() => {
-                  const store = useOfficeStore.getState();
-                  store.returnHome(activeAgent);
-                  setActiveAgent(null);
-                }}
-              />
-            ) : (
-              <EmptyChatPanel />
-            )}
-          </div>
-        </div>
-
-        {/* Task board (Kanban) */}
-        <div className="lg:h-[320px]">
-          <TaskBoard onRefresh={() => void poll()} />
-        </div>
-
-        {/* Footer */}
-        <footer className="mt-2 border-t border-slate-800 pt-3 text-center text-[11px] text-slate-500">
-          WebForge Office · TypeScript Agent Runtime ·{" "}
-          <a
-            href="https://github.com/lordwhitefire/webforge-office"
-            className="text-amber-400 hover:underline"
-            target="_blank"
-            rel="noreferrer"
-          >
-            webforge-office
-          </a>
-        </footer>
-      </div>
-
-      {/* Standup modal */}
-      <StandupModal
-        open={standupOpen}
-        onClose={closeStandup}
-        fetchStandup={fetchStandup}
-      />
-    </main>
-  );
-}
-
-function StatPill({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color: string;
-}) {
-  return (
-    <div
-      className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${color}`}
-    >
-      <span className="text-slate-400">{label}</span>
-      <span className="font-bold text-slate-100">{value}</span>
+        </section>
+      </main>
+      <Footer />
     </div>
-  );
-}
-
-function EmptyChatPanel() {
-  return (
-    <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-700 bg-slate-900/30 p-6 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-800/80 text-slate-500">
-        <span className="text-2xl">💬</span>
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-slate-300">No agent selected</p>
-        <p className="mt-1 text-xs text-slate-500">
-          Click an agent on the office floor to bring them to the CEO office
-          and start a conversation.
-        </p>
-      </div>
-    </div>
-  );
+  )
 }

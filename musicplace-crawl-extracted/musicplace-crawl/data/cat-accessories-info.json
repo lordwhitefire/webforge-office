@@ -1,0 +1,43 @@
+{
+  "title": "Accessories – Music Place",
+  "h1": "",
+  "productCount": 7,
+  "products": [
+    {
+      "name": "Blue Microphones Snowball iCE",
+      "price": "$150.75",
+      "url": "https://musicplace.themerex.net/product/barrington-br-fr401-double-french-horn/"
+    },
+    {
+      "name": "Blue Microphones Snowball iCE",
+      "price": "$150.75",
+      "url": "https://musicplace.themerex.net/product/blue-microphones-snowball-ice/"
+    },
+    {
+      "name": "Microphones Yeti USB Microphone",
+      "price": "$150.75",
+      "url": "https://musicplace.themerex.net/product/microphones-yeti-usb-microphone/"
+    },
+    {
+      "name": "MXX V22R Large  Capsule Condenser Microphone",
+      "price": "$349.99",
+      "url": "https://musicplace.themerex.net/product/mxx-v22r-large-capsule-condenser-microphone/"
+    },
+    {
+      "name": "Soyuz Tube Condenser Microphone",
+      "price": "$848.99 – $948.99Price range: $848.99 through $948.99",
+      "url": "https://musicplace.themerex.net/product/soyuz-tube-condenser-microphone/"
+    },
+    {
+      "name": "Tama S.L.P. Big Black Steel Snare Drum",
+      "price": "$249.99",
+      "url": "https://musicplace.themerex.net/product/tama-s-l-p-big-black-steel-snare-drum/"
+    },
+    {
+      "name": "Tama S.L.P. Big Black Steel Snare Drum",
+      "price": "",
+      "url": "https://musicplace.themerex.net/product/tama-s-l-p-big-black-steel-snare-drum/"
+    }
+  ],
+  "url": "https://musicplace.themerex.net/product-category/dj-karaoke/accessories-dj-karaoke/"
+}

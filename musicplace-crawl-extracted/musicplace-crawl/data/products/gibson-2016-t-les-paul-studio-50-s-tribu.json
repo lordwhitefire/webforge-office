@@ -1,0 +1,50 @@
+{
+  "name": "Gibson 2016 T Les Paul Studio 50’s Tribute",
+  "price": "<span class=\"woocommerce-Price-amount amount\" aria-hidden=\"true\"><bdi><span class=\"woocommerce-Price-currencySymbol\">$</span>899.99</bdi></span> <span aria-hidden=\"true\">–</span> <span class=\"woocommerce-Price-amount amount\" aria-hidden=\"true\"><bdi><span class=\"woocommerce-Price-currencySymbol\">$</span>950.99</bdi></span><span class=\"screen-reader-text\">Price range: $899.99 through $950.99</span>",
+  "sku": "N/A",
+  "categories": [
+    "Band & Orchestra",
+    "Bass Guitars",
+    "Guitars",
+    "Instruments",
+    "Orchestral Strings"
+  ],
+  "tags": [
+    "company",
+    "electric guitars",
+    "sale"
+  ],
+  "shortDescription": "",
+  "fullDescription": "<h2>Description</h2>\n\n<p>Fusce nunc dolor, pretium luctus elit at, interdum sollicitudin lectus. Quisque finibus consequat molestie. Aenean cursus lorem eu fringilla euismod. Pellentesque ullamcorper tempus nisl at sollicitudin. Ut ut maximus lectus, ut condimentum augue. Curabitur non tortor neque. Donec euismod diam sit amet pretium molestie. Sed quis pellentesque velit, vitae rhoncus dolor. Aliquam erat volutpat. Aenean malesuada, risus sed lobortis iaculis, massa erat tristique purus, eu suscipit magna ipsum eu elit. Ut eu orci eget est vestibulum pretium quis ultrices eros.</p>\n<p>Mauris non rhoncus mauris, ut porta nunc. Nullam tincidunt tempus ligula, a dapibus massa ullamcorper et. Aliquam facilisis, massa in malesuada vehicula, odio mauris gravida sem, molestie imperdiet metus urna sit amet ex. Praesent egestas, nisi vel finibus finibus, dui nulla aliquam metus, sit amet lacinia diam justo sed mauris. Sed efficitur, eros vitae ultricies bibendum, eros nibh pretium massa, ut consequat nisl felis eu libero. Aenean sit amet convallis nisl. Vestibulum sollicitudin nec sem sit amet aliquam. Integer rutrum vel neque nec porttitor. Integer malesuada at massa at vulputate. Duis in nunc molestie, vulputate erat a, interdum tellus. Vestibulum eget nisl ullamcorper, mattis nisi sed, mollis nibh. Maecenas semper, erat a porttitor rutrum, metus nulla accumsan ligula, nec faucibus lorem risus ac enim.</p>",
+  "stock": "",
+  "rating": "<div class=\"star-rating\" role=\"img\" aria-label=\"Rated 5.00 out of 5\"><span style=\"width:100%\">Rated <strong class=\"rating\">5.00</strong> out of 5 based on <span class=\"rating\">1</span> customer rating</span></div>\t\t\t\t\t\t\t\t<a href=\"#reviews\" class=\"woocommerce-review-link\" rel=\"nofollow\">(<span class=\"count\">1</span> customer review)</a>",
+  "mainImage": "https://musicplace.themerex.net/wp-content/uploads/2016/07/f-600x778.jpg",
+  "galleryImages": [
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/f-600x778.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/f.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_4-600x778.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_3-600x778.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_2-600x778.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_1-600x778.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/f-100x100.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_4-100x100.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_3-100x100.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_2-100x100.jpg",
+    "https://musicplace.themerex.net/wp-content/uploads/2016/07/3_1-100x100.jpg"
+  ],
+  "features": [
+    {
+      "label": "Color",
+      "value": "Black, Red, White"
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Jack Black",
+      "date": "August 1, 2016",
+      "rating": "Rated 5 out of 5",
+      "text": "Jack Black \n\t\t\t\t– August 1, 2016"
+    }
+  ],
+  "url": "https://musicplace.themerex.net/product/gibson-2016-t-les-paul-studio-50s-tribute/"
+}

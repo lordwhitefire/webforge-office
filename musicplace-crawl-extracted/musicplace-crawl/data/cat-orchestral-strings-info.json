@@ -1,0 +1,43 @@
+{
+  "title": "Orchestral Strings – Music Place",
+  "h1": "",
+  "productCount": 7,
+  "products": [
+    {
+      "name": "Custom Zone 6-String Full-Size Electric Guitar",
+      "price": "$1,329.99",
+      "url": "https://musicplace.themerex.net/product/barrington-br-fr401-double-french-horn/"
+    },
+    {
+      "name": "Custom Zone 6-String Full-Size Electric Guitar",
+      "price": "$1,329.99",
+      "url": "https://musicplace.themerex.net/product/custom-zone-6-string-full-size-electric-guitar/"
+    },
+    {
+      "name": "Gibson 2016 T Les Paul Studio 50’s Tribute",
+      "price": "$899.99 – $950.99Price range: $899.99 through $950.99",
+      "url": "https://musicplace.themerex.net/product/gibson-2016-t-les-paul-studio-50s-tribute/"
+    },
+    {
+      "name": "Gibson Custom L5 Premier Acoustic Guitar",
+      "price": "$1,229.99 – $1,329.99Price range: $1,229.99 through $1,329.99",
+      "url": "https://musicplace.themerex.net/product/gibson-custom-l5-premier-acoustic-guitar/"
+    },
+    {
+      "name": "Handcrafted Blue Acoustic Violin",
+      "price": "$850.75 – $950.75Price range: $850.75 through $950.75",
+      "url": "https://musicplace.themerex.net/product/handcrafted-blue-acoustic-violin/"
+    },
+    {
+      "name": "Handcrafted Wood Acoustic Violin",
+      "price": "$650.75 – $700.75Price range: $650.75 through $700.75",
+      "url": "https://musicplace.themerex.net/product/handcrafted-wood-acoustic-violin/"
+    },
+    {
+      "name": "Tama S.L.P. Big Black Steel Snare Drum",
+      "price": "",
+      "url": "https://musicplace.themerex.net/product/tama-s-l-p-big-black-steel-snare-drum/"
+    }
+  ],
+  "url": "https://musicplace.themerex.net/product-category/band-orchestra/orchestral-strings/"
+}
