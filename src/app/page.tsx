@@ -17,24 +17,28 @@ export default function HomePage() {
       <main className="flex-1">
         {/* ─── Hero — person with headphones, text overlay ─── */}
         {/* Per home-1440-01: full-width hero with background image, white text, dark "VIEW MORE" button */}
-        <section className="relative flex h-[500px] items-center justify-center overflow-hidden bg-gradient-to-b from-[#1a1a1a] to-[#141618]">
-          {/* Background image placeholder — generated gradient simulating photo of person with headphones */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#2a2a2a] via-[#1a1a1a] to-[#0a0a0a]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141618] via-transparent to-transparent" />
-          {/* Text — per screenshot: centered, white */}
-          <div className="relative z-10 mx-auto max-w-2xl px-4 text-center">
-            <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl" style={{ fontFamily: "var(--font-lato)" }}>
-              The Headphones You Want.
-            </h1>
-            <p className="mb-8 text-base text-[#9B9C9E] md:text-lg">
-              Rest assured you're getting some of the best headphones available with our selection of Top Recommended.
-            </p>
-            <Link
-              href="/category/headphones"
-              className="inline-block bg-[#1A1C1F] px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#33383D]"
-            >
-              View More
-            </Link>
+        <section className="relative flex h-[500px] items-center justify-center overflow-hidden">
+          {/* Hero background image — generated image of person with headphones per home-1440-01.png */}
+          <div className="absolute inset-0">
+            <img src="/musicplace/hero-1.png" alt="Person wearing headphones" className="h-full w-full object-cover opacity-60" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#141618]/50 via-[#141618]/30 to-[#141618]" />
+          {/* Text — per screenshot: LEFT-aligned, white, dark "VIEW MORE" button */}
+          <div className="relative z-10 mx-auto max-w-7xl px-4 text-left">
+            <div className="max-w-xl">
+              <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl" style={{ fontFamily: "var(--font-lato)" }}>
+                The Headphones You Want.
+              </h1>
+              <p className="mb-8 text-base text-white/80 md:text-lg">
+                Rest assured you're getting some of the best headphones available with our selection of Top Recommended.
+              </p>
+              <Link
+                href="/category/headphones"
+                className="inline-block bg-[#1A1C1F] px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#33383D]"
+              >
+                View More
+              </Link>
+            </div>
           </div>
         </section>
 

@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, X, Search, ShoppingCart, ChevronDown } from "lucide-react"
+import { Menu, X, Search, ShoppingCart, ChevronDown, Truck, Phone, User } from "lucide-react"
 import { useCart } from "@/lib/cart-store"
 
 interface NavItem {
@@ -72,23 +72,36 @@ export function Header() {
       {/* Top utility bar — bg #1A1C1F per crawled CSS */}
       <div className="border-b border-[#33383D]/50 bg-[#1A1C1F] px-4 py-1.5 text-[11px] text-[#9B9C9E]">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <span>Free Shipping On All Orders Over $100</span>
+          <span className="flex items-center gap-1.5">
+            <Truck className="h-3 w-3 text-[#E21818]" />
+            Free Shipping On All Orders Over $100
+          </span>
           <div className="flex items-center gap-4">
-            <span>Support Anytime 123-456-7890</span>
-            <Link href="/login" className="text-[#E21818] hover:underline">Login</Link>
+            <span className="flex items-center gap-1.5">
+              <Phone className="h-3 w-3 text-[#E21818]" />
+              Support Anytime 123-456-7890
+            </span>
+            <Link href="/login" className="flex items-center gap-1 text-[#E21818] hover:underline">
+              <User className="h-3 w-3" />
+              Login
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Main bar — bg #141618 per crawled CSS */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <img src="/musicplace/logo-dark.png" alt="SOUND MUSIC STORE" className="h-10 w-auto" />
-        </Link>
+      {/* Logo bar — centered logo per screenshot */}
+      <div className="border-b border-[#33383D]/30 py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-center">
+          <Link href="/" className="flex items-center gap-3">
+            <img src="/musicplace/logo-dark.png" alt="SOUND MUSIC STORE" className="h-12 w-auto" />
+          </Link>
+        </div>
+      </div>
 
-        {/* Desktop nav with mega menus */}
-        <nav className="hidden items-center gap-1 md:flex">
+      {/* Nav bar */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
+        {/* Desktop nav */}
+        <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
           {NAV.map((item) => (
             <div
               key={item.label}
@@ -98,17 +111,17 @@ export function Header() {
             >
               <Link
                 href={item.href}
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium ${
+                className={`flex items-center gap-1 px-4 py-2 text-sm font-medium ${
                   item.label === "Home" ? "text-white" : "text-[#9B9C9E]"
                 } hover:text-white`}
               >
                 {item.label}
                 {item.dropdown && <ChevronDown className="h-3 w-3" />}
-                {item.label === "Home" && (
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#E21818]" />
-                )}
               </Link>
-
+              {/* Active underline for Home */}
+              {item.label === "Home" && (
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[#E21818]" />
+              )}
               {/* Dropdown */}
               {item.dropdown && openDropdown === item.label && (
                 <div className="absolute left-0 top-full min-w-[200px] border border-[#33383D] bg-[#141618] py-2 shadow-xl">
@@ -134,7 +147,7 @@ export function Header() {
           </button>
           <Link
             href="/cart"
-            className="flex items-center gap-1.5 rounded bg-[#E21818] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#C51515]"
+            className="flex items-center gap-1.5 rounded border border-[#33383D] bg-transparent px-3 py-1.5 text-xs font-bold text-white hover:bg-[#1A1C1F]"
           >
             <ShoppingCart className="h-4 w-4" />
             <span>{count}</span>
