@@ -14,6 +14,10 @@ permission:
     "*": deny
     voss: allow
     daedalus: allow
+    athena: allow
+    hephaestus: allow
+    minos: allow
+    thoth: allow
     "recruited-*": allow
   broadcast: allow
   recall: allow
