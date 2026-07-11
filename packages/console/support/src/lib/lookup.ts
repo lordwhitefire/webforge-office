@@ -1,8 +1,8 @@
 "use server"
 
-import { Database, and, eq, isNull, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { AuthTable } from "@opencode-ai/console-core/schema/auth.sql.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
+import { Database, and, eq, isNull, sql } from "@webforge-ai/console-core/drizzle/index.js"
+import { AuthTable } from "@webforge-ai/console-core/schema/auth.sql.js"
+import { UserTable } from "@webforge-ai/console-core/schema/user.sql.js"
 import {
   BillingTable,
   PaymentTable,
@@ -10,15 +10,15 @@ import {
   BlackPlans,
   UsageTable,
   LiteTable,
-} from "@opencode-ai/console-core/schema/billing.sql.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { KeyTable } from "@opencode-ai/console-core/schema/key.sql.js"
-import { ModelTable } from "@opencode-ai/console-core/schema/model.sql.js"
-import { BlackData } from "@opencode-ai/console-core/black.js"
-import { LiteData } from "@opencode-ai/console-core/lite.js"
-import { Subscription } from "@opencode-ai/console-core/subscription.js"
-import { centsToMicroCents } from "@opencode-ai/console-core/util/price.js"
-import { getWeekBounds } from "@opencode-ai/console-core/util/date.js"
+} from "@webforge-ai/console-core/schema/billing.sql.js"
+import { WorkspaceTable } from "@webforge-ai/console-core/schema/workspace.sql.js"
+import { KeyTable } from "@webforge-ai/console-core/schema/key.sql.js"
+import { ModelTable } from "@webforge-ai/console-core/schema/model.sql.js"
+import { BlackData } from "@webforge-ai/console-core/black.js"
+import { LiteData } from "@webforge-ai/console-core/lite.js"
+import { Subscription } from "@webforge-ai/console-core/subscription.js"
+import { centsToMicroCents } from "@webforge-ai/console-core/util/price.js"
+import { getWeekBounds } from "@webforge-ai/console-core/util/date.js"
 
 export type LookupResult = {
   identifier: string

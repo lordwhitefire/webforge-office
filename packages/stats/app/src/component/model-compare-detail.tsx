@@ -1,13 +1,13 @@
 import "../routes/index.css"
 import { Link, Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
+import { ProviderIcon } from "@webforge-ai/ui/provider-icon"
 import {
   getStatsModelsComparisonData,
   type ModelUsagePoint,
   type StatsModelComparisonInput,
   type StatsModelComparisonEntry,
-} from "@opencode-ai/stats-core/domain/home"
-import { runtime } from "@opencode-ai/stats-core/runtime"
+} from "@webforge-ai/stats-core/domain/home"
+import { runtime } from "@webforge-ai/stats-core/runtime"
 import { createAsync, query, useParams, useSearchParams } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -169,7 +169,7 @@ export default function ModelCompareDetailPage(props: ModelCompareDetailPageProp
   const description = createMemo(() => {
     if (props.family)
       return `Compare the latest ${props.family.first.name} and ${props.family.second.name} models: ${models()[0].name} vs ${models()[1].name}. See benchmarks, usage, price, context length, and features.`
-    return `Compare ${models()[0].name} and ${models()[1].name} by usage, rank, context window, output limit, cache ratio, and cost across OpenCode data.`
+    return `Compare ${models()[0].name} and ${models()[1].name} by usage, rank, context window, output limit, cache ratio, and cost across WebForge data.`
   })
   const canonicalPath = createMemo(() => {
     if (props.family) return canonicalFamilyComparisonPath(props.family.first, props.family.second)
@@ -237,7 +237,7 @@ export default function ModelCompareDetailPage(props: ModelCompareDetailPageProp
         <Meta name="robots" content={models().length > 2 ? "noindex,follow" : "index,follow"} />
         <Link rel="canonical" href={canonicalUrl()} />
         <Meta property="og:type" content="website" />
-        <Meta property="og:site_name" content="OpenCode" />
+        <Meta property="og:site_name" content="WebForge" />
         <Meta property="og:title" content={title()} />
         <Meta property="og:description" content={description()} />
         <Meta property="og:url" content={canonicalUrl()} />

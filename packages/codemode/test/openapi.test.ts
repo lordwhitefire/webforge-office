@@ -14,8 +14,8 @@ type Recorded = {
   readonly body: unknown
 }
 
-const opencodeSpec = async (): Promise<Document> => {
-  return Bun.file(new URL("./fixtures/opencode-v2-openapi.json", import.meta.url)).json() as Promise<Document>
+const webforgeSpec = async (): Promise<Document> => {
+  return Bun.file(new URL("./fixtures/webforge-v2-openapi.json", import.meta.url)).json() as Promise<Document>
 }
 
 const happyPathSpec = async (): Promise<Document> => {
@@ -173,8 +173,8 @@ describe("OpenAPI.fromSpec", () => {
     expect(client.requests[3]!.headers.authorization).toBe("Bearer bearer-secret")
   })
 
-  test("converts representative opencode operations into the expected tool shape", async () => {
-    const spec = await opencodeSpec()
+  test("converts representative webforge operations into the expected tool shape", async () => {
+    const spec = await webforgeSpec()
     const result = OpenAPI.fromSpec({ spec, baseUrl })
 
     expect(result.skipped).toHaveLength(5)
@@ -355,8 +355,8 @@ describe("OpenAPI.fromSpec", () => {
     expect(tool.output.$defs).toMatchObject({ Local: { type: "string" }, Global: { type: "number" } })
   })
 
-  test("documents that the opencode fixture is unauthenticated", async () => {
-    const spec = await opencodeSpec()
+  test("documents that the webforge fixture is unauthenticated", async () => {
+    const spec = await webforgeSpec()
     const components = isRecord(spec.components) ? spec.components : {}
     const result = OpenAPI.fromSpec({ spec, baseUrl })
 
@@ -369,16 +369,16 @@ describe("OpenAPI.fromSpec", () => {
     expect(Object.keys(isRecord(input.properties) ? input.properties : {})).toStrictEqual([])
   })
 
-  test("exposes real opencode operations through CodeMode discovery", async () => {
+  test("exposes real webforge operations through CodeMode discovery", async () => {
     const { layer } = recordingClient(() => json({}))
     const runtime = CodeMode.make({
-      tools: { opencode: OpenAPI.fromSpec({ spec: await opencodeSpec(), baseUrl }).tools },
+      tools: { webforge: OpenAPI.fromSpec({ spec: await webforgeSpec(), baseUrl }).tools },
     })
     const result = await Effect.runPromise(
       runtime
         .execute(
           `
-        return await tools.$codemode.search({ query: "global health", namespace: "opencode", limit: 1 })
+        return await tools.$codemode.search({ query: "global health", namespace: "webforge", limit: 1 })
       `,
         )
         .pipe(Effect.provide(layer)),
@@ -397,13 +397,13 @@ describe("OpenAPI.fromSpec", () => {
     expect(JSON.stringify(result.value)).toContain("healthy: true")
   })
 
-  test("invokes real opencode path parameters and JSON request bodies", async () => {
+  test("invokes real webforge path parameters and JSON request bodies", async () => {
     const { requests, layer } = recordingClient((request) => {
       if (request.method === "GET") return json({ id: "ses_123" })
       return json({ id: "ses_456" })
     })
     const runtime = CodeMode.make({
-      tools: { opencode: OpenAPI.fromSpec({ spec: await opencodeSpec(), baseUrl }).tools },
+      tools: { webforge: OpenAPI.fromSpec({ spec: await webforgeSpec(), baseUrl }).tools },
     })
 
     const result = await Effect.runPromise(
@@ -429,9 +429,9 @@ describe("OpenAPI.fromSpec", () => {
     })
   })
 
-  test("serializes deep-object query parameters from the opencode fixture", async () => {
+  test("serializes deep-object query parameters from the webforge fixture", async () => {
     const client = recordingClient(() => json({ directory: "/tmp" }))
-    const location = toolAt(OpenAPI.fromSpec({ spec: await opencodeSpec(), baseUrl }).tools, "v2.location.get")
+    const location = toolAt(OpenAPI.fromSpec({ spec: await webforgeSpec(), baseUrl }).tools, "v2.location.get")
     if (!Tool.isDefinition(location)) throw new Error("v2.location.get was not generated")
 
     await Effect.runPromise(
@@ -806,7 +806,7 @@ describe("OpenAPI.fromSpec", () => {
   test("fails missing required parameters before auth and network", async () => {
     const { requests, layer } = recordingClient(() => json({}))
     const runtime = CodeMode.make({
-      tools: { opencode: OpenAPI.fromSpec({ spec: await opencodeSpec(), baseUrl }).tools },
+      tools: { webforge: OpenAPI.fromSpec({ spec: await webforgeSpec(), baseUrl }).tools },
     })
 
     const result = await Effect.runPromise(

@@ -1,17 +1,17 @@
 ---
 title: Konfiguracija
-description: Korištenje OpenCode JSON konfiguracije.
+description: Korištenje WebForge JSON konfiguracije.
 ---
 
-Možete konfigurirati OpenCode koristeći JSON konfiguracijski fajl.
+Možete konfigurirati WebForge koristeći JSON konfiguracijski fajl.
 
 ---
 
 ## Format
 
-OpenCode podržava i **JSON** i **JSONC** (JSON sa komentarima) formate.
+WebForge podržava i **JSON** i **JSONC** (JSON sa komentarima) formate.
 
-```jsonc title="opencode.jsonc"
+```jsonc title="webforge.jsonc"
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "anthropic/claude-sonnet-4-5",
@@ -42,30 +42,30 @@ Na primjer, ako vaša globalna konfiguracija postavlja `autoupdate: true`, a va�
 
 Izvori konfiguracije se učitavaju ovim redoslijedom (kasniji izvori poništavaju ranije):
 
-1. **Udaljena konfiguracija** (od `.well-known/opencode`) - organizacijske postavke
-2. **Globalna konfiguracija** (`~/.config/opencode/opencode.json`) - korisničke preferencije
-3. **Prilagođena konfiguracija** (`OPENCODE_CONFIG` env var) - prilagođena preinačenja
-4. **Konfiguracija projekta** (`opencode.json` u projektu) - postavke specifične za projekat
-5. **`.opencode` direktoriji** - agenti, komande, dodaci
-6. **Inline konfiguracija** (`OPENCODE_CONFIG_CONTENT` env var) - runtime preinačenja
+1. **Udaljena konfiguracija** (od `.well-known/webforge`) - organizacijske postavke
+2. **Globalna konfiguracija** (`~/.config/webforge/webforge.json`) - korisničke preferencije
+3. **Prilagođena konfiguracija** (`WEBFORGE_CONFIG` env var) - prilagođena preinačenja
+4. **Konfiguracija projekta** (`webforge.json` u projektu) - postavke specifične za projekat
+5. **`.webforge` direktoriji** - agenti, komande, dodaci
+6. **Inline konfiguracija** (`WEBFORGE_CONFIG_CONTENT` env var) - runtime preinačenja
 
 To znači da konfiguracije projekta mogu nadjačati globalne zadane postavke, a globalne konfiguracije mogu nadjačati postavke udaljene organizacije.
 
 :::note
-Direktoriji `.opencode` i `~/.config/opencode` koriste **imena u množini** za poddirektorije: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/` i `themes/`. Pojedinačna imena (npr. `agent/`) su također podržana za kompatibilnost unatrag.
+Direktoriji `.webforge` i `~/.config/webforge` koriste **imena u množini** za poddirektorije: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/` i `themes/`. Pojedinačna imena (npr. `agent/`) su također podržana za kompatibilnost unatrag.
 :::
 
 ---
 
 ### Udaljeno (Remote)
 
-Organizacije mogu pružiti zadanu konfiguraciju preko `.well-known/opencode` krajnje tačke. Ovo se automatski preuzima kada se autentifikujete kod provajdera koji to podržava.
+Organizacije mogu pružiti zadanu konfiguraciju preko `.well-known/webforge` krajnje tačke. Ovo se automatski preuzima kada se autentifikujete kod provajdera koji to podržava.
 
 Prvo se učitava udaljena konfiguracija koja služi kao osnovni sloj. Svi ostali izvori konfiguracije (globalni, projektni) mogu nadjačati ove zadane postavke.
 
 Na primjer, ako vaša organizacija nudi MCP servere koji su po defaultu onemogućeni:
 
-```json title="Remote config from .well-known/opencode"
+```json title="Remote config from .well-known/webforge"
 {
   "mcp": {
     "jira": {
@@ -79,7 +79,7 @@ Na primjer, ako vaša organizacija nudi MCP servere koji su po defaultu onemogu�
 
 Možete omogućiti određene servere u vašoj lokalnoj konfiguraciji:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "mcp": {
     "jira": {
@@ -95,9 +95,9 @@ Možete omogućiti određene servere u vašoj lokalnoj konfiguraciji:
 
 ### Globalno
 
-Postavite svoju globalnu OpenCode konfiguraciju u `~/.config/opencode/opencode.json`. Koristite globalnu konfiguraciju za korisničke preferencije kao što su provajderi, modeli i dozvole.
+Postavite svoju globalnu WebForge konfiguraciju u `~/.config/webforge/webforge.json`. Koristite globalnu konfiguraciju za korisničke preferencije kao što su provajderi, modeli i dozvole.
 
-Za postavke specifične za TUI, koristite `~/.config/opencode/tui.json`.
+Za postavke specifične za TUI, koristite `~/.config/webforge/tui.json`.
 
 Globalna konfiguracija poništava zadane postavke udaljene organizacije.
 
@@ -105,7 +105,7 @@ Globalna konfiguracija poništava zadane postavke udaljene organizacije.
 
 ### Projekt
 
-Dodajte `opencode.json` u korijen projekta. Konfiguracija projekta ima najveći prioritet među standardnim konfiguracijskim datotekama - ona nadjačava globalne i udaljene konfiguracije.
+Dodajte `webforge.json` u korijen projekta. Konfiguracija projekta ima najveći prioritet među standardnim konfiguracijskim datotekama - ona nadjačava globalne i udaljene konfiguracije.
 
 Za TUI postavke specifične za projekat, dodajte `tui.json` pored njega.
 
@@ -113,7 +113,7 @@ Za TUI postavke specifične za projekat, dodajte `tui.json` pored njega.
 Postavite specifičnu konfiguraciju projekta u korijen vašeg projekta.
 :::
 
-Kada se OpenCode pokrene, traži konfiguracijsku datoteku u trenutnom direktoriju ili prelazi do najbližeg Git direktorija.
+Kada se WebForge pokrene, traži konfiguracijsku datoteku u trenutnom direktoriju ili prelazi do najbližeg Git direktorija.
 
 Ovo je također sigurno provjeriti u Git i koristi istu shemu kao globalna.
 
@@ -121,11 +121,11 @@ Ovo je također sigurno provjeriti u Git i koristi istu shemu kao globalna.
 
 ### Prilagođena konfiguracija
 
-Navedite prilagođenu putanju konfiguracijske datoteke koristeći varijablu okruženja `OPENCODE_CONFIG`.
+Navedite prilagođenu putanju konfiguracijske datoteke koristeći varijablu okruženja `WEBFORGE_CONFIG`.
 
 ```bash
-export OPENCODE_CONFIG=/path/to/my/custom-config.json
-opencode run "Hello world"
+export WEBFORGE_CONFIG=/path/to/my/custom-config.json
+webforge run "Hello world"
 ```
 
 Prilagođena konfiguracija se učitava između globalne i projektne konfiguracije po redoslijedu prioriteta.
@@ -134,14 +134,14 @@ Prilagođena konfiguracija se učitava između globalne i projektne konfiguracij
 
 ### Prilagođeni direktorij
 
-Navedite prilagođeni konfiguracijski direktorij koristeći `OPENCODE_CONFIG_DIR` varijablu okruženja. U ovom direktoriju će se tražiti agenti, komande, modovi i dodaci baš kao standardni `.opencode` direktorij, i trebali bi pratiti istu strukturu.
+Navedite prilagođeni konfiguracijski direktorij koristeći `WEBFORGE_CONFIG_DIR` varijablu okruženja. U ovom direktoriju će se tražiti agenti, komande, modovi i dodaci baš kao standardni `.webforge` direktorij, i trebali bi pratiti istu strukturu.
 
 ```bash
-export OPENCODE_CONFIG_DIR=/path/to/my/config-directory
-opencode run "Hello world"
+export WEBFORGE_CONFIG_DIR=/path/to/my/config-directory
+webforge run "Hello world"
 ```
 
-Prilagođeni direktorij se učitava nakon direktorija globalne konfiguracije i `.opencode`, tako da **može nadjačati** njihove postavke.
+Prilagođeni direktorij se učitava nakon direktorija globalne konfiguracije i `.webforge`, tako da **može nadjačati** njihove postavke.
 
 ---
 
@@ -170,9 +170,9 @@ Koristite namjenski `tui.json` (ili `tui.jsonc`) fajl za postavke specifične za
 }
 ```
 
-Koristite `OPENCODE_TUI_CONFIG` da pokažete na prilagođeni TUI konfiguracijski fajl.
+Koristite `WEBFORGE_TUI_CONFIG` da pokažete na prilagođeni TUI konfiguracijski fajl.
 
-Stari `theme`, `keybinds`, i `tui` ključevi u `opencode.json` su zastarjeli i automatski će se migrirati kada je to moguće.
+Stari `theme`, `keybinds`, i `tui` ključevi u `webforge.json` su zastarjeli i automatski će se migrirati kada je to moguće.
 
 [Saznajte više o korištenju TUI ovdje](/docs/tui#configure).
 
@@ -180,9 +180,9 @@ Stari `theme`, `keybinds`, i `tui` ključevi u `opencode.json` su zastarjeli i a
 
 ### Server
 
-Možete konfigurirati postavke servera za naredbe `opencode serve` i `opencode web` putem opcije `server`.
+Možete konfigurirati postavke servera za naredbe `webforge serve` i `webforge web` putem opcije `server`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "server": {
@@ -199,8 +199,8 @@ Dostupne opcije:
 
 - `port` - Port za slušanje.
 - `hostname` - Hostname za slušanje. Kada je `mdns` omogućen i nije postavljeno ime hosta, podrazumevano je `0.0.0.0`.
-- `mdns` - Omogući mDNS otkrivanje servisa. Ovo omogućava drugim uređajima na mreži da otkriju vaš OpenCode server.
-- `mdnsDomain` - Prilagođeno ime domene za mDNS servis. Zadano je `opencode.local`. Korisno za pokretanje više instanci na istoj mreži.
+- `mdns` - Omogući mDNS otkrivanje servisa. Ovo omogućava drugim uređajima na mreži da otkriju vaš WebForge server.
+- `mdnsDomain` - Prilagođeno ime domene za mDNS servis. Zadano je `webforge.local`. Korisno za pokretanje više instanci na istoj mreži.
 - `cors` - Dodatni origini koji omogućavaju CORS kada koristite HTTP server iz klijenta baziranog na pretraživaču. Vrijednosti moraju biti puni origin (shema + host + opcijski port), npr. `https://app.example.com`.
 
 [Saznajte više o serveru ovdje](/docs/server).
@@ -211,7 +211,7 @@ Dostupne opcije:
 
 Možete upravljati alatima koje LLM može koristiti putem opcije `tools`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "tools": {
@@ -227,9 +227,9 @@ Možete upravljati alatima koje LLM može koristiti putem opcije `tools`.
 
 ### Model
 
-Možete konfigurirati dobavljače i modele koje želite koristiti u svojoj OpenCode konfiguraciji kroz opcije `provider`, `model` i `small_model`.
+Možete konfigurirati dobavljače i modele koje želite koristiti u svojoj WebForge konfiguraciji kroz opcije `provider`, `model` i `small_model`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {},
@@ -238,11 +238,11 @@ Možete konfigurirati dobavljače i modele koje želite koristiti u svojoj OpenC
 }
 ```
 
-Opcija `small_model` konfigurira poseban model za lagane zadatke poput generiranja naslova. Podrazumevano, OpenCode pokušava da koristi jeftiniji model ako je dostupan od vašeg provajdera, inače se vraća na vaš glavni model.
+Opcija `small_model` konfigurira poseban model za lagane zadatke poput generiranja naslova. Podrazumevano, WebForge pokušava da koristi jeftiniji model ako je dostupan od vašeg provajdera, inače se vraća na vaš glavni model.
 
 Opcije provajdera mogu uključivati ​​`timeout` i `setCacheKey`:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
@@ -271,7 +271,7 @@ Neki provajderi podržavaju dodatne opcije konfiguracije osim generičkih postav
 
 Amazon Bedrock podržava konfiguraciju specifičnu za AWS:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
@@ -317,7 +317,7 @@ Postavite vašu UI temu u `tui.json`.
 
 Možete konfigurirati specijalizirane agente za određene zadatke putem opcije `agent`.
 
-```jsonc title="opencode.jsonc"
+```jsonc title="webforge.jsonc"
 {
   "$schema": "https://opencode.ai/config.json",
   "agent": {
@@ -335,7 +335,7 @@ Možete konfigurirati specijalizirane agente za određene zadatke putem opcije `
 }
 ```
 
-Također možete definirati agente koristeći markdown datoteke u `~/.config/opencode/agents/` ili `.opencode/agents/`. [Saznajte više ovdje](/docs/agents).
+Također možete definirati agente koristeći markdown datoteke u `~/.config/webforge/agents/` ili `.webforge/agents/`. [Saznajte više ovdje](/docs/agents).
 
 ---
 
@@ -343,16 +343,16 @@ Također možete definirati agente koristeći markdown datoteke u `~/.config/ope
 
 Možete postaviti zadanog agenta koristeći opciju `default_agent`. Ovo određuje koji se agent koristi kada nijedan nije eksplicitno specificiran.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "plan"
 }
 ```
 
-Zadani agent mora biti primarni agent (ne podagent). Ovo može biti ugrađeni agent kao što je `"build"` ili `"plan"`, ili [prilagođeni agent](/docs/agents) koji ste definirali. Ako navedeni agent ne postoji ili je podagent, OpenCode će se vratiti na `"build"` s upozorenjem.
+Zadani agent mora biti primarni agent (ne podagent). Ovo može biti ugrađeni agent kao što je `"build"` ili `"plan"`, ili [prilagođeni agent](/docs/agents) koji ste definirali. Ako navedeni agent ne postoji ili je podagent, WebForge će se vratiti na `"build"` s upozorenjem.
 
-Ova postavka se primjenjuje na sva sučelja: TUI, CLI (`opencode run`), desktop aplikaciju i GitHub Action.
+Ova postavka se primjenjuje na sva sučelja: TUI, CLI (`webforge run`), desktop aplikaciju i GitHub Action.
 
 ---
 
@@ -360,7 +360,7 @@ Ova postavka se primjenjuje na sva sučelja: TUI, CLI (`opencode run`), desktop 
 
 Možete konfigurirati funkciju [share](/docs/share) putem opcije `share`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "share": "manual"
@@ -381,7 +381,7 @@ Podrazumevano, dijeljenje je postavljeno na ručni način rada gdje trebate eksp
 
 Možete konfigurirati prilagođene naredbe za ponavljanje zadataka putem opcije `command`.
 
-```jsonc title="opencode.jsonc"
+```jsonc title="webforge.jsonc"
 {
   "$schema": "https://opencode.ai/config.json",
   "command": {
@@ -399,7 +399,7 @@ Možete konfigurirati prilagođene naredbe za ponavljanje zadataka putem opcije 
 }
 ```
 
-Također možete definirati naredbe koristeći markdown fajlove u `~/.config/opencode/commands/` ili `.opencode/commands/`. [Saznajte više ovdje](/docs/commands).
+Također možete definirati naredbe koristeći markdown fajlove u `~/.config/webforge/commands/` ili `.webforge/commands/`. [Saznajte više ovdje](/docs/commands).
 
 ---
 
@@ -420,9 +420,9 @@ Prilagodite prečice tipki u `tui.json`.
 
 ### Automatsko ažuriranje
 
-OpenCode će automatski preuzeti sva nova ažuriranja kada se pokrene. Ovo možete onemogućiti opcijom `autoupdate`.
+WebForge će automatski preuzeti sva nova ažuriranja kada se pokrene. Ovo možete onemogućiti opcijom `autoupdate`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": false
@@ -438,7 +438,7 @@ Imajte na umu da ovo funkcionira samo ako nije instalirano pomoću upravitelja p
 
 Možete konfigurirati formatere koda putem opcije `formatter`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "formatter": {
@@ -462,11 +462,11 @@ Možete konfigurirati formatere koda putem opcije `formatter`.
 
 ### Dozvole
 
-Prema zadanim postavkama, OpenCode **dopušta sve operacije** bez potrebe za eksplicitnim dopuštenjem. Ovo možete promijeniti koristeći opciju `permission`.
+Prema zadanim postavkama, WebForge **dopušta sve operacije** bez potrebe za eksplicitnim dopuštenjem. Ovo možete promijeniti koristeći opciju `permission`.
 
 Na primjer, da osigurate da alati `edit` i `bash` zahtijevaju odobrenje korisnika:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "permission": {
@@ -484,7 +484,7 @@ Na primjer, da osigurate da alati `edit` i `bash` zahtijevaju odobrenje korisnik
 
 Možete kontrolirati ponašanje sažimanja konteksta putem opcije `compaction`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "compaction": {
@@ -505,7 +505,7 @@ Možete kontrolirati ponašanje sažimanja konteksta putem opcije `compaction`.
 
 Možete konfigurirati obrasce ignoriranja promatrača datoteka putem opcije `watcher`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "watcher": {
@@ -522,7 +522,7 @@ Obrasci prate glob sintaksu. Koristite ovo da isključite bučne direktorije iz 
 
 Možete konfigurirati MCP servere koje želite koristiti putem opcije `mcp`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {}
@@ -535,14 +535,14 @@ Možete konfigurirati MCP servere koje želite koristiti putem opcije `mcp`.
 
 ### Dodaci
 
-[Plugins](/docs/plugins) proširuju OpenCode sa prilagođenim alatima, kukicama i integracijama.
+[Plugins](/docs/plugins) proširuju WebForge sa prilagođenim alatima, kukicama i integracijama.
 
-Postavite datoteke dodataka u `.opencode/plugins/` ili `~/.config/opencode/plugins/`. Također možete učitati dodatke iz npm-a preko opcije `plugin`.
+Postavite datoteke dodataka u `.webforge/plugins/` ili `~/.config/webforge/plugins/`. Također možete učitati dodatke iz npm-a preko opcije `plugin`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
+  "plugin": ["webforge-helicone-session", "@my-org/custom-plugin"]
 }
 ```
 
@@ -554,7 +554,7 @@ Postavite datoteke dodataka u `.opencode/plugins/` ili `~/.config/opencode/plugi
 
 Možete konfigurirati upute za model koji koristite putem opcije `instructions`.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
@@ -569,7 +569,7 @@ Ovo uzima niz putanja i glob uzoraka do datoteka instrukcija. [Saznajte više o 
 
 Možete onemogućiti dobavljače koji se automatski učitavaju preko opcije `disabled_providers`. Ovo je korisno kada želite spriječiti učitavanje određenih provajdera čak i ako su njihovi vjerodajnici dostupni.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "disabled_providers": ["openai", "gemini"]
@@ -592,14 +592,14 @@ Opcija `disabled_providers` prihvata niz ID-ova provajdera. Kada je provajder on
 
 Možete odrediti listu dozvoljenih dobavljača putem opcije `enabled_providers`. Kada se podesi, samo navedeni provajderi će biti omogućeni, a svi ostali će biti zanemareni.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-Ovo je korisno kada želite da ograničite OpenCode da koristi samo određene provajdere umjesto da ih onemogućavate jednog po jednog.
+Ovo je korisno kada želite da ograničite WebForge da koristi samo određene provajdere umjesto da ih onemogućavate jednog po jednog.
 
 :::note
 `disabled_providers` ima prioritet nad `enabled_providers`.
@@ -613,7 +613,7 @@ Ako se provajder pojavljuje i u `enabled_providers` i `disabled_providers`, `dis
 
 Ključ `experimental` sadrži opcije koje su u aktivnom razvoju.
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "experimental": {}
@@ -636,10 +636,10 @@ Možete koristiti zamjenu varijabli u vašim konfiguracijskim datotekama da bist
 
 Koristite `{env:VARIABLE_NAME}` za zamjenu varijabli okruženja:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "{env:OPENCODE_MODEL}",
+  "model": "{env:WEBFORGE_MODEL}",
   "provider": {
     "anthropic": {
       "models": {},
@@ -659,7 +659,7 @@ Ako varijabla okruženja nije postavljena, bit će zamijenjena praznim nizom.
 
 Koristite `{file:path/to/file}` da zamijenite sadržaj fajla:
 
-```json title="opencode.json"
+```json title="webforge.json"
 {
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["./custom-instructions.md"],

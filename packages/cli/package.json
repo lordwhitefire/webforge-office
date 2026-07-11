@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@opencode-ai/cli",
+  "name": "@webforge-ai/cli",
   "version": "1.17.18",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "webforge": "./bin/lildax.cjs"
+    "webforge": "./bin/webforge.cjs"
   },
   "files": [
     "bin"
@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "@effect/platform-node": "catalog:",
-    "@opencode-ai/core": "workspace:*",
-    "@opencode-ai/sdk": "workspace:*",
-    "@opencode-ai/server": "workspace:*",
-    "@opencode-ai/tui": "workspace:*",
+    "@webforge-ai/core": "workspace:*",
+    "@webforge-ai/sdk": "workspace:*",
+    "@webforge-ai/server": "workspace:*",
+    "@webforge-ai/tui": "workspace:*",
     "@opentui/core": "catalog:",
     "@opentui/solid": "catalog:",
     "@parcel/watcher": "2.5.1",
@@ -28,7 +28,7 @@
     "solid-js": "catalog:"
   },
   "devDependencies": {
-    "@opencode-ai/script": "workspace:*",
+    "@webforge-ai/script": "workspace:*",
     "@tsconfig/bun": "catalog:",
     "@types/bun": "catalog:",
     "@typescript/native-preview": "catalog:"

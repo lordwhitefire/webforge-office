@@ -259,7 +259,7 @@ export async function installWslDistro(name: string, opts?: RunWslOptions) {
   )
 }
 
-export async function installWslOpencode(version: string, distro: string, opts?: RunWslOptions) {
+export async function installWslWebforge(version: string, distro: string, opts?: RunWslOptions) {
   return runInteractiveCommand(
     resolveSystem32Command("wsl.exe"),
     wslArgs(
@@ -302,11 +302,11 @@ export async function probeWslDistro(name: string, opts?: RunWslOptions): Promis
   }
 }
 
-export async function resolveWslOpencode(distro: string, opts?: RunWslOptions) {
+export async function resolveWslWebforge(distro: string, opts?: RunWslOptions) {
   return firstLine(
     (
       await runWslSh(
-        'if [ -x "$HOME/.webforge/bin/opencode" ]; then printf "%s\\n" "$HOME/.webforge/bin/opencode"; fi',
+        'if [ -x "$HOME/.webforge/bin/webforge" ]; then printf "%s\\n" "$HOME/.webforge/bin/webforge"; fi',
         distro,
         opts,
       )

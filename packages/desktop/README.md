@@ -1,6 +1,6 @@
-# OpenCode Desktop
+# WebForge Desktop
 
-The OpenCode Desktop app, built with Electron.
+The WebForge Desktop app, built with Electron.
 
 ## Development
 

@@ -25,7 +25,7 @@ function selection(selection: unknown) {
 
 export function createCommentMetadata(input: PromptComment) {
   return {
-    opencodeComment: {
+    webforgeComment: {
       path: input.path,
       selection: input.selection,
       comment: input.comment,
@@ -37,7 +37,7 @@ export function createCommentMetadata(input: PromptComment) {
 
 export function readCommentMetadata(value: unknown) {
   if (!value || typeof value !== "object") return
-  const meta = (value as { opencodeComment?: unknown }).webforgeComment
+  const meta = (value as { webforgeComment?: unknown }).webforgeComment
   if (!meta || typeof meta !== "object") return
   const path = (meta as { path?: unknown }).path
   const comment = (meta as { comment?: unknown }).comment

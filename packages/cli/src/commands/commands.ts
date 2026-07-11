@@ -1,9 +1,9 @@
 import { Argument, Flag } from "effect/unstable/cli"
 import { Spec } from "../framework/spec"
 
-declare const OPENCODE_CLI_NAME: string | undefined
+declare const WEBFORGE_CLI_NAME: string | undefined
 
-export const Commands = Spec.make(typeof OPENCODE_CLI_NAME === "string" ? OPENCODE_CLI_NAME : "opencode", {
+export const Commands = Spec.make(typeof WEBFORGE_CLI_NAME === "string" ? WEBFORGE_CLI_NAME : "webforge", {
   description: "WebForge Code — Autonomous agent system",
   commands: [
     Spec.make("api", {

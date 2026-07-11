@@ -1,8 +1,8 @@
 declare global {
-  const OPENCODE_VERSION: string
-  const OPENCODE_CHANNEL: string
+  const WEBFORGE_VERSION: string
+  const WEBFORGE_CHANNEL: string
 }
 
-export const InstallationVersion = typeof OPENCODE_VERSION === "string" ? OPENCODE_VERSION : "local"
-export const InstallationChannel = typeof OPENCODE_CHANNEL === "string" ? OPENCODE_CHANNEL : "local"
+export const InstallationVersion = typeof WEBFORGE_VERSION === "string" ? WEBFORGE_VERSION : "local"
+export const InstallationChannel = typeof WEBFORGE_CHANNEL === "string" ? WEBFORGE_CHANNEL : "local"
 export const InstallationLocal = InstallationChannel === "local"

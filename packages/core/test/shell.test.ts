@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
 import path from "path"
-import { Shell } from "@opencode-ai/core/shell"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { which } from "@opencode-ai/core/util/which"
+import { Shell } from "@webforge-ai/core/shell"
+import { FSUtil } from "@webforge-ai/core/fs-util"
+import { which } from "@webforge-ai/core/util/which"
 
 const withShell = async (shell: string | undefined, fn: () => void | Promise<void>) => {
   const prev = process.env.SHELL
@@ -44,8 +44,8 @@ describe("shell", () => {
     await withShell(undefined, async () => {
       const preferred = Shell.preferred()
       const acceptable = Shell.acceptable()
-      expect(Shell.preferred("opencode-missing-shell")).toBe(preferred)
-      expect(Shell.acceptable("opencode-missing-shell")).toBe(acceptable)
+      expect(Shell.preferred("webforge-missing-shell")).toBe(preferred)
+      expect(Shell.acceptable("webforge-missing-shell")).toBe(acceptable)
     })
   })
 

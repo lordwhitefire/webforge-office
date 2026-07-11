@@ -1,11 +1,11 @@
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { List } from "@opencode-ai/ui/list"
-import { TextField } from "@opencode-ai/ui/text-field"
+import { Button } from "@webforge-ai/ui/button"
+import { useDialog } from "@webforge-ai/ui/context/dialog"
+import { Dialog } from "@webforge-ai/ui/dialog"
+import { DropdownMenu } from "@webforge-ai/ui/dropdown-menu"
+import { Icon } from "@webforge-ai/ui/icon"
+import { IconButton } from "@webforge-ai/ui/icon-button"
+import { List } from "@webforge-ai/ui/list"
+import { TextField } from "@webforge-ai/ui/text-field"
 import { useMutation } from "@tanstack/solid-query"
 import { showToast } from "@/utils/toast"
 import { useNavigate } from "@solidjs/router"
@@ -20,7 +20,7 @@ import { type ServerHealth, useCheckServerHealth } from "@/utils/server-health"
 import { useSettings } from "@/context/settings"
 import { useTabs } from "@/context/tabs"
 
-const DEFAULT_USERNAME = "opencode"
+const DEFAULT_USERNAME = "webforge"
 
 interface ServerFormProps {
   value: string

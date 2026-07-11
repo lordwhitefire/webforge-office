@@ -1,35 +1,35 @@
 import { expect, test } from "bun:test"
 import { Schema } from "effect"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { Agent } from "@opencode-ai/schema/agent"
-import { Location } from "@opencode-ai/schema/location"
-import { Model } from "@opencode-ai/schema/model"
-import { AgentAttachment, FileAttachment, Prompt, Source } from "@opencode-ai/schema/prompt"
-import { Provider } from "@opencode-ai/schema/provider"
-import { Project } from "@opencode-ai/schema/project"
-import { ProjectDirectories } from "@opencode-ai/schema/project-directories"
-import { PermissionV1 } from "@opencode-ai/schema/permission-v1"
-import { Session } from "@opencode-ai/schema/session"
-import { SessionInput } from "@opencode-ai/schema/session-input"
-import { SessionMessage } from "@opencode-ai/schema/session-message"
-import { Workspace } from "@opencode-ai/schema/workspace"
-import { Command } from "@opencode-ai/schema/command"
-import { Connection } from "@opencode-ai/schema/connection"
-import { Credential } from "@opencode-ai/schema/credential"
-import { FileSystem } from "@opencode-ai/schema/filesystem"
-import { Integration } from "@opencode-ai/schema/integration"
-import { LLM } from "@opencode-ai/schema/llm"
-import { Permission } from "@opencode-ai/schema/permission"
-import { Plugin } from "@opencode-ai/schema/plugin"
-import { Pty } from "@opencode-ai/schema/pty"
-import { Reference } from "@opencode-ai/schema/reference"
-import { SessionTodo } from "@opencode-ai/schema/session-todo"
-import { Skill } from "@opencode-ai/schema/skill"
-import { AbsolutePath, DateTimeUtcFromMillis, optional, statics } from "@opencode-ai/schema/schema"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { PluginV2 } from "@opencode-ai/core/plugin"
+import { AgentV2 } from "@webforge-ai/core/agent"
+import { ModelV2 } from "@webforge-ai/core/model"
+import { SessionV2 } from "@webforge-ai/core/session"
+import { Agent } from "@webforge-ai/schema/agent"
+import { Location } from "@webforge-ai/schema/location"
+import { Model } from "@webforge-ai/schema/model"
+import { AgentAttachment, FileAttachment, Prompt, Source } from "@webforge-ai/schema/prompt"
+import { Provider } from "@webforge-ai/schema/provider"
+import { Project } from "@webforge-ai/schema/project"
+import { ProjectDirectories } from "@webforge-ai/schema/project-directories"
+import { PermissionV1 } from "@webforge-ai/schema/permission-v1"
+import { Session } from "@webforge-ai/schema/session"
+import { SessionInput } from "@webforge-ai/schema/session-input"
+import { SessionMessage } from "@webforge-ai/schema/session-message"
+import { Workspace } from "@webforge-ai/schema/workspace"
+import { Command } from "@webforge-ai/schema/command"
+import { Connection } from "@webforge-ai/schema/connection"
+import { Credential } from "@webforge-ai/schema/credential"
+import { FileSystem } from "@webforge-ai/schema/filesystem"
+import { Integration } from "@webforge-ai/schema/integration"
+import { LLM } from "@webforge-ai/schema/llm"
+import { Permission } from "@webforge-ai/schema/permission"
+import { Plugin } from "@webforge-ai/schema/plugin"
+import { Pty } from "@webforge-ai/schema/pty"
+import { Reference } from "@webforge-ai/schema/reference"
+import { SessionTodo } from "@webforge-ai/schema/session-todo"
+import { Skill } from "@webforge-ai/schema/skill"
+import { AbsolutePath, DateTimeUtcFromMillis, optional, statics } from "@webforge-ai/schema/schema"
+import { ProviderV2 } from "@webforge-ai/core/provider"
+import { PluginV2 } from "@webforge-ai/core/plugin"
 
 test("Core reuses the canonical shared schemas", async () => {
   const [
@@ -55,27 +55,27 @@ test("Core reuses the canonical shared schemas", async () => {
     coreSchema,
     coreWorkspace,
   ] = await Promise.all([
-    import("@opencode-ai/core/command"),
-    import("@opencode-ai/core/integration/connection"),
-    import("@opencode-ai/core/credential"),
-    import("@opencode-ai/core/filesystem"),
-    import("@opencode-ai/core/integration"),
-    import("@opencode-ai/core/location"),
-    import("@opencode-ai/llm"),
-    import("@opencode-ai/core/permission"),
-    import("@opencode-ai/core/v1/permission"),
-    import("@opencode-ai/core/project/copy"),
-    import("@opencode-ai/core/pty"),
-    import("@opencode-ai/core/project/schema"),
-    import("@opencode-ai/core/reference"),
-    import("@opencode-ai/core/session/input"),
-    import("@opencode-ai/core/session/message"),
-    import("@opencode-ai/core/session/todo"),
-    import("@opencode-ai/core/session/prompt"),
-    import("@opencode-ai/core/skill"),
-    import("@opencode-ai/core/v2-schema"),
-    import("@opencode-ai/core/schema"),
-    import("@opencode-ai/core/workspace"),
+    import("@webforge-ai/core/command"),
+    import("@webforge-ai/core/integration/connection"),
+    import("@webforge-ai/core/credential"),
+    import("@webforge-ai/core/filesystem"),
+    import("@webforge-ai/core/integration"),
+    import("@webforge-ai/core/location"),
+    import("@webforge-ai/llm"),
+    import("@webforge-ai/core/permission"),
+    import("@webforge-ai/core/v1/permission"),
+    import("@webforge-ai/core/project/copy"),
+    import("@webforge-ai/core/pty"),
+    import("@webforge-ai/core/project/schema"),
+    import("@webforge-ai/core/reference"),
+    import("@webforge-ai/core/session/input"),
+    import("@webforge-ai/core/session/message"),
+    import("@webforge-ai/core/session/todo"),
+    import("@webforge-ai/core/session/prompt"),
+    import("@webforge-ai/core/skill"),
+    import("@webforge-ai/core/v2-schema"),
+    import("@webforge-ai/core/schema"),
+    import("@webforge-ai/core/workspace"),
   ])
 
   const schemas = [
