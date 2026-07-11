@@ -70,14 +70,14 @@ webforge-office/
 │   ├── verify_work.ts           ← superiors verify + sign off on subordinate work
 │   └── lib/
 │       └── metrics.ts           ← shared metrics types + scoring
-├── plugin/                      ← guardrails plugin (auto-discovered)
+├── plugin/                      ← 2 plugins (auto-discovered)
 │   ├── guardrails.ts            ← pre-tool-call hook, blocks inference patterns
+│   ├── init-project.ts          ← auto-copies 301 agents + .webforge/ into each project
 │   └── lib/
 │       └── patterns.ts          ← inference pattern database
-├── project-template/            ← copy into each new project as .webforge/
+├── project-template/            ← source files init-project.ts copies from
 │   ├── plan.md                  ← shared plan file (Ralph Loop checks for PROJECT COMPLETE)
-│   ├── registry.json            ← name → role lookup for all agents
-│   ├── agents.json              ← full org tree (reportsTo + subordinates)
+│   ├── agents.json              ← full org tree (reportsTo + subordinates) — read by 8 tools
 │   ├── .pocket-universe.jsonc   ← Pocket Universe config (broadcast + recall)
 │   ├── memory/                  ← STATE.md, PROJECT.md, edit-log.md, etc.
 │   ├── mailbox/                 ← hermes.json, voss.json, daedalus.json
@@ -112,14 +112,19 @@ When you run `webforge` (or `opencode` if you used Option B):
 ```bash
 mkdir my-project && cd my-project
 
-# Copy the per-project state files
-cp -r ~/.config-webforge/opencode/project-template .webforge
+# Just run webforge — the init-project plugin automatically:
+#   1. Copies all 301 agent MD files into .opencode/agents/
+#   2. Creates .webforge/ with agents.json, plan.md, memory/, mailbox/, status/
+webforge
 
 # Edit .webforge/plan.md with your project goal
 
-# Start the Ralph Loop
+# Start the Ralph Loop (optional — for autonomous unattended runs)
 OPENCODE_CMD=webforge bash ~/.config-webforge/opencode/scripts/webforge-loop.sh
 ```
+
+You no longer need to manually copy anything. The `init-project` plugin fires
+when you start a session in any project and sets everything up automatically.
 
 Walk away. The loop will:
 1. Launch Hermes with a continuation prompt
