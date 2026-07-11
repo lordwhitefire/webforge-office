@@ -443,3 +443,40 @@ You are a senior <role> specializing in <expertise>.
 7. **Async communication needs a wake-up mechanism.** Polling doesn't work when agents only live for 35 calls. You need event-driven wake-up (Pocket Universe's `broadcast`) or accept that communication is strictly sequential. (Error #7)
 
 8. **"What to check when you wake up" must be defined per tier.** A junior checking everyone's history wastes all 35 calls. A junior checking only their direct superior gets context without overload. (Error #8)
+
+---
+
+## Error #20 — Sandbox Limitation: Subagents Cannot Spawn Subagents
+
+**Status:** `[DOCUMENTED]` (2026-07-11)
+
+**Symptom:** Hephaestus was given ~42 tool calls worth of work and did the building himself. He should have delegated to Aurora who delegates to Lead-Faro who delegates to workers.
+
+**Root Cause:** In this sandbox, the `Task` tool is only available to the main agent (Hermes/me). Subagents (Hephaestus, Aurora, etc.) get Bash, Read, Write, Grep — but NOT the Task tool. They literally cannot spawn their own subordinates.
+
+**Workaround:** The main agent relays briefs down the chain manually:
+- Hermes spawns Hephaestus (brief only, ~4 calls)
+- Hermes takes Hephaestus's brief and spawns Aurora with it
+- Hermes takes Aurora's brief and spawns the worker with it
+- Worker does the actual building (35 calls max)
+- Hermes spawns the quality checker with the worker's output
+- Results bubble back up
+
+**Real Fix:** In the actual WebForge Code (OpenCode clone), every agent has the custom `task` tool and can spawn their own subordinates. The chain works naturally: Hermes → Hephaestus → Aurora → Lead-Faro → Sr-Hale → Jr-Hawk.
+
+**Law Violations This Caused:**
+- Law 1 (35-call limit): Hephaestus used ~42 calls
+- Law 7 (Heads must not build): Hephaestus did worker-level tasks
+- Law 8 (Multi-worker): Single agent doing everything
+
+---
+
+## Error #21 — Using Generated Images Instead of Originals
+
+**Status:** `[DOCUMENTED]` (2026-07-11)
+
+**Symptom:** I generated a hero image with `z-ai image` instead of using the original crawled image. This interferes with visual comparison because the generated image looks different from the original.
+
+**Root Cause:** The original hero image (a Depositphotos stock photo) was not downloaded during the crawl because it was hosted on a different URL pattern. Instead of finding the original or extracting it from the screenshots, I generated a new one.
+
+**Fix:** Use ONLY original crawled images. If an image is missing from the crawl, extract it from the screenshots or report it as missing. Never generate images that should match an original.

@@ -27,34 +27,36 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col bg-[#141618]">
       <Header />
       <main className="flex-1">
-        {/* ─── Hero — person with headphones, CENTERED text per home-1440-01 ─── */}
-        {/* Per crawled CSS: bg image from Depositphotos_28403683_original-2.jpg (extracted from screenshot) */}
-        <section className="relative flex min-h-[535px] items-center justify-center overflow-hidden">
+        {/* ─── Hero — person with headphones, LEFT-aligned text per home-1440-01 ─── */}
+        {/* Per crawled CSS: bg image from Depositphotos_28403683_original-2.jpg (extracted from screenshot since original not downloaded) */}
+        <section className="relative flex min-h-[535px] items-center overflow-hidden">
           <div className="absolute inset-0">
             <img
-              src="/musicplace/hero-bg.jpg"
+              src="/musicplace/hero-original.jpg"
               alt="Person wearing headphones"
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#141618]/40 via-[#141618]/20 to-[#141618]" />
-          {/* Centered text per screenshot */}
-          <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
-            <h1
-              className="mb-4 text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl"
-              style={{ fontFamily: "var(--font-lato)" }}
-            >
-              The Headphones You Want.
-            </h1>
-            <p className="mb-8 text-base text-white/85 md:text-lg">
-              Rest assured you&apos;re getting some of the best headphones available with our selection of Top Recommended.
-            </p>
-            <Link
-              href="/category/headphones"
-              className="inline-block bg-[#1A1C1F] px-10 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#33383D]"
-            >
-              View More
-            </Link>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#141618]/85 via-[#141618]/30 to-transparent" />
+          {/* Left-aligned text per screenshot */}
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-4">
+            <div className="max-w-xl">
+              <h1
+                className="mb-4 text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl"
+                style={{ fontFamily: "var(--font-lato)" }}
+              >
+                The Headphones You Want.
+              </h1>
+              <p className="mb-8 text-base text-white/85 md:text-lg">
+                Rest assured you&apos;re getting some of the best headphones available with our selection of Top Recommended.
+              </p>
+              <Link
+                href="/category/headphones"
+                className="inline-block bg-[#1A1C1F] px-10 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#33383D]"
+              >
+                View More
+              </Link>
+            </div>
           </div>
         </section>
 
