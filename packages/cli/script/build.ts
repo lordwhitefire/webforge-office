@@ -10,7 +10,7 @@ import pkg from "../package.json"
 import { modelsData } from "./generate"
 
 const dir = path.resolve(import.meta.dirname, "..")
-const binary = "lildax"
+const binary = "webforge"
 process.chdir(dir)
 
 await rm("dist", { recursive: true, force: true })
@@ -88,7 +88,7 @@ for (const item of targets) {
     },
     define: {
       OPENCODE_VERSION: `'${Script.version}'`,
-      OPENCODE_CLI_NAME: `'${binary}'`,
+      'webforge': `'${binary}'`,
       OPENCODE_MODELS_DEV: modelsData,
       OPENCODE_CHANNEL: `'${Script.channel}'`,
       OPENCODE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "undefined",
