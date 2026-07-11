@@ -13,8 +13,8 @@ permission:
   read: allow
   edit: deny
   bash: deny
-  safe_edit: allow
-  safe_bash: allow
+  safe_edit: deny
+  safe_bash: deny
   task:
     "*": deny
     aurora: "allow"
@@ -23,13 +23,22 @@ permission:
     "recruited-*": "allow"
   broadcast: allow
   recall: allow
-  websearch: allow
+  websearch: deny
+  webfetch: deny
   glob: allow
   grep: allow
   list: allow
-  todowrite: allow
+  todowrite: deny
   question: allow
   skill: allow
+  memory: deny
+  registry: allow
+  status: allow
+  report_metrics: allow
+  verify_work: allow
+  create_agent: deny
+  update_plan: deny
+  revoke: deny
 
 ---
 

@@ -11,20 +11,29 @@ temperature: 0.1
 steps: 35
 permission:
   read: allow
-  edit: deny
-  bash: deny
-  safe_edit: allow
-  safe_bash: allow
+  edit: allow
+  bash: allow
+  safe_edit: deny
+  safe_bash: deny
   task: deny
   broadcast: allow
   recall: allow
   websearch: deny
+  webfetch: deny
   glob: allow
   grep: allow
   list: allow
   todowrite: deny
   question: allow
   skill: allow
+  memory: deny
+  registry: deny
+  status: allow
+  report_metrics: allow
+  verify_work: deny
+  create_agent: deny
+  update_plan: deny
+  revoke: deny
 ---
 
 # Jr-Bram

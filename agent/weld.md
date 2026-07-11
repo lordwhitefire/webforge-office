@@ -13,10 +13,27 @@ permission:
   read: allow
   edit: deny
   bash: deny
-  safe_edit: allow
-  safe_bash: allow
-  task:
-    "*": deny
+  safe_edit: deny
+  safe_bash: deny
+  task: deny
+  broadcast: allow
+  recall: allow
+  websearch: deny
+  webfetch: deny
+  glob: allow
+  grep: allow
+  list: allow
+  todowrite: deny
+  question: allow
+  skill: allow
+  memory: deny
+  registry: allow
+  status: allow
+  report_metrics: allow
+  verify_work: deny
+  create_agent: allow
+  update_plan: deny
+  revoke: deny
 
   broadcast: allow
   recall: allow

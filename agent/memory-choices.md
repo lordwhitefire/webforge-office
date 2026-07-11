@@ -19,12 +19,21 @@ permission:
   broadcast: allow
   recall: allow
   websearch: deny
+  webfetch: deny
   glob: allow
   grep: allow
   list: allow
   todowrite: deny
   question: allow
   skill: allow
+  memory: allow
+  registry: deny
+  status: allow
+  report_metrics: allow
+  verify_work: deny
+  create_agent: deny
+  update_plan: deny
+  revoke: deny
 ---
 
 # Memory-Choices

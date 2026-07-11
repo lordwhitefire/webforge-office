@@ -1,20 +1,23 @@
 /**
- * WebForge Safe Edit — wraps file editing with Law enforcement.
+ * WebForge Safe Edit — for DOCUMENTATION files only.
  *
- * Checks:
- * - Law 2: File must not exceed 300 lines after edit
- * - Law 6: Logs the edit to project memory
+ * Enforces:
+ * - Law 2: File must not exceed 300 lines after edit (keeps docs manageable)
  * - Law 5: Scans content for inference patterns (Flagger)
+ * - Law 6: Logs the edit to project memory
  *
- * Place in: .opencode/tools/safe_edit.ts
+ * WHO USES THIS: Documentation department workers only.
+ * Code files should use the built-in `edit` tool (no line limit).
+ *
+ * Place in: tool/safe_edit.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Edit a file safely. Checks file length (Law 2), logs to memory (Law 6), and scans for inference (Law 5). Use this instead of the built-in edit tool.",
+  description: "Edit a DOCUMENTATION file safely. Enforces 300-line limit (Law 2), logs to memory (Law 6), scans for inference (Law 5). For docs/memory files only — use the built-in edit tool for code files.",
   args: {
     path: {
       type: "string",
-      description: "File path to edit",
+      description: "File path to edit (relative or absolute)",
     },
     content: {
       type: "string",
@@ -26,7 +29,10 @@ export default {
     const path = await import("path")
 
     const agentName = context.agent || "Unknown"
-    const filePath = path.join(process.cwd(), args.path)
+    // Fix: handle absolute paths correctly
+    // If args.path is absolute (starts with /), use it as-is
+    // If relative, join with cwd
+    const filePath = path.isAbsolute(args.path) ? args.path : path.join(process.cwd(), args.path)
 
     // ─── WebForge Tool Guard ───
     // Only registered WebForge agents can use safe_edit.

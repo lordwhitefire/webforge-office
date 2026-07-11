@@ -1,16 +1,19 @@
 /**
- * WebForge Safe Bash — wraps bash commands with safety checks.
+ * WebForge Safe Bash — for DOCUMENTATION department workers only.
  *
  * Checks:
  * - Blocks dangerous commands (rm -rf /, sudo, etc.)
  * - Blocks writing to .env files
  * - Logs all commands to memory (Law 6)
  *
- * Place in: .opencode/tools/safe_bash.ts
+ * WHO USES THIS: Documentation department workers only.
+ * Build, quality, and meta workers use the built-in `bash` tool.
+ *
+ * Place in: tool/safe_bash.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Run a shell command safely. Blocks dangerous commands, protects .env files, and logs to memory. Use this instead of the built-in bash tool.",
+  description: "Run a shell command safely (for documentation workers). Blocks dangerous commands, protects .env files, and logs to memory. Build/quality/meta workers should use the built-in bash tool instead.",
   args: {
     command: {
       type: "string",
