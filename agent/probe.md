@@ -1,12 +1,7 @@
-# Tier Template: DIRECTOR
-# Used by: Probe, Odin, Dorian, Aurora, Titan, Zephyr, Verdict-Lance, Verdict-Hazel, etc.
-# Directors do NOT do work. They coordinate leads and verify deliverables.
-
 ---
 description: "WebForge Director — intelligence department. Reports to Athena."
 name: "Probe"
 mode: subagent
-model: sonnet
 temperature: 0.2
 steps: 35
 permission:

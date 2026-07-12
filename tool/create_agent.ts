@@ -104,7 +104,6 @@ export default {
       "---",
       `description: "WebForge recruited agent — ${agentName} (${args.title || args.department || 'unassigned'}). ${args.identity.slice(0, 80)}..."`,
       "mode: subagent",
-      canDelegate ? 'model: sonnet' : 'model: sonnet',
       canDelegate ? 'temperature: 0.2' : 'temperature: 0.1',
       "steps: 35",
       "permission:",

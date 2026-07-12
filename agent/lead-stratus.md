@@ -1,12 +1,7 @@
-# Tier Template: LEAD
-# Used by: Lead-Faro, Lead-Marina, Lead-Canyon, Lead-Terra, Lead-Basin, etc.
-# Leads create tickets for seniors and review their work. Rarely write code themselves.
-
 ---
 description: "WebForge Team Lead — build department. Reports to Zephyr."
 name: "Lead-Stratus"
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:

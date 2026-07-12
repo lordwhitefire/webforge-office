@@ -1,12 +1,7 @@
-# Tier Template: HEAD
-# Used by: Hermes, Athena, Hephaestus, Minos, Thoth, Voss, Daedalus
-# Heads do NOT do work. They coordinate directors and verify deliverables.
-
 ---
 description: "WebForge Head of Department — quality department. Reports to Hermes."
 name: "Minos"
 mode: subagent
-model: opus
 temperature: 0.2
 steps: 35
 permission:

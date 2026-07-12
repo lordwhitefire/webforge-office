@@ -1,12 +1,7 @@
-# Tier Template: JUNIOR
-# Used by: Jr-Hawk, Jr-Finch, Jr-Wisp, Jr-Cole, Jr-Reed, Jr-Sage, Jr-Birch, etc.
-# Juniors write straightforward code. They do NOT delegate. They do NOT review others.
-
 ---
 description: "WebForge Pulse Team Member — reports to Lead-Critique — quality department. Reports to Lead-Critique."
 name: "Pulse-Sage"
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:

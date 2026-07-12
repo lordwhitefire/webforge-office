@@ -1,12 +1,7 @@
-# Tier Template: JUNIOR
-# Used by: Jr-Hawk, Jr-Finch, Jr-Wisp, Jr-Cole, Jr-Reed, Jr-Sage, Jr-Birch, etc.
-# Juniors write straightforward code. They do NOT delegate. They do NOT review others.
-
 ---
 description: "WebForge Quill Team Member — reports to Lead-Scribe — documentation department. Reports to Lead-Scribe."
 name: "Scroll"
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:

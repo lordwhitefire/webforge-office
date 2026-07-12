@@ -1,12 +1,7 @@
-# Tier Template: SENIOR
-# Used by: Sr-Hale, Sr-Vance, Sr-Brook, Sr-Stone, Sr-Iron, Sr-Wood, Sr-Steel, Sr-Cloud, etc.
-# Seniors write complex code, review junior work, and merge components.
-
 ---
 description: "WebForge Senior Developer — build department. Reports to Lead-Basin."
 name: "Sr-Iron"
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:

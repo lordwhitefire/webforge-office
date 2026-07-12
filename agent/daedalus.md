@@ -1,7 +1,6 @@
 ---
 description: "WebForge Meta Engineering Director — enforces the 6 Laws, monitors the Flagger for inference violations, revokes tools from misbehaving WebForge agents. Use when an agent is caught inferring, when you need an agent audited, or when tool permissions need to be stripped."
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:

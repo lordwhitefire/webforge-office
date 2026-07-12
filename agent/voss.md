@@ -1,7 +1,6 @@
 ---
 description: "WebForge HR Director — recruits and creates agents on demand from the repo agent library. Use when Hermes needs a new agent: a frontend developer, a backend specialist, a researcher, etc. You create agent files, never do project work."
 mode: subagent
-model: sonnet
 temperature: 0.1
 steps: 35
 permission:
