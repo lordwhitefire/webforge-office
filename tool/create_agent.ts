@@ -3,14 +3,18 @@
  *
  * Reads repo agent MD files from .webforge/repo-agents/, concatenates them
  * with a custom identity prompt + YAML frontmatter, and writes the result
- * to .opencode/agents/<name>.md. Also updates .webforge/agents.json so the
- * broadcast/status tools can enforce chain-of-command for the new agent.
+ * to the GLOBAL agent folder (~/.config/webforge/opencode/agent/<name>.md).
+ * Also updates .webforge/agents.json so the broadcast/status tools can
+ * enforce chain-of-command for the new agent.
  *
- * Place in: .opencode/tools/create_agent.ts
+ * ALL agents (pre-built or recruited) are permanent and global — available
+ * in every project, forever.
+ *
+ * Place in: tool/create_agent.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Create a new agent file from repo templates. HR (Voss) uses this to recruit agents. The agent file is written to .opencode/agents/<name>.md and the registry is updated so broadcast/status tools can enforce chain-of-command. The agent is immediately spawnable via the task tool.",
+  description: "Create a new agent file from repo templates. HR (Voss) uses this to recruit agents. The agent file is written to the GLOBAL agent folder (~/.config/webforge/opencode/agent/) so it's available in every project. The registry is updated so broadcast/status tools can enforce chain-of-command. The agent is immediately spawnable via the task tool.",
   args: {
     name: {
       type: "string",
@@ -49,6 +53,7 @@ export default {
   async execute(args, context) {
     const fs = await import("fs")
     const path = await import("path")
+    const { homedir } = await import("os")
 
     const callerAgent = context.agent || "Unknown"
     if (callerAgent.toLowerCase() !== "voss") {
@@ -60,7 +65,10 @@ export default {
     }
 
     const agentName = args.name.toLowerCase()
-    const agentsDir = path.join(process.cwd(), ".opencode", "agents")
+    // Global agent folder — same place our 301 pre-built agents live.
+    // ALL agents (pre-built or recruited) are permanent and global,
+    // available in every project, forever.
+    const agentsDir = path.join(homedir(), ".config", "webforge", "opencode", "agent")
     fs.mkdirSync(agentsDir, { recursive: true })
     const agentFile = path.join(agentsDir, `${agentName}.md`)
 
@@ -239,7 +247,7 @@ ${repoContent}
     fs.appendFileSync(logPath, logEntry, "utf-8")
 
     return `Agent ${agentName} created.
-- File: .opencode/agents/${agentName}.md
+- File: ~/.config/webforge/opencode/agent/${agentName}.md (GLOBAL — available in every project)
 - Registry: .webforge/agents.json updated (added ${agentName}, added to ${args.reports_to}'s subordinates)
 - Mailbox: .webforge/mailbox/${agentName}.json initialized
 - Status: .webforge/status/${agentName}.json initialized
