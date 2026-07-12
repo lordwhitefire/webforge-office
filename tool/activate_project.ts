@@ -2,22 +2,30 @@
  * WebForge Activate Project Tool
  *
  * Called by Hermes when entering a project folder for the first time.
+ * Also manages the "active project" — the project WebForge is currently
+ * working on. This survives compaction because it's stored in a file.
  *
- * Checks if .webforge/memory/ exists:
- *   - If YES → project is already activated. Returns "ACTIVATED".
- *   - If NO  → returns "NOT_ACTIVATED" and tells Hermes to ask the user:
- *     - "New project" → creates .webforge/ structure + signals documentation dept to scan
- *     - "Subfolder of X" → creates a .webforge-subfolder marker file pointing to parent
+ * Actions:
+ *   - check            — check if a project is activated (uses active-project.txt if no path given)
+ *   - activate_new     — create .webforge/ structure in a new project + set as active
+ *   - mark_subfolder   — mark this folder as a subfolder of a parent project
+ *   - switch_project   — switch the active project to a new path (activates if needed)
+ *   - get_active       — return the currently active project path
  *
  * Place in: tool/activate_project.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Check if this project is activated (has .webforge/ memory). If not activated, ask the user if this is a new project or a subfolder of an existing project. This is the FIRST thing Hermes does when entering any folder.",
+  description: "Manage the active WebForge project. Call with action='check' on startup to see if the project is activated. Call with action='activate_new' to set up a new project. Call with action='switch_project' to change which project WebForge works on. The active project is stored in ~/.config/webforge/active-project.txt so it survives compaction.",
   args: {
     action: {
       type: "string",
-      description: "Action: 'check' (default) or 'activate_new' or 'mark_subfolder'",
+      description: "Action: 'check' (default) | 'activate_new' | 'mark_subfolder' | 'switch_project' | 'get_active'",
+      optional: true,
+    },
+    path: {
+      type: "string",
+      description: "Project folder path. If omitted, uses the active project from active-project.txt (or cwd as fallback).",
       optional: true,
     },
     parent_project_path: {
@@ -29,33 +37,85 @@ export default {
   async execute(args, context) {
     const fs = await import("fs")
     const path = await import("path")
+    const { resolveProjectPath, readActiveProject, writeActiveProject } = await import("./lib/agents-json.js")
 
     const action = args.action || "check"
-    const cwd = process.cwd()
-    const webforgeDir = path.join(cwd, ".webforge")
+
+    // ─── GET_ACTIVE: return the currently active project ───
+    if (action === "get_active") {
+      const active = readActiveProject()
+      if (active) {
+        return `ACTIVE_PROJECT: ${active}`
+      }
+      return `NO_ACTIVE_PROJECT: No project is currently active. Ask the user which project to work on, then call activate_project with action='switch_project' and path='<project-path>'.`
+    }
+
+    // ─── SWITCH_PROJECT: change the active project ───
+    if (action === "switch_project") {
+      if (!args.path) {
+        return `BLOCKED: Must provide 'path' for switch_project action.`
+      }
+
+      const newPath = path.resolve(args.path)
+      if (!fs.existsSync(newPath)) {
+        return `BLOCKED: Path does not exist: ${newPath}`
+      }
+
+      // Write to active-project.txt
+      writeActiveProject(newPath)
+
+      // Check if it's activated
+      const memoryDir = path.join(newPath, ".webforge", "memory")
+      const subfolderMarker = path.join(newPath, ".webforge-subfolder")
+
+      if (fs.existsSync(subfolderMarker)) {
+        const parentPath = fs.readFileSync(subfolderMarker, "utf-8").trim()
+        return `SWITCHED: Active project is now ${newPath}. NOTE: This is a subfolder of ${parentPath}. Use the parent's memory at ${parentPath}/.webforge/memory/.`
+      }
+
+      if (fs.existsSync(memoryDir) && fs.existsSync(path.join(memoryDir, "STATE.md"))) {
+        return `SWITCHED: Active project is now ${newPath}. Project is already activated. Read .webforge/PROJECT.md and .webforge/memory/work-log.md to continue.`
+      }
+
+      return `SWITCHED: Active project is now ${newPath}. Project is NOT activated yet. Ask the user: "Is this a new project, or a subfolder of an existing project?" Then call activate_project with action='activate_new' or action='mark_subfolder'.`
+    }
+
+    // ─── For check, activate_new, mark_subfolder — resolve the project path ───
+    const projectPath = path.resolve(resolveProjectPath(args.path))
+
+    // Verify the path exists
+    if (!fs.existsSync(projectPath)) {
+      return `BLOCKED: Project path does not exist: ${projectPath}`
+    }
+
+    const webforgeDir = path.join(projectPath, ".webforge")
     const memoryDir = path.join(webforgeDir, "memory")
-    const subfolderMarker = path.join(cwd, ".webforge-subfolder")
+    const subfolderMarker = path.join(projectPath, ".webforge-subfolder")
 
     // ─── CHECK: is this project activated? ───
     if (action === "check") {
       // Check for subfolder marker first
       if (fs.existsSync(subfolderMarker)) {
         const parentPath = fs.readFileSync(subfolderMarker, "utf-8").trim()
-        return `SUBFOLDER: This folder is a subfolder of ${parentPath}. Use the parent project's memory at ${parentPath}/.webforge/memory/. Do not create separate memory here.`
+        return `SUBFOLDER: ${projectPath} is a subfolder of ${parentPath}. Use the parent project's memory at ${parentPath}/.webforge/memory/. Do not create separate memory here.`
       }
 
       // Check for existing memory
       if (fs.existsSync(memoryDir) && fs.existsSync(path.join(memoryDir, "STATE.md"))) {
-        return `ACTIVATED: This project is already activated. Read .webforge/memory/STATE.md and .webforge/PROJECT.md to understand the project. Read .webforge/memory/work-log.md to see recent activity.`
+        // Update active-project.txt to this path (in case it changed)
+        writeActiveProject(projectPath)
+        return `ACTIVATED: ${projectPath} is already activated. Read .webforge/PROJECT.md and .webforge/memory/work-log.md to continue. Active project file updated.`
       }
 
-      return `NOT_ACTIVATED: This folder has no WebForge memory. Ask the user: "Is this a new project, or is it a subfolder of an existing WebForge project?" Then call activate_project with action='activate_new' or action='mark_subfolder' with the parent path.`
+      return `NOT_ACTIVATED: ${projectPath} has no WebForge memory. Ask the user: "Is this a new project, or is it a subfolder of an existing WebForge project?" Then call activate_project with action='activate_new' or action='mark_subfolder' with the parent path.`
     }
 
     // ─── ACTIVATE_NEW: create the .webforge/ structure ───
     if (action === "activate_new") {
       if (fs.existsSync(memoryDir)) {
-        return `ALREADY_ACTIVATED: .webforge/ already exists. Use action='check'.`
+        // Already activated — just set as active and return
+        writeActiveProject(projectPath)
+        return `ALREADY_ACTIVATED: ${projectPath} already has .webforge/. Active project file updated.`
       }
 
       // Create directory structure
@@ -99,7 +159,7 @@ Project initialization — intelligence department scanning codebase
         "utf-8"
       )
 
-      // Create empty constraints.md, errors-and-fixes.md, preferences.md
+      // Create empty constraints.md, errors-and-fixes.md, preferences.md, PROJECT.md
       fs.writeFileSync(
         path.join(webforgeDir, "constraints.md"),
         "# Project Constraints\n\n> Real-world constraints discovered during intelligence scan.\n\n",
@@ -115,24 +175,21 @@ Project initialization — intelligence department scanning codebase
         "# Developer Preferences\n\n> Accumulated preferences stated by the CEO. Not area-specific.\n\n",
         "utf-8"
       )
+      fs.writeFileSync(
+        path.join(webforgeDir, "PROJECT.md"),
+        "# Project Overview\n\n> This file is the entry point. Hermes reads this first. To be filled in by the documentation department after the intelligence scan.\n\n## Project Name\n(To be filled)\n\n## Goal\n(To be filled)\n\n## Tech Stack Summary\n(To be filled)\n\n## Current Status\nProject initialization — awaiting intelligence scan\n",
+        "utf-8"
+      )
 
       // Create empty plan.md
       fs.writeFileSync(
         path.join(webforgeDir, "plan.md"),
-        "# Project Plan\n\n> Updated by Hermes via the update_plan tool. The Ralph Loop checks for '## PROJECT COMPLETE'.\n\n## Tasks\n\n- [ ] Intelligence scan\n- [ ] Documentation\n- [ ] Build\n\n## PROJECT COMPLETE\n\n(Remove this line when complete — the Ralph Loop stops when it sees '## PROJECT COMPLETE')\n",
+        "# Project Plan\n\n> Updated by Hermes via the update_plan tool. The Ralph Loop checks for '## PROJECT COMPLETE'.\n\n## Tasks\n\n- [ ] Intelligence scan\n- [ ] Documentation\n- [ ] Build\n\n## PROJECT COMPLETE\n\n(Remove this line when complete)\n",
         "utf-8"
       )
 
-      // Copy agents.json from global template if it exists
-      const globalConfigDir = path.join(
-        process.env.WEBFORGE_CONFIG_HOME || path.join(process.env.HOME || "", ".config", "webforge", "opencode"),
-        ""
-      )
-      const templateAgentsJson = path.join(globalConfigDir, "project-template", "agents.json")
-
-      // Try multiple locations for the template
+      // Try to copy agents.json from the global template
       const possiblePaths = [
-        templateAgentsJson,
         path.join(__dirname, "..", "project-template", "agents.json"),
         path.join(process.env.HOME || "", ".config", "webforge", "opencode", "project-template", "agents.json"),
       ]
@@ -149,7 +206,6 @@ Project initialization — intelligence department scanning codebase
       }
 
       if (!agentsJsonCopied) {
-        // Create minimal agents.json
         fs.writeFileSync(
           path.join(webforgeDir, "agents.json"),
           JSON.stringify({ agents: [] }, null, 2),
@@ -157,7 +213,10 @@ Project initialization — intelligence department scanning codebase
         )
       }
 
-      return `ACTIVATED: Created .webforge/ structure. Now delegate to Athena (Intelligence) to scan the codebase. Intelligence will write findings to .webforge/memory/research/. Then Documentation department will write area docs to .webforge/areas/ and PROJECT.md.`
+      // Set as active project
+      writeActiveProject(projectPath)
+
+      return `ACTIVATED: Created .webforge/ structure at ${projectPath}. Active project file updated. Now delegate to Athena (Intelligence) to scan the codebase. Intelligence will write findings to .webforge/memory/research/. Then Documentation department will write area docs to .webforge/areas/ and fill in PROJECT.md.`
     }
 
     // ─── MARK_SUBFOLDER: create the marker file ───
@@ -166,22 +225,21 @@ Project initialization — intelligence department scanning codebase
         return `BLOCKED: Must provide parent_project_path for mark_subfolder action.`
       }
 
-      // Verify the parent has .webforge/memory/
-      const parentMemory = path.join(args.parent_project_path, ".webforge", "memory")
+      const parentPath = path.resolve(args.parent_project_path)
+      const parentMemory = path.join(parentPath, ".webforge", "memory")
       if (!fs.existsSync(parentMemory)) {
-        return `BLOCKED: Parent project at ${args.parent_project_path} does not have .webforge/memory/. Are you sure it's a WebForge project?`
+        return `BLOCKED: Parent project at ${parentPath} does not have .webforge/memory/. Are you sure it's a WebForge project?`
       }
 
       // Create the marker file
-      fs.writeFileSync(
-        subfolderMarker,
-        args.parent_project_path,
-        "utf-8"
-      )
+      fs.writeFileSync(subfolderMarker, parentPath, "utf-8")
 
-      return `MARKED: This folder is now marked as a subfolder of ${args.parent_project_path}. WebForge will use the parent's memory. You will not be asked again.`
+      // Set parent as active project (since this is a subfolder)
+      writeActiveProject(parentPath)
+
+      return `MARKED: ${projectPath} is now marked as a subfolder of ${parentPath}. WebForge will use the parent's memory. Active project set to the parent. You will not be asked again.`
     }
 
-    return `Unknown action: ${action}. Use 'check', 'activate_new', or 'mark_subfolder'.`
+    return `Unknown action: ${action}. Use 'check', 'activate_new', 'mark_subfolder', 'switch_project', or 'get_active'.`
   },
 }

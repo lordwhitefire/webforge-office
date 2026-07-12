@@ -9,30 +9,41 @@
  * WHO USES THIS: Documentation department workers only.
  * Build, quality, and meta workers use the built-in `bash` tool.
  *
+ * The project path is resolved via resolveProjectPath():
+ *   1. Explicit `project_path` argument from the agent
+ *   2. ~/.config/webforge/active-project.txt (the active project)
+ *   3. process.cwd() (fallback)
+ *
  * Place in: tool/safe_bash.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Run a shell command safely (for documentation workers). Blocks dangerous commands, protects .env files, and logs to memory. Build/quality/meta workers should use the built-in bash tool instead.",
+  description: "Run a shell command safely (for documentation workers). Blocks dangerous commands, protects .env files, and logs to memory. Build/quality/meta workers should use the built-in bash tool instead. The project path is auto-detected from active-project.txt (or pass 'project_path' to override).",
   args: {
     command: {
       type: "string",
       description: "Shell command to execute",
+    },
+    project_path: {
+      type: "string",
+      description: "Project folder path (auto-detected from active-project.txt if omitted).",
+      optional: true,
     },
   },
   async execute(args, context) {
     const { execSync } = await import("child_process")
     const fs = await import("fs")
     const path = await import("path")
+    const { resolveProjectPath, isWebForgeAgent } = await import("./lib/agents-json.js")
 
     const agentName = context.agent || "Unknown"
     const command = args.command
+    const projectPath = resolveProjectPath(args.project_path)
 
     // ─── WebForge Tool Guard ───
     // Only registered WebForge agents can use safe_bash.
     // OpenCode built-in agents (build, plan, etc.) are unaffected.
-    const { isWebForgeAgent } = await import("./lib/agents-json.js")
-    if (!isWebForgeAgent(fs, path, agentName)) {
+    if (!isWebForgeAgent(fs, path, agentName, projectPath)) {
       return `BLOCKED: ${agentName} is not a registered WebForge agent. safe_bash only applies to WebForge agents. Use the built-in bash tool instead.`
     }
 
@@ -60,7 +71,7 @@ export default {
       output = execSync(command, {
         encoding: "utf-8",
         timeout: 60000,
-        cwd: process.cwd(),
+        cwd: projectPath,
         maxBuffer: 1024 * 1024,
       })
     } catch (e) {
@@ -68,7 +79,7 @@ export default {
     }
 
     // Law 6: Log to memory
-    const memDir = path.join(process.cwd(), ".webforge", "memory")
+    const memDir = path.join(projectPath, ".webforge", "memory")
     fs.mkdirSync(memDir, { recursive: true })
     const logPath = path.join(memDir, "bash-log.md")
     const logEntry = `- **[${new Date().toISOString()}]** ${agentName} ran: \`${command.slice(0, 100)}\`\n`

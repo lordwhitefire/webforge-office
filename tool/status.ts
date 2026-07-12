@@ -10,8 +10,13 @@
  * - blocked        — any agent logs they're stuck
  * - recruited      — HR logs a new agent was recruited
  *
- * The tool appends to .webforge/memory/work-log.md (shared, append-only).
- * It also writes a snapshot to .webforge/status/<agent>.json.
+ * The tool appends to <project>/.webforge/memory/work-log.md (shared, append-only).
+ * It also writes a snapshot to <project>/.webforge/status/<agent>.json.
+ *
+ * The project path is resolved via resolveProjectPath():
+ *   1. Explicit `path` argument from the agent
+ *   2. ~/.config/webforge/active-project.txt (the active project)
+ *   3. process.cwd() (fallback)
  *
  * Agents CANNOT read or edit work-log.md through this tool — only append.
  *
@@ -19,7 +24,7 @@
  */
 
 export default {
-  description: "Log your activity to the shared work log. Every agent must call this when: receiving a task, starting work, completing work, starting a review, completing a review, getting blocked, or recruiting an agent. Appends to .webforge/memory/work-log.md — cannot read or edit existing entries.",
+  description: "Log your activity to the shared work log. Every agent must call this when: receiving a task, starting work, completing work, starting a review, completing a review, getting blocked, or recruiting an agent. Appends to .webforge/memory/work-log.md — cannot read or edit existing entries. The project path is auto-detected from active-project.txt (or pass 'path' to override).",
   args: {
     event: {
       type: "string",
@@ -49,14 +54,22 @@ export default {
       description: "Additional notes (e.g., review verdict, blocking reason). Omit if not applicable.",
       optional: true,
     },
+    path: {
+      type: "string",
+      description: "Project folder path (auto-detected from active-project.txt if omitted).",
+      optional: true,
+    },
   },
   async execute(args, context) {
     const fs = await import("fs")
     const path = await import("path")
+    const { resolveProjectPath } = await import("./lib/agents-json.js")
 
     const agentName = context.agent || "Unknown"
     const timestamp = new Date().toISOString()
-    const webforgeDir = path.join(process.cwd(), ".webforge")
+    const projectPath = resolveProjectPath(args.path)
+
+    const webforgeDir = path.join(projectPath, ".webforge")
     const memoryDir = path.join(webforgeDir, "memory")
     const statusDir = path.join(webforgeDir, "status")
     const workLogPath = path.join(memoryDir, "work-log.md")
@@ -122,9 +135,10 @@ export default {
       details: args.details,
       reported_to: args.reported_to || null,
       notes: args.notes || null,
+      project: projectPath,
     }
     fs.writeFileSync(agentStatusPath, JSON.stringify(statusSnapshot, null, 2), "utf-8")
 
-    return `Logged: ${eventLabel} to work-log.md`
+    return `Logged: ${eventLabel} to work-log.md (project: ${projectPath})`
   },
 }

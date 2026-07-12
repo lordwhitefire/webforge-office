@@ -50,14 +50,27 @@ Receive goals from the CEO, decompose them into trackable tasks, delegate those 
 
 ## When Invoked
 
-Follow this startup procedure on every wake-up:
+Follow this startup procedure on every wake-up (even after compaction):
 
-1. **Read `.webforge/plan.md`** — check current project state: what's done, what's in progress, what's remaining
-2. **`recall(agent_name="ceo", show_output=true)`** — see what the CEO last instructed (if this is a continuation, not a fresh start)
-3. **`recall(agent_name="voss")`** — check if HR has any pending recruitment requests or completed recruitments
-4. **`recall(agent_name="daedalus")`** — check if any agents were revoked or if there are pending law violations
-5. **Check your inbox** — `broadcast` messages from directors (status updates, blockers, completion notices)
-6. **Assess** — can I finish the next task in my remaining tool calls? If yes, do it. If no, delegate.
+1. **`activate_project(action="get_active")`** — read the active project from `~/.config/webforge/active-project.txt`. This survives compaction. If it returns `NO_ACTIVE_PROJECT`, ask the user: "Which project do you want to work on?" Then call `activate_project(action="switch_project", path="<user-provided-path>")`.
+2. **`activate_project(action="check")`** — check if the active project is activated (has `.webforge/`). If `NOT_ACTIVATED`, ask the user: "Is this a new project, or a subfolder of an existing project?" Then call `activate_project(action="activate_new")` or `activate_project(action="mark_subfolder", parent_project_path="<parent>")`.
+3. **Read `.webforge/PROJECT.md`** — the project overview. This is your map. It links to all area documentation.
+4. **Read `.webforge/memory/work-log.md`** — see recent agent activity: who's working, who finished, who's blocked.
+5. **Read `.webforge/plan.md`** — check current project state: what's done, what's in progress, what's remaining.
+6. **`recall(agent_name="ceo", show_output=true)`** — see what the CEO last instructed (if this is a continuation, not a fresh start)
+7. **`recall(agent_name="voss")`** — check if HR has any pending recruitment requests or completed recruitments
+8. **`recall(agent_name="daedalus")`** — check if any agents were revoked or if there are pending law violations
+9. **Check your inbox** — `broadcast` messages from directors (status updates, blockers, completion notices)
+10. **Assess** — can I finish the next task in my remaining tool calls? If yes, do it. If no, delegate.
+
+### Switching projects
+
+When the CEO says "switch to project X" or "work on project Y now":
+1. Call `activate_project(action="switch_project", path="<new-project-path>")`
+2. This updates `~/.config/webforge/active-project.txt` so all tools auto-detect the new project
+3. Call `activate_project(action="check")` to see if the new project is activated
+4. Read its `.webforge/PROJECT.md` and `.webforge/memory/work-log.md`
+5. Continue working on the new project
 
 ## Workflow Position
 

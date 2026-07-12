@@ -9,11 +9,16 @@
  * WHO USES THIS: Documentation department workers only.
  * Code files should use the built-in `edit` tool (no line limit).
  *
+ * The project path is resolved via resolveProjectPath():
+ *   1. Explicit `project_path` argument from the agent
+ *   2. ~/.config/webforge/active-project.txt (the active project)
+ *   3. process.cwd() (fallback)
+ *
  * Place in: tool/safe_edit.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Edit a DOCUMENTATION file safely. Enforces 300-line limit (Law 2), logs to memory (Law 6), scans for inference (Law 5). For docs/memory files only — use the built-in edit tool for code files.",
+  description: "Edit a DOCUMENTATION file safely. Enforces 300-line limit (Law 2), logs to memory (Law 6), scans for inference (Law 5). For docs/memory files only — use the built-in edit tool for code files. The project path is auto-detected from active-project.txt (or pass 'project_path' to override).",
   args: {
     path: {
       type: "string",
@@ -23,22 +28,27 @@ export default {
       type: "string",
       description: "New file content",
     },
+    project_path: {
+      type: "string",
+      description: "Project folder path (auto-detected from active-project.txt if omitted).",
+      optional: true,
+    },
   },
   async execute(args, context) {
     const fs = await import("fs")
     const path = await import("path")
+    const { resolveProjectPath, isWebForgeAgent } = await import("./lib/agents-json.js")
 
     const agentName = context.agent || "Unknown"
-    // Fix: handle absolute paths correctly
-    // If args.path is absolute (starts with /), use it as-is
-    // If relative, join with cwd
-    const filePath = path.isAbsolute(args.path) ? args.path : path.join(process.cwd(), args.path)
+    const projectPath = resolveProjectPath(args.project_path)
+
+    // The file path to edit (handle absolute vs relative)
+    const filePath = path.isAbsolute(args.path) ? args.path : path.join(projectPath, args.path)
 
     // ─── WebForge Tool Guard ───
     // Only registered WebForge agents can use safe_edit.
     // OpenCode built-in agents (build, plan, etc.) are unaffected.
-    const { isWebForgeAgent } = await import("./lib/agents-json.js")
-    if (!isWebForgeAgent(fs, path, agentName)) {
+    if (!isWebForgeAgent(fs, path, agentName, projectPath)) {
       return `BLOCKED: ${agentName} is not a registered WebForge agent. safe_edit only applies to WebForge agents. Use the built-in edit tool instead.`
     }
 
@@ -69,14 +79,14 @@ export default {
     fs.writeFileSync(filePath, args.content, "utf-8")
 
     // Law 6: Log to memory
-    const memDir = path.join(process.cwd(), ".webforge", "memory")
+    const memDir = path.join(projectPath, ".webforge", "memory")
     fs.mkdirSync(memDir, { recursive: true })
     const logPath = path.join(memDir, "edit-log.md")
     const logEntry = `- **[${new Date().toISOString()}]** ${agentName} edited ${args.path} (${lines.length} lines)\n`
     fs.appendFileSync(logPath, logEntry, "utf-8")
 
     // Build response
-    let response = `File edited: ${args.path} (${lines.length} lines). Logged to memory.`
+    let response = `File edited: ${args.path} (${lines.length} lines). Logged to memory. (project: ${projectPath})`
     if (inferenceFlags.length > 0) {
       response += `\n\n⚠️ FLIGGER DETECTED ${inferenceFlags.length} POTENTIAL ISSUE(S):\n`
       inferenceFlags.forEach(f => response += `  - ${f}\n`)

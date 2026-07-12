@@ -114,6 +114,61 @@ webforge-office/
 **WebForge launches from a dedicated home base folder and points at projects.**
 This prevents `.opencode/` folder clashes with stock OpenCode.
 
+## Active Project Memory (survives compaction)
+
+WebForge remembers which project it's currently working on. This is stored in:
+
+```
+~/.config/webforge/active-project.txt
+```
+
+The file contains one line: the absolute path to the active project. Every tool that touches `.webforge/` auto-reads this file to find the project folder. This means:
+
+- **Hermes survives compaction.** Even after a context compaction, Hermes reads `active-project.txt` and knows exactly which project to continue working on. He doesn't get confused or start scanning the wrong folder.
+- **Tools auto-detect the project.** You don't need to pass the project path on every tool call. The `status`, `memory`, `safe_edit`, `safe_bash`, `activate_project`, and other tools all read `active-project.txt` automatically.
+- **Path override is optional.** Every tool accepts an optional `path` (or `project_path`) argument. If provided, it overrides the active project. If omitted, the tool uses `active-project.txt`. If that file doesn't exist either, it falls back to `process.cwd()`.
+
+### Path resolution order (every tool)
+
+```
+1. Explicit `path` argument from the agent     ← highest priority
+2. ~/.config/webforge/active-project.txt       ← auto-detected
+3. process.cwd()                                ← fallback
+```
+
+### How Hermes uses it on every wake-up
+
+Hermes's startup procedure (defined in `agent/hermes.md`):
+
+1. **`activate_project(action="get_active")`** — read the active project path
+2. **`activate_project(action="check")`** — check if it's activated (has `.webforge/`)
+3. If not activated → ask you: new project or subfolder?
+4. If activated → read `PROJECT.md` + `work-log.md` → continue working
+
+### Switching projects
+
+When you tell Hermes "switch to project B":
+
+1. Hermes calls `activate_project(action="switch_project", path="/path/to/project-b")`
+2. This updates `active-project.txt`
+3. All subsequent tool calls auto-detect the new project
+4. Hermes reads the new project's `PROJECT.md` and `work-log.md`
+5. Work continues on project B
+
+### Project path argument
+
+Every tool accepts an optional `path` (or `project_path`) argument. This lets an agent work on a different project without switching the active one:
+
+```typescript
+// Auto-detected from active-project.txt:
+status({ event: "work_started", task_id: "task-001", details: "Starting" })
+
+// Override — write to a specific project:
+status({ event: "work_started", task_id: "task-001", details: "Starting", path: "/home/me/project-b" })
+```
+
+This is useful when Hermes needs to read from one project while writing to another, or when an agent is recruited for a specific project that isn't the active one.
+
 ## How It Works
 
 OpenCode scans its config directory for `agent/*.md`, `tool/*.ts`, and `plugin/*.ts` files automatically. This repo provides exactly those files, pre-built.
