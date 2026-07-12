@@ -57,29 +57,35 @@ webforge-office/
 │   ├── voss.md                  ← permanent HR Director (149 lines)
 │   ├── daedalus.md              ← permanent Meta Engineering Director (169 lines)
 │   └── ...                      ← 298 generated agents (full org chart)
-├── tool/                        ← 10 custom tools (auto-discovered)
-│   ├── safe_edit.ts             ← file editing with Law 2/5/6 enforcement
-│   ├── safe_bash.ts             ← bash with dangerous-command blocking + logging
-│   ├── memory.ts                ← read/write to .webforge/memory/
-│   ├── registry.ts              ← look up agent info + reporting relationships
-│   ├── revoke.ts                ← strip permissions from law-violating agents
-│   ├── status.ts                ← write status snapshots for coordination
-│   ├── create_agent.ts          ← HR (Voss) creates new agent files on demand
-│   ├── update_plan.ts           ← Hermes updates shared plan, signals PROJECT COMPLETE
-│   ├── report_metrics.ts        ← workers report task metrics before sign-off
-│   ├── verify_work.ts           ← superiors verify + sign off on subordinate work
+├── tool/                        ← 11 custom tools (auto-discovered, all global)
+│   ├── activate_project.ts     ← checks/creates .webforge/ per project (Hermes calls first)
+│   ├── safe_edit.ts            ← docs-only editing with 300-line limit (Law 2)
+│   ├── safe_bash.ts            ← docs-only bash with dangerous-command blocking
+│   ├── memory.ts               ← read/write to .webforge/memory/ (doc + intel only)
+│   ├── status.ts               ← log activity to work-log.md (EVERY agent uses this)
+│   ├── registry.ts             ← look up agent info + reporting relationships
+│   ├── revoke.ts               ← strip permissions from law-violating agents (Daedalus)
+│   ├── create_agent.ts         ← HR (Voss) creates new agent files on demand
+│   ├── update_plan.ts          ← Hermes updates shared plan, signals PROJECT COMPLETE
+│   ├── report_metrics.ts       ← workers report task metrics before sign-off
+│   ├── verify_work.ts          ← superiors verify + sign off on subordinate work
 │   └── lib/
-│       └── metrics.ts           ← shared metrics types + scoring
-├── plugin/                      ← 2 plugins (auto-discovered)
+│       ├── metrics.ts          ← shared metrics types + scoring
+│       └── agents-json.ts      ← auto-creates agents.json if missing (prevents crashes)
+├── plugin/                      ← 1 plugin (auto-discovered)
 │   ├── guardrails.ts            ← pre-tool-call hook, blocks inference patterns
-│   ├── init-project.ts          ← auto-copies 301 agents + .webforge/ into each project
 │   └── lib/
 │       └── patterns.ts          ← inference pattern database
-├── project-template/            ← source files init-project.ts copies from
+├── project-template/            ← template files copied by activate_project.ts
 │   ├── plan.md                  ← shared plan file (Ralph Loop checks for PROJECT COMPLETE)
-│   ├── agents.json              ← full org tree (reportsTo + subordinates) — read by 8 tools
-│   ├── .pocket-universe.jsonc   ← Pocket Universe config (broadcast + recall)
-│   ├── memory/                  ← STATE.md, PROJECT.md, edit-log.md, etc.
+│   ├── PROJECT.md               ← project overview template (documentation fills this in)
+│   ├── agents.json              ← org tree (read by 8 tools)
+│   ├── constraints.md           ← project constraints template
+│   ├── errors-and-fixes.md      ← error log template
+│   ├── preferences.md           ← developer preferences template
+│   ├── areas/                   ← 80-area documentation (one file per area, created during scan)
+│   ├── .pocket-universe.jsonc   ← Pocket Universe config
+│   ├── memory/                  ← STATE.md, work-log.md, edit-log.md, research/, decisions/
 │   ├── mailbox/                 ← hermes.json, voss.json, daedalus.json
 │   ├── status/                  ← hermes.json, voss.json, daedalus.json
 │   └── repo-agents/             ← how to clone external agent libraries
@@ -88,8 +94,25 @@ webforge-office/
 └── docs/
     ├── IMPLEMENTATION.md        ← full system design
     ├── AGENT-SPEC.md            ← agent template specification
-    └── CHANGELOG.md             ← errors found + fixes applied during integration
+    ├── CHANGELOG.md             ← errors found + fixes applied during integration
+    └── web-development-areas.md ← 80-area checklist for project documentation
 ```
+
+## Architecture: Global + Per-Project
+
+**Everything is GLOBAL except memory and documentation.**
+
+| Lives globally (~/.config/webforge/opencode/) | Lives per-project (<project>/.webforge/) |
+|---|---|
+| 301 agent MD files | PROJECT.md (overview) |
+| 11 custom tools | areas/ (80-area documentation) |
+| Guardrails plugin | memory/ (STATE.md, work-log.md, research/, decisions/) |
+| opencode.json config | constraints.md, errors-and-fixes.md, preferences.md |
+| Permissions | agents.json (org tree for tools) |
+| | plan.md (shared plan for Ralph Loop) |
+
+**WebForge launches from a dedicated home base folder and points at projects.**
+This prevents `.opencode/` folder clashes with stock OpenCode.
 
 ## How It Works
 
@@ -110,21 +133,25 @@ When you run `webforge` (or `opencode` if you used Option B):
 ## Starting a New Project
 
 ```bash
-mkdir my-project && cd my-project
+# From your WebForge home base folder, point at the project:
+webforge /path/to/my-project
 
-# Just run webforge — the init-project plugin automatically:
-#   1. Copies all 301 agent MD files into .opencode/agents/
-#   2. Creates .webforge/ with agents.json, plan.md, memory/, mailbox/, status/
-webforge
+# Hermes's first action is to call activate_project:
+# - If .webforge/ exists → reads PROJECT.md + work-log.md, starts working
+# - If not → asks you: new project or subfolder?
+#   - New project → creates .webforge/ structure, intelligence scans codebase
+#   - Subfolder → creates .webforge-subfolder marker pointing to parent
 
-# Edit .webforge/plan.md with your project goal
+# After activation, intelligence department scans all files and writes
+# findings to .webforge/memory/research/. Documentation department then
+# writes area docs to .webforge/areas/ and fills in PROJECT.md.
 
 # Start the Ralph Loop (optional — for autonomous unattended runs)
 OPENCODE_CMD=webforge bash ~/.config-webforge/opencode/scripts/webforge-loop.sh
 ```
 
-You no longer need to manually copy anything. The `init-project` plugin fires
-when you start a session in any project and sets everything up automatically.
+**No agents are copied into projects.** Everything stays global. Only memory
+and documentation live per-project.
 
 Walk away. The loop will:
 1. Launch Hermes with a continuation prompt

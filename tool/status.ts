@@ -1,85 +1,130 @@
 /**
- * WebForge Status Tool — agents write their status to a file on disk.
+ * WebForge Status Tool — logs agent activity to the shared work log.
  *
- * This implements the watchdog pattern: agents call this to record
- * "I'm working", "I'm done", or "I'm blocked" in .webforge/status/<agent>.json.
+ * Every agent uses this to log:
+ * - task_assigned  — superior logs who they assigned a task to
+ * - work_started   — worker logs they're starting
+ * - work_complete  — worker logs they're done + what they did
+ * - review_started — superior logs they're reviewing
+ * - review_complete— superior logs their verdict
+ * - blocked        — any agent logs they're stuck
+ * - recruited      — HR logs a new agent was recruited
  *
- * NOTE: This tool does NOT wake the superior. To notify a superior agent,
- * use `broadcast(send_to="<superior>", message="...")` separately.
- * The `broadcast` tool (from Pocket Universe) handles the wake-up mechanism.
+ * The tool appends to .webforge/memory/work-log.md (shared, append-only).
+ * It also writes a snapshot to .webforge/status/<agent>.json.
  *
- * Place in: .opencode/tools/status.ts
+ * Agents CANNOT read or edit work-log.md through this tool — only append.
+ *
+ * Place in: tool/status.ts (auto-discovered by OpenCode)
  */
 
 export default {
-  description: "Write your status to .webforge/status/<your-name>.json. Use 'working' when you start, 'done' when finished, or 'blocked' when stuck. This creates a status snapshot on disk for monitoring. To actually notify your superior (with wake-up), use broadcast(send_to='...', message='...') separately.",
+  description: "Log your activity to the shared work log. Every agent must call this when: receiving a task, starting work, completing work, starting a review, completing a review, getting blocked, or recruiting an agent. Appends to .webforge/memory/work-log.md — cannot read or edit existing entries.",
   args: {
-    status: {
+    event: {
       type: "string",
-      description: "Status: 'working', 'done', or 'blocked'",
+      description: "Event type: task_assigned | work_started | work_complete | review_started | review_complete | blocked | recruited",
     },
-    message: {
+    task_id: {
       type: "string",
-      description: "Details about your status",
+      description: "Task identifier (e.g., task-2026-07-12-001). Use 'N/A' if not applicable.",
+    },
+    details: {
+      type: "string",
+      description: "What you did, how you did it, or what's happening. Be specific.",
+    },
+    reported_to: {
+      type: "string",
+      description: "Who you're reporting to (for work_complete, review_complete). Omit if not applicable.",
+      optional: true,
+    },
+    files_changed: {
+      type: "array",
+      items: { type: "string" },
+      description: "Files changed (for work_complete). Omit if not applicable.",
+      optional: true,
+    },
+    notes: {
+      type: "string",
+      description: "Additional notes (e.g., review verdict, blocking reason). Omit if not applicable.",
+      optional: true,
     },
   },
   async execute(args, context) {
     const fs = await import("fs")
     const path = await import("path")
 
-    const fromAgent = context.agent || "Unknown"
+    const agentName = context.agent || "Unknown"
+    const timestamp = new Date().toISOString()
+    const webforgeDir = path.join(process.cwd(), ".webforge")
+    const memoryDir = path.join(webforgeDir, "memory")
+    const statusDir = path.join(webforgeDir, "status")
+    const workLogPath = path.join(memoryDir, "work-log.md")
 
-    // Load registry to find superior (for informational purposes)
-    const registryPath = path.join(process.cwd(), ".webforge", "agents.json")
-    interface AgentInfo {
-      name: string;
-      reportsTo?: string | null;
-    }
-    let superior: string | null = null
-    let _isWebForgeAgent = false
-    try {
-      const registry: Record<string, AgentInfo> = JSON.parse(fs.readFileSync(registryPath, "utf-8"))
-      const agentInfo = Object.values(registry).find(
-        a => a.name.toLowerCase() === fromAgent.toLowerCase()
-      )
-      superior = agentInfo?.reportsTo ?? null
-      _isWebForgeAgent = !!agentInfo
-    } catch {}
-
-    // ─── WebForge Tool Guard ───
-    // Only registered WebForge agents can use status.
-    // OpenCode built-in agents are unaffected.
-    if (!_isWebForgeAgent) {
-      return `BLOCKED: ${fromAgent} is not a registered WebForge agent. status only applies to WebForge agents.`
-    }
-
-    // Save status to .webforge/status/<agent>.json
-    const statusDir = path.join(process.cwd(), ".webforge", "status")
+    // Ensure directories exist
+    fs.mkdirSync(memoryDir, { recursive: true })
     fs.mkdirSync(statusDir, { recursive: true })
 
-    const statusPath = path.join(statusDir, `${fromAgent.toLowerCase()}.json`)
-    const statusData = {
-      agent: fromAgent,
-      status: args.status,
-      message: args.message || "",
-      superior: superior || null,
-      timestamp: new Date().toISOString(),
+    // ─── Build the work log entry ───
+    const eventLabel = args.event.replace(/_/g, " ").toUpperCase()
+    let entry = `## [${timestamp}] ${agentName} — ${eventLabel}\n`
+    entry += `- **Task ID:** ${args.task_id || "N/A"}\n`
+
+    if (args.event === "task_assigned") {
+      entry += `- **Details:** ${args.details}\n`
+    } else if (args.event === "work_started") {
+      entry += `- **Details:** ${args.details}\n`
+    } else if (args.event === "work_complete") {
+      entry += `- **What I did:** ${args.details}\n`
+      if (args.files_changed && args.files_changed.length > 0) {
+        entry += `- **Files changed:** ${args.files_changed.join(", ")}\n`
+      }
+      if (args.reported_to) {
+        entry += `- **Reported to:** ${args.reported_to}\n`
+      }
+      entry += `- **Status:** Ready for review\n`
+    } else if (args.event === "review_started") {
+      entry += `- **Reviewing:** ${args.details}\n`
+    } else if (args.event === "review_complete") {
+      entry += `- **Verdict:** ${args.notes || "N/A"}\n`
+      entry += `- **Notes:** ${args.details}\n`
+      if (args.reported_to) {
+        entry += `- **Forwarded to:** ${args.reported_to}\n`
+      }
+    } else if (args.event === "blocked") {
+      entry += `- **Blocking issue:** ${args.details}\n`
+      entry += `- **What I need:** ${args.notes || "See details"}\n`
+    } else if (args.event === "recruited") {
+      entry += `- **Details:** ${args.details}\n`
+    } else {
+      entry += `- **Details:** ${args.details}\n`
     }
-    fs.writeFileSync(statusPath, JSON.stringify(statusData, null, 2))
 
-    // Log to memory (Law 6: documentation)
-    const memDir = path.join(process.cwd(), ".webforge", "memory")
-    fs.mkdirSync(memDir, { recursive: true })
-    const logPath = path.join(memDir, "status-log.md")
-    const logEntry = `- **[${new Date().toISOString()}]** ${fromAgent} → ${args.status}: ${args.message || "(no message)"}\n`
-    fs.appendFileSync(logPath, logEntry, "utf-8")
+    entry += `\n`
 
-    return `Status written: ${args.status}.
-- File: .webforge/status/${fromAgent.toLowerCase()}.json
-- Superior: ${superior || "(none)"}
-- Logged: .webforge/memory/status-log.md
+    // ─── Append to work-log.md (create if doesn't exist) ───
+    if (!fs.existsSync(workLogPath)) {
+      fs.writeFileSync(
+        workLogPath,
+        "# WebForge Work Log\n\n> Auto-generated by the status tool. Every agent action is logged here in chronological order.\n\n",
+        "utf-8"
+      )
+    }
+    fs.appendFileSync(workLogPath, entry, "utf-8")
 
-To notify your superior (with wake-up), call:
-  broadcast(send_to="${superior || "<superior-name>"}", message="Status: ${args.status} — ${args.message || ""}")`
+    // ─── Write per-agent status snapshot ───
+    const agentStatusPath = path.join(statusDir, `${agentName}.json`)
+    const statusSnapshot = {
+      agent: agentName,
+      event: args.event,
+      task_id: args.task_id || null,
+      timestamp: timestamp,
+      details: args.details,
+      reported_to: args.reported_to || null,
+      notes: args.notes || null,
+    }
+    fs.writeFileSync(agentStatusPath, JSON.stringify(statusSnapshot, null, 2), "utf-8")
+
+    return `Logged: ${eventLabel} to work-log.md`
   },
 }

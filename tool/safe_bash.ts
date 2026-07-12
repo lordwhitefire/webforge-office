@@ -30,17 +30,9 @@ export default {
 
     // ─── WebForge Tool Guard ───
     // Only registered WebForge agents can use safe_bash.
-    // OpenCode built-in agents (build, plan, etc.) are unaffected —
-    // they use the built-in bash tool (no dangerous-op blocking).
-    const regPath = path.join(process.cwd(), ".webforge", "agents.json")
-    let _isWebForgeAgent = false
-    try {
-      const reg = JSON.parse(fs.readFileSync(regPath, "utf-8"))
-      _isWebForgeAgent = Object.values(reg).some(
-        (a: any) => a.name?.toLowerCase() === agentName.toLowerCase()
-      )
-    } catch {}
-    if (!_isWebForgeAgent) {
+    // OpenCode built-in agents (build, plan, etc.) are unaffected.
+    const { isWebForgeAgent } = await import("./lib/agents-json.js")
+    if (!isWebForgeAgent(fs, path, agentName)) {
       return `BLOCKED: ${agentName} is not a registered WebForge agent. safe_bash only applies to WebForge agents. Use the built-in bash tool instead.`
     }
 

@@ -36,6 +36,7 @@ permission:
   verify_work: allow
   create_agent: deny
   update_plan: allow
+  activate_project: allow
   revoke: deny
 ---
 
