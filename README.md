@@ -231,6 +231,53 @@ Walk away. The loop will:
 11. **Verification proof** — `report_metrics` requires all 5 fields
 12. **Communication circles** — `task` tool uses glob permissions (`"*": deny`, specific agents `allow`)
 
+## Permission Enforcement (how it actually works)
+
+OpenCode's built-in permission system (the `permission:` block in agent .md files) has a critical bug: it only enforces on the **primary agent** — not on subagents spawned via the `task` tool. This means Hermes's permissions work, but Athena's (and every other subagent's) are silently ignored. Confirmed in OpenCode issues #7474, #12566, #23519.
+
+Plugin-based hooks don't fix this either — plugins only intercept the primary agent's calls, not subagent calls (issue #5894).
+
+### The WebForge fix: same-name tool override
+
+We create custom tools with the **exact same names** as OpenCode's built-in tools: `edit`, `bash`, `write`. OpenCode's docs confirm: "If a custom tool uses the same name as a built-in tool, the custom tool takes precedence." This means our version **replaces** the native one — there's no unguarded native tool left for anyone to fall back on.
+
+Inside each of these tools, the **first line of code** (before anything else runs):
+
+1. Read the calling agent's name from `context.agent`
+2. Find that agent's `.md` file in `~/.config/webforge/opencode/agent/`
+3. Parse the YAML frontmatter to extract the permission block
+4. Check if the tool is allowed (`edit: allow` or `edit: deny`)
+5. If denied → return `BLOCKED` immediately, do not touch any files
+6. If allowed → proceed with the normal edit/bash/write logic
+
+### Why this can't be bypassed
+
+- The check isn't a hook or event listener that could get skipped — it's literally the first line of the function that runs the tool
+- There's no other tool with that name to fall back to (we replaced the native one)
+- The check runs unconditionally every single time the function executes
+- Subagent, direct agent, doesn't matter — there's no path around it
+
+### Tools that override built-ins
+
+| Tool | File | Permission checked |
+|------|------|-------------------|
+| `edit` | `tool/edit.ts` | `edit` in agent's .md |
+| `bash` | `tool/bash.ts` | `bash` in agent's .md |
+| `write` | `tool/write.ts` | `edit` in agent's .md (write uses edit permission) |
+
+### Shared permission checker
+
+All three tools use `tool/lib/permission-check.ts` — a shared helper that reads the agent's .md file and parses the permission block. Built-in OpenCode agents (`build`, `plan`, `general`, `explore`) bypass WebForge enforcement (they don't have .md files in our config).
+
+### Testing
+
+To verify enforcement works: spawn Athena (who has `edit: deny`) and have her try to edit a file. She should see:
+```
+BLOCKED: athena does not have permission to use edit. (Source: athena.md (edit: deny))
+```
+
+If she can edit the file, something is wrong — the override isn't taking effect.
+
 ## Configuration
 
 ### API Keys
